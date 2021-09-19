@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setMenuIsActive, setAlert, setUser } from './redux-store';
+import { setMenuIsActive, setUser } from './redux-store';
 import { developmentLog } from './utils';
 import { API } from './api';
 
@@ -9,22 +9,25 @@ import AuthRoute from './components/AuthRoute';
 import LoadingIcon from './components/LoadingIcon';
 
 import './styles/app.scss';
-// import DashboardLayout from './layouts/DashboardLayout';
+// import AdminLayout from './layouts/AdminLayout';
 
+import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import LogoutPage from './pages/LogoutPage';
 import HomePage from './pages/HomePage';
+import ClimbPage from './pages/ClimbPage';
+import ScanPage from './pages/ScanPage';
 
-import ClimbsPage from './pages/Climbs/ClimbsPage';
-import EditClimbPage from './pages/Climbs/EditClimbPage';
-import ViewClimbPage from './pages/Climbs/ViewClimbPage';
-import NewClimbPage from './pages/Climbs/NewClimbPage';
+import { default as AdminClimbsPage } from './pages/Admin/Climbs/ClimbsPage';
+import EditClimbPage from './pages/Admin/Climbs/EditClimbPage';
+import ViewClimbPage from './pages/Admin/Climbs/ViewClimbPage';
+import NewClimbPage from './pages/Admin/Climbs/NewClimbPage';
 
 import OrganizationPage from './pages/OrganizationPage';
 import LocationsPage from './pages/LocationsPage';
-import AdminHomePage from './pages/AdminHomePage';
+import { default as AdminHomePage } from './pages/Admin/HomePage';
 import OrganizationProvider from './providers/OrganizationProvider';
 
 function App(props) {
@@ -90,8 +93,6 @@ function App(props) {
     history.listen((location, action) => {
       // close menu
       dispatch(setMenuIsActive(null));
-      // clear alert
-      dispatch(setAlert(null));
     });
   }, [history, dispatch]);
 
@@ -108,18 +109,23 @@ function App(props) {
       <AuthRoute path="/logout" component={LogoutPage} />
 
       <Route exact path="/" component={HomePage} />
+      <Route exact path="/climbs/:climbId(\d+)" component={ClimbPage} />
+
+      <Route exact path="/scan" component={ScanPage} />
 
       <Route path="/admin">
         <OrganizationProvider>
           <AuthRoute exact path="/admin/organization" component={OrganizationPage} />
           <AuthRoute exact path="/admin/locations" component={LocationsPage} />
-          <AuthRoute exact path="/admin/climbs" component={ClimbsPage} />
+          <AuthRoute exact path="/admin/climbs" component={AdminClimbsPage} />
           <AuthRoute exact path="/admin/climbs/new" component={NewClimbPage} />
           <AuthRoute exact path="/admin/climbs/:climbId(\d+)" component={ViewClimbPage} />
           <AuthRoute exact path="/admin/climbs/:climbId(\d+)/edit" component={EditClimbPage} />
           <AuthRoute exact path="/admin" component={AdminHomePage} />
         </OrganizationProvider>
       </Route>
+
+      <Route path="/" component={NotFoundPage} />
 
     </Switch>
   );

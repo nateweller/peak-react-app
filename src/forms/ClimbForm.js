@@ -8,9 +8,10 @@ import { disciplines, grades } from './../enums';
 import { API } from './../api';
 import { setIsLoading } from '../redux-store';
 
+import { useAlerts } from './../hooks';
+
 import Input from './../components/Input';
 import Select from './../components/Select';
-import Alert from '../components/Alert';
 
 function ClimbForm({ climbId }) {
 
@@ -18,7 +19,7 @@ function ClimbForm({ climbId }) {
 
     const isNew = ! parseInt(climbId);
 
-    const [alert, setAlert] = useState(null);
+    const alerts = useAlerts();
 
     const [redirect, setRedirect] = useState(null);
 
@@ -59,7 +60,7 @@ function ClimbForm({ climbId }) {
         if (climbId === 'new') {
             API.post('climbs', values)
                 .then((response) => setRedirect(`/admin/climbs/${response.data.id}`))
-                .catch(() => setAlert({
+                .catch(() => alerts.add({
                     'message': 'Error.',
                     'type': 'danger'
                 }))
@@ -76,7 +77,7 @@ function ClimbForm({ climbId }) {
                 setLocations(response.data);
             })
             .catch(error => {
-                setAlert({
+                alerts.add({
                     message: error.message,
                     type: 'danger'
                 });
@@ -84,7 +85,7 @@ function ClimbForm({ climbId }) {
             .finally(() => {
                 dispatch(setIsLoading(false));
             });
-    }, [dispatch]);
+    }, [alerts, dispatch]);
 
     const loadClimb = useCallback(() => {
         dispatch(setIsLoading(false));
@@ -93,7 +94,7 @@ function ClimbForm({ climbId }) {
                 setClimbData(response.data);
             })
             .catch(error => {
-                setAlert({
+                alerts.add({
                     message: error.message,
                     type: 'danger'
                 });
@@ -101,7 +102,7 @@ function ClimbForm({ climbId }) {
             .finally(() => {
                 dispatch(setIsLoading(false));
             });
-    }, [dispatch, climbId]);
+    }, [alerts, dispatch, climbId]);
 
     useEffect(() => {
         // set default climb data
@@ -132,7 +133,7 @@ function ClimbForm({ climbId }) {
     }
 
     if (!isNew && !climbData) {
-        return <LoadingIcon isFullScreen={true} />;
+        return <LoadingIcon isLarge={true} />;
     }
 
     return (
@@ -140,11 +141,7 @@ function ClimbForm({ climbId }) {
             {() => (
                 <Form id="climb-form">
 
-                    { alert &&
-                        <Alert type={ alert.type } className="mb-4">
-                            <p>{ alert.message }</p>
-                        </Alert>
-                    }
+                    { alerts.render() }
 
                     <Input 
                         name="name"

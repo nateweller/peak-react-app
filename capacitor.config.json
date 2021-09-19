@@ -1,0 +1,6 @@
+{
+  "appId": "com.fivefifteen.peak",
+  "appName": "peak",
+  "webDir": "build",
+  "bundledWebRuntime": false
+}

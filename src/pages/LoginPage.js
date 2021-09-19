@@ -8,7 +8,7 @@ function LoginPage() {
 
     if (user) {
         return (
-            <Redirect to="/admin" />
+            <Redirect to="/" />
         );
     }
 

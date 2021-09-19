@@ -10,7 +10,6 @@ const globalState = createSlice({
         isLoading: false,
         menuIsActive: false,
         screenTitle: '',
-        alert: null,
         user: null,
         organization: null
     },
@@ -24,9 +23,6 @@ const globalState = createSlice({
         setScreenTitle: (state, action) => {
             state.screenTitle = action.payload;
         },
-        setAlert: (state, action) => {
-            state.alert = action.payload;
-        },
         setUser: (state, action) => {
             state.user = action.payload;
         },
@@ -36,7 +32,7 @@ const globalState = createSlice({
     }
 });
 
-export const { setIsLoading, setMenuIsActive, setScreenTitle, setAlert, setUser, setOrganization } = globalState.actions;
+export const { setIsLoading, setMenuIsActive, setScreenTitle, setUser, setOrganization } = globalState.actions;
 
 export const store = configureStore({
     reducer: {

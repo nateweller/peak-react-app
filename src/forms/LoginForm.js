@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Formik, Form, /* Field, ErrorMessage */ } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { API } from './../api';
 import { setUser } from './../redux-store';
+import { useAlerts } from './../hooks';
 
-import Alert from './../components/Alert';
 import Button from './../components/Button';
 import Input from './../components/Input';
 
@@ -14,7 +13,7 @@ function LoginForm() {
 
     const dispatch = useDispatch();
 
-    const [errorMessage, setErrorMessage] = useState(null);
+    const alerts = useAlerts();
 
     const initialValues = {
         email: '',
@@ -33,17 +32,20 @@ function LoginForm() {
                 dispatch(setUser({ ...response.data.user, token: response.data.token }));
             })
             .catch((error) => {
-                setErrorMessage(error?.response?.data?.message || 'Error');
+                alerts.replace({
+                    type: 'danger',
+                    message: error?.response?.data?.message || 'Error'
+                })
                 setSubmitting(false);
             });
     };
 
     return (
         <>
-            { errorMessage ? <Alert type="danger" message={errorMessage} /> : null }
+            { alerts.render() }
 
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-                {({ errors, touched, isSubmitting }) => (
+                {({ isSubmitting }) => (
                     <Form className="space-y-6">
 
                         <div className="mt-1">

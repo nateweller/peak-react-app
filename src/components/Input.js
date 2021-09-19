@@ -10,7 +10,9 @@ function Input(props) {
         type, 
         description, 
         required, 
-        autoComplete 
+        autoComplete,
+        rows,
+        as,
     } = props;
 
     return (
@@ -20,7 +22,7 @@ function Input(props) {
             </label>
             <div className="mt-1">
                 <Field
-                    type={type || 'text'}
+                    type={type}
                     name={name}
                     id={name}
                     className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
@@ -28,6 +30,8 @@ function Input(props) {
                     aria-describedby={`${name}-description`}
                     autoComplete={autoComplete}
                     required={required}
+                    rows={rows}
+                    as={as}
                 />
             </div>
             <p className="mt-2 text-sm text-gray-500" id={`${name}-description`}>
@@ -41,7 +45,7 @@ function Input(props) {
 Input.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
+    type: PropTypes.string,
     placeholder: PropTypes.string,
     description: PropTypes.string
 };

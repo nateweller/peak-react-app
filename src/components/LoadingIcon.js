@@ -1,20 +1,28 @@
-function LoadingIcon({ isFullScreen }) {
-    const icon = (
-        <div className="loading-icon">
-            <div />
-            <div />
-            <div />
-            <div />
-        </div>
-    );
+import { RefreshIcon } from '@heroicons/react/outline';
 
-    const iconWithWrapper = (
-        <div className="loading-icon-wrapper">
-            { icon }
-        </div>
-    );
+function LoadingIcon({ isFullScreen, isLarge }) {
+    const icon = 
+        <div className="inline-block animate-spin">
+            <RefreshIcon className="h-8 w-8 animation-spin text-indigo-500" />
+        </div>;
 
-    return isFullScreen ? iconWithWrapper : icon;
+    if (isFullScreen) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                { icon }
+            </div>
+        );
+    }
+
+    if (isLarge) {
+        return (
+            <div className="text-center py-24">
+                { icon }
+            </div>
+        );
+    }
+
+    return icon;
 }
 
 export default LoadingIcon;
