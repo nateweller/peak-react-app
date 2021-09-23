@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import LoadingIcon from './../components/LoadingIcon';
 import { grades } from './../enums';
 import { API } from './../api';
 import { useAlerts, useLoadingMonitor } from './../hooks';
+import RegisterForm from './RegisterForm';
 
 import Input from './../components/Input';
 import Select from './../components/Select';
@@ -22,8 +24,9 @@ function SendForm({ sendId, climbId, afterSubmit }) {
 
     const [gradeOptions] = useState(grades.BOULDER.V);
 
+    const user = useSelector(state => state.global.user);
+
     const validationSchema = Yup.object().shape({
-        climb_id: Yup.number().required('Climb is required.'),
         grade: Yup.string(),
         rating: Yup.number(),
         feedback: Yup.string()
@@ -31,7 +34,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
 
     const onSubmit = (values, { setSubmitting }) => {
         if (sendId === 'new') {
-            API.post(`climbs/${values.climb_id}/sends`, values)
+            API.post(`climbs/${climbId}/sends`, values)
                 .then((response) => afterSubmit(response))
                 .catch(() => {
                     alerts.add({
@@ -43,7 +46,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
                     setSubmitting(false);
                 });
         } else {
-            API.patch(`climbs/${values.climb_id}/sends/${sendId}`, values)
+            API.patch(`climbs/${climbId}/sends/${sendId}`, values)
                 .then((response) => afterSubmit(response))
                 .catch(() => alerts.add({
                     'message': 'Error.',
@@ -72,7 +75,6 @@ function SendForm({ sendId, climbId, afterSubmit }) {
         // set default send data 
         if (isNew && sendData === undefined) {
             setSendData({
-                climb_id: climbId,
                 grade: '',
                 rating: '',
                 feedback: ''
@@ -88,6 +90,15 @@ function SendForm({ sendId, climbId, afterSubmit }) {
         return <LoadingIcon isFullScreen={true} />;
     }
 
+    if (! user) {
+        return (
+            <div>
+                <h2>Sign In</h2>
+                <RegisterForm />
+            </div>
+        );
+    }
+
     return (
         <Formik initialValues={ sendData || {} } validationSchema={ validationSchema } onSubmit={ onSubmit }>
             {({ isSubmitting }) => (
@@ -95,14 +106,14 @@ function SendForm({ sendId, climbId, afterSubmit }) {
 
                     { alerts.render() }
 
-                    <div className="mt-4">
+                    {/* <div className="mt-4">
                         <Select 
                             name="climb_id"
                             label="Climb"
                             initialValue={ climbId }
                             options={[]}
                         />
-                    </div>
+                    </div> */}
 
                     <div className="mt-4">
                         <Select

@@ -32,10 +32,26 @@ const globalState = createSlice({
     }
 });
 
+/**
+ * API Cache
+ */
+const dataStore = createSlice({
+    name: 'dataStore',
+    initialState: {},
+    reducers: {
+        setDataStoreItem: (state, action) => {
+            state[action.payload.key] = action.payload.value;
+        }
+    }
+});
+
 export const { setIsLoading, setMenuIsActive, setScreenTitle, setUser, setOrganization } = globalState.actions;
+
+export const { setDataStoreItem } = dataStore.actions;
 
 export const store = configureStore({
     reducer: {
-        global: globalState.reducer
+        global: globalState.reducer,
+        dataStore: dataStore.reducer
     }
 });

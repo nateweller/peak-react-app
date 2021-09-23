@@ -1,34 +1,38 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setOrganization } from './../redux-store';
+import { createContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { API } from './../api';
 import { developmentLog } from '../utils';
 
+export const OrganizationContext = createContext(undefined);
+
 function OrganizationProvider(props) {
 
-    const dispatch = useDispatch();
     const user = useSelector(state => state.global.user);
-    // const organization = useSelector(state => state.global.organization);
+
+    const [organization, setOrganization] = useState(undefined);
 
     useEffect(() => {
         API.get('organizations')
             .then(response => {
                 // to do: add support for multiple organizations per user
-                dispatch(setOrganization(response.data[0]));
+                setOrganization(response.data[0]);
 
                 developmentLog('Organization fetched by OrganizationProvider:');
                 developmentLog(response.data[0]);
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                console.error(error);
+                setOrganization(null);
+            });
 
         return () => {};
 
-    }, [user?.id, dispatch]);
+    }, [user]);
 
     return (
-        <>
+        <OrganizationContext.Provider value={ organization }>
             { props.children }
-        </>
+        </OrganizationContext.Provider>
     );
 }
 

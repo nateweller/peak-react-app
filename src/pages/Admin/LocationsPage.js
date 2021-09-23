@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { API } from '../api';
-import { setScreenTitle } from './../redux-store';
+import { API } from '../../api';
+import { setScreenTitle } from './../../redux-store';
 
 function LocationsPage() {
 

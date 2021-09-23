@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setScreenTitle } from './../redux-store';
-import OrganizationForm from '../forms/OrganizationForm';
+import { setScreenTitle } from './../../redux-store';
+import OrganizationForm from '../../forms/OrganizationForm';
 
 function OrganizationPage() {
 

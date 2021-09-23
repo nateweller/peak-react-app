@@ -27,7 +27,7 @@ function Table(props) {
                                 </th> */}
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {data.map((dataRow, loopIndex) => (
+                                {Boolean(data?.length) && data.map((dataRow, loopIndex) => (
                                     <tr key={ loopIndex }>
                                         {dataRow.map((dataColumn, columnLoopIndex) => (
                                             <td 

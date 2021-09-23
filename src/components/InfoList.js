@@ -1,3 +1,5 @@
+import LoadingIcon from "./LoadingIcon";
+
 function InfoList(props) {
 
     const { heading, info } = props;
@@ -13,6 +15,10 @@ function InfoList(props) {
     };
 
     const renderInfo = () => {
+        if (info === undefined) {
+            return <LoadingIcon isLarge={ true } />
+        }
+
         if (! info || ! info.length) {
             return (
                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

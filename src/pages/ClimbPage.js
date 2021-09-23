@@ -1,20 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import AppLayout from '../layouts/AppLayout';
 import SendForm from '../forms/SendForm';
 import Dialog from '../components/Dialog';
 import InfoList from '../components/InfoList';
 import Button from '../components/Button';
-import { API } from '../api';
+import { useDataStore, useDataStoreItem } from '../hooks';
 
-function Climb(props) {
+function ClimbPage(props) {
 
     const climbId = props.match.params.climbId;
+    
+    const dataStore = useDataStore();
+    const { dataSynced: climbData } = useDataStoreItem(`climbs/${climbId}`, { useCache: true, syncCache: true });
 
-    const [climbData, setClimbData] = useState(undefined);
-    const [isLoading, setIsLoading] = useState(false);
     const [showSendForm, setShowSendForm] = useState(false);
 
     const getClimbInfo = () => {
+        if (climbData === undefined) return undefined;
         if (! climbData || climbData.length) return [];
 
         return [
@@ -29,41 +31,20 @@ function Climb(props) {
             {
                 label: 'Grade',
                 value: climbData.grade
+            },
+            {
+                label: 'Total Sends',
+                value: climbData.send_count
             }
         ];
     }
-
-    useEffect(() => {
-        if (climbData === undefined && ! isLoading) {
-            setIsLoading(true);
-            API.get(`climbs/${climbId}`)
-                .then(response => setClimbData(response.data))
-                .catch(err => {
-                    console.error(err);
-                    setClimbData(null);
-                })
-                .finally(() => setIsLoading(false));
-        }
-    }, [climbData, climbId, isLoading]);
-
-    if (! climbData) return null;
 
     const pageHeader = (
         <div className="md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
                 <h2 className="text-2xl font-bold leading-7 text-white sm:text-3xl sm:truncate">
-                    { climbData?.name || 'Unnamed Climb' }
+                    { climbData?.name }
                 </h2>
-                <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-                    <div className="mt-2 flex items-center text-sm text-gray-300">
-                        {/* <LocationMarkerIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-500" aria-hidden="true" /> */}
-                        { climbData?.discipline }
-                    </div>
-                    <div className="mt-2 flex items-center text-sm text-gray-300">
-                        {/* <BriefcaseIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-500" aria-hidden="true" /> */}
-                        { climbData?.grade || 'Ungraded' }
-                    </div>
-                </div>
             </div>
             <div className="mt-4 flex md:mt-0 md:ml-4">
                 <Button 
@@ -86,8 +67,10 @@ function Climb(props) {
                 <h2 className="text-2xl font-bold mb-8">Log Your Send</h2>
                 <SendForm 
                     sendId="new" 
+                    climbId={ climbId }
                     afterSubmit={ () => {
                         setShowSendForm(false);
+                        dataStore.get(`climbs/${climbId}`);
                     } }
                 />
             </Dialog>
@@ -95,4 +78,4 @@ function Climb(props) {
     );
 }
 
-export default Climb;
+export default ClimbPage;

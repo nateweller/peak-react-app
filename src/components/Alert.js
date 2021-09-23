@@ -10,7 +10,6 @@ function Alert(props) {
 
     const getClassName = () => {
         let className = `rounded-md p-4`;
-        console.log(type);
 
         switch (type) {
             case 'success':

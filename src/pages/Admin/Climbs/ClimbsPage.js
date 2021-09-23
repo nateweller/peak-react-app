@@ -67,6 +67,7 @@ function ClimbsPage() {
                 </div>
             );
         }
+        
         return (
             <Table 
                 data={climbs.reduce((data, climb) => {

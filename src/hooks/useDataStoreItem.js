@@ -1,0 +1,132 @@
+import { useCallback, useEffect, useReducer } from 'react'
+import { useSelector } from 'react-redux';
+import useDataStore from './useDataStore';
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'SET_IS_LOADING':
+            return {
+                ...state,
+                isLoading: true
+            };
+        case 'SET_DATA_FROM_FETCH':
+            return {
+                ...state,
+                data: action.payload,
+                dataFetched: true,
+                isLoading: false
+            };
+        case 'SET_DATA_FROM_FORCE_FETCH':
+            if (state.data === undefined) {
+                return {
+                    ...state,
+                    data: action.payload,
+                    dataFetched: true,
+                    isLoading: false 
+                };
+            } else {
+                return {
+                    ...state,
+                    dataForced: action.payload,
+                    dataFetched: true,
+                    isLoading: false
+                };
+            }
+        case 'SET_DATA_FROM_SYNC':
+            return {
+                ...state,
+                dataSynced: action.payload
+            };
+        case 'SET_DATA_FROM_ERROR':
+            return {
+                ...state,
+                data: null,
+                dataFetched: true,
+                isLoading: false
+            }
+        default:
+            throw new Error();
+    }
+}
+
+function useDataStoreItem(key, config) {
+
+    const { 
+        /**
+         * Use Cache
+         * 
+         * When enabled, attempts to load data using useDataStore() hook.
+         * Will fetch data from API if undefined in the data store.
+         * 
+         * @type {bool}
+         */
+        useCache,
+
+        /**
+         * Force Data Fetch
+         * 
+         * When enabled, triggers an API call even when caching is enabled and the 
+         * value is available from the data store. Useful for showing cached value
+         * immediatley and loading fresh data in the background.
+         * 
+         * @type {bool}
+         */
+        forceDataFetch
+    } = config || {};
+
+    const dataStore = useDataStore();
+
+    // load the cached value from the redux dataStore.
+    const cacheValue = useSelector(state => state.dataStore[key]);
+    const defaultValue = useCache && cacheValue !== undefined ? cacheValue : undefined;
+
+    const [state, dispatch] = useReducer(reducer, {
+        data: defaultValue,
+        updatedData: undefined, 
+        isLoading: false,
+        dataFetched: false,
+        error: undefined
+    });
+
+    const shouldFetch = useCallback(() => {
+        if (state.isLoading) return false;
+        if (state.error) return false;
+        if (state.data !== undefined && ! forceDataFetch) return false;
+        if (state.updatedData !== undefined && forceDataFetch) return false;
+
+        return true;
+    }, [state, forceDataFetch]);
+
+    const fetch = useCallback(() => {
+        // setItem({ ...item, isLoading: true });
+        dispatch({ type: 'SET_IS_LOADING', payload: true });
+        dataStore.get(key, config)
+            .then(data => {
+                // when using cache, provide the fetched value as "updatedData"
+                // so that update can be handled by specific implementations.
+                if (forceDataFetch) {
+                    dispatch({ type: 'SET_DATA_FROM_FORCE_FETCH', payload: data });
+                    return;
+                }
+
+                dispatch({ type: 'SET_DATA_FROM_FETCH', payload: data });
+            })
+            .catch(error => {
+                dispatch({ type: 'SET_DATA_FROM_ERROR' });
+            });
+    }, [ dataStore, key, config, forceDataFetch]);
+
+    useEffect(() => {
+        if (! shouldFetch()) return;
+
+        fetch();
+    }, [shouldFetch, fetch]);
+
+    useEffect(() => {
+        dispatch({ type: 'SET_DATA_FROM_SYNC', payload: cacheValue });
+    }, [cacheValue]);
+
+    return state;
+}
+
+export default useDataStoreItem;

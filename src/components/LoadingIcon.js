@@ -3,7 +3,7 @@ import { RefreshIcon } from '@heroicons/react/outline';
 function LoadingIcon({ isFullScreen, isLarge }) {
     const icon = 
         <div className="inline-block animate-spin">
-            <RefreshIcon className="h-8 w-8 animation-spin text-indigo-500" />
+            <RefreshIcon className="h-8 w-8 text-indigo-500" />
         </div>;
 
     if (isFullScreen) {

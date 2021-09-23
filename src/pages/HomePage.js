@@ -1,29 +1,25 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
-import { API } from '../api';
+import { useDataStoreItem, useAlerts } from '../hooks';
 import Table from '../components/Table';
 import AppLayout from '../layouts/AppLayout';
 import LoadingIcon from '../components/LoadingIcon';
 import Button from '../components/Button';
+import { useEffect } from 'react';
 
 function HomePage() {
 
-    const [climbsData, setClimbsData] = useState(undefined);
-    const [isLoading, setIsLoading] = useState(false);
+    const alerts = useAlerts();
+    const { data, error, isLoading } = useDataStoreItem('climbs', { useCache: true, forceDataFetch: true });
 
     useEffect(() => {
-        if (climbsData === undefined && ! isLoading) {
-            setIsLoading(true);
-            API.get('climbs')
-                .then(response => setClimbsData(response.data))
-                .catch(err => {
-                    console.error(err);
-                    setClimbsData([]);
-                })
-                .finally(() => setIsLoading(false));
+        if (error) {
+            alerts.replace({
+                type: 'danger',
+                message: error?.message || 'Error'
+            });
         }
-    }, [climbsData, isLoading]);
+    }, [error, alerts]);
 
     const pageHeader = (
         <div className="md:flex md:items-center md:justify-between">
@@ -47,13 +43,13 @@ function HomePage() {
     );
 
     const renderClimbsTable = () => {
-        if (! climbsData) {
+        if (isLoading) {
             return <LoadingIcon isLarge={ true } />;
         }
 
         return (
             <Table 
-                data={climbsData.reduce((data, climbData) => {
+                data={Boolean(data?.length) && data.reduce((data, climbData) => {
                     data.push([
                         {
                             label: 'Climb',
@@ -97,6 +93,7 @@ function HomePage() {
 
     return (
         <AppLayout header={ pageHeader } isBorderless={ true }>
+            { alerts.render() }
             { renderClimbsTable() }
         </AppLayout>
     );

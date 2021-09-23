@@ -2,7 +2,7 @@ import axios from 'axios';
 import { store } from './redux-store';
 
 export const API = {
-    baseURL: 'http://peak:8888/api',
+    baseURL: 'http://192.168.50.114:8888/api',
     getApiToken: () => {
         const state = store.getState();
         return state?.global?.user?.token;

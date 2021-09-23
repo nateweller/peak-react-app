@@ -20,7 +20,7 @@ function useAlerts() {
                     <Alert
                         type={ alert.type }
                         key={ loopIndex }
-                        className={ loopIndex !== alerts - 1 ? 'mb-4' : '' }
+                        className={ loopIndex !== alerts.length - 1 ? 'mb-4' : '' }
                     >
                         { alert.message }
                     </Alert>
