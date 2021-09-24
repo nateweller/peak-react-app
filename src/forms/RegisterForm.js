@@ -1,108 +1,98 @@
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { API } from './../api';
 import { setUser } from './../redux-store';
+import { useAlerts } from './../hooks';
+import { API } from './../api';
 
-import Alert from './../components/Alert';
+import Input from './../components/Input';
+import Button from './../components/Button';
 
 function RegisterForm() {
 
     const dispatch = useDispatch();
 
-    const [errorMessage, setErrorMessage] = useState(null);
+    const alerts = useAlerts();
 
     const initialValues = {
         name: '',
         email: '',
         password: '',
-        confirm_password: ''
+        password_confirmation: ''
     };
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('Name is required.'),
         email: Yup.string().required('Email address is required.'),
         password: Yup.string().required('Password is required.'),
-        confirm_password: Yup.string().required('Confirm Password is required.')
+        password_confirmation: Yup.string().required('Confirm Password is required.')
     });
 
     const onSubmit = (values, { setSubmitting }) => {
         API.post('register', values)
             .then((response) => {
+                localStorage.setItem('token', response.data.token);
                 dispatch(setUser({ ...response.data.user, token: response.data.token }));
             })
             .catch((error) => {
-                setErrorMessage(error.response.data.message);
-            })
-            .finally(() => {
+                alerts.replace({
+                    type: 'danger',
+                    message: error?.response?.data?.message || 'Error'
+                });
                 setSubmitting(false);
             });
     };
 
     return (
         <>
-            { errorMessage ? <Alert type="danger" message={errorMessage} /> : null }
+            { alerts.render() }
 
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-                {({ errors, touched, isSubmitting }) => (
-                    <Form>
+                {({ isSubmitting }) => (
+                    <Form className="space-y-6">
 
-                        <div className="mb-3">
-                            <label htmlFor="name" className="form-label">
-                                Name
-                            </label>
-                            <Field 
+                        <div className="mt-1">
+                            <Input 
                                 type="text"
                                 name="name"
-                                className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} 
-                                aria-describedby="name-validation"
+                                label="Name"
+                                required
                             />
-                            <ErrorMessage name="name" id="name-validation" component="div" className="invalid-feedback d-block" />
                         </div>
 
-                        <div className="mb-3">
-                            <label htmlFor="email" className="form-label">
-                                Email
-                            </label>
-                            <Field 
-                                type="email"
+                        <div>
+                            <Input 
                                 name="email"
-                                className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} 
-                                aria-describedby="email-validation"
+                                type="email"
+                                label="Email Address"
+                                autoComplete="email"
+                                required 
                             />
-                            <ErrorMessage name="email" id="email-validation" component="div" className="invalid-feedback d-block" />
                         </div>
 
-                        <div className="mb-3">
-                            <label htmlFor="password" className="form-label">
-                                Password
-                            </label>
-                            <Field 
-                                type="password"
+                        <div>
+                            <Input 
                                 name="password"
-                                className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')}
-                                aria-describedby="password_validation"
-                            />
-                            <ErrorMessage name="password" id="password_validation" component="div" className="invalid-feedback d-block" />
-                        </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="password_confirmation" className="form-label">
-                                Confirm Password
-                            </label>
-                            <Field 
+                                label="Password"
                                 type="password"
-                                name="password_confirmation"
-                                className={'form-control' + (errors.password_confirmation && touched.password_confirmation ? ' is-invalid' : '')}
-                                aria-describedby="password_confirmatino_validation"
+                                required
                             />
-                            <ErrorMessage name="password_confirmation" id="password_confirmatino_validation" component="div" className="invalid-feedback d-block" />
                         </div>
 
-                        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                            Register
-                        </button>
+                        <div>
+                            <Input 
+                                name="password_confirmation"
+                                label="Confirm Password"
+                                type="password"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <Button type="submit" disabled={ isSubmitting } className="w-full flex justify-center">
+                                Create Account 
+                            </Button>
+                        </div>
 
                     </Form>
                 )}

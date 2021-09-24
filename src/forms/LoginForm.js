@@ -81,7 +81,7 @@ function LoginForm() {
                             </div>
 
                             <div className="text-sm">
-                                <Link to="/forgot" className="font-medium text-indigo-500 hover:text-indigo-600">
+                                <Link to="/reset" className="font-medium text-indigo-500 hover:text-indigo-600">
                                     Forgot your password?
                                 </Link>
                             </div>

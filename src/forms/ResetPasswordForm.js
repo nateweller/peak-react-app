@@ -1,18 +1,16 @@
-import { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { API } from './../api';
+import { useAlerts } from './../hooks';
 
-import Alert from './../components/Alert';
+import Input from './../components/Input';
+import Button from './../components/Button';
 
 function ResetPasswordForm(props) {
 
     const { token } = props;
 
-    const [alert, setAlert] = useState({
-        type: 'info',
-        message: ''
-    });
+    const alerts = useAlerts();
 
     const initialValues = {
         password: '',
@@ -20,7 +18,6 @@ function ResetPasswordForm(props) {
     };
 
     const validationSchema = Yup.object().shape({
-        email: Yup.string().email('Invalid email address.').required('Email address is required.'),
         password: Yup.string().required('Password is required.'),
         password_confirmation: Yup.string().required('Confirm Password is required.')
     });
@@ -28,15 +25,15 @@ function ResetPasswordForm(props) {
     const onSubmit = (values, { setSubmitting }) => {
         API.post('reset', { ...values, token })
             .then((response) => {
-                setAlert({
+                alerts.replace({
                     type: 'success',
-                    message: response.data.message
+                    message: response?.data?.message || 'Success'
                 });
             })
             .catch((error) => {
-                setAlert({
+                alerts.replace({
                     type: 'danger',
-                    message: error.response.data.message
+                    message: error?.response?.data?.message || 'Error'
                 });
             })
             .finally(() => {
@@ -46,28 +43,33 @@ function ResetPasswordForm(props) {
 
     return (
         <>
-            { alert.message ? <Alert type={alert.type} message={alert.message} /> : null }
+            { alerts.render() }
 
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-                {({ errors, touched, isSubmitting }) => (
-                    <Form>
+                {({ isSubmitting }) => (
+                    <Form className="space-y-6">
 
-                        <div className="mb-3">
-                            <label htmlFor="email" className="form-label">
-                                Email
-                            </label>
-                            <Field 
-                                type="email"
-                                name="email"
-                                className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} 
-                                aria-describedby="email-validation"
+                        <div>
+                            <Input
+                                name="password"
+                                type="password"
+                                label="New Password"
+                                required 
                             />
-                            <ErrorMessage name="email" id="email-validation" component="div" className="invalid-feedback d-block" />
                         </div>
 
-                        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                        <div>
+                            <Input
+                                name="password_confirmation"
+                                type="password"
+                                label="Confirm New Password"
+                                required 
+                            />
+                        </div>
+
+                        <Button type="submit" disabled={ isSubmitting }>
                             Reset Password
-                        </button>
+                        </Button>
 
                     </Form>
                 )}

@@ -1,6 +1,7 @@
 import RegisterForm from '../forms/RegisterForm';
 import { Redirect, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import AuthLayout from '../layouts/AuthLayout';
 
 function RegisterPage() {
 
@@ -13,27 +14,29 @@ function RegisterPage() {
     }
 
     return (
-        <div className="bg-light min-vh-100 py-5">
-            <div className="container" style={{ maxWidth: '420px' }}>
-                <h1 className="h3">
-                    Register
-                </h1>
-                <div className="card">
-                    <div className="card-body">
-                        <RegisterForm />
-                    </div>
-                </div>
-                <p className="mt-4">
-                    <Link to="/login">
-                        Login
-                    </Link> 
+        <AuthLayout>
+            <div>
+                <img
+                    className="h-12 w-auto"
+                    src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+                    alt="Workflow"
+                />
+                <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+                    Create an account
+                </h2>
+                <p className="mt-2 text-sm text-gray-600">
+                    Been here before?
                     {' '}
-                    <Link to="/reset">
-                        Reset Password
+                    <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                        Sign in
                     </Link>
                 </p>
             </div>
-        </div>
+
+            <div className="mt-8">
+                <RegisterForm />
+            </div>
+        </AuthLayout>
     );
 }
 

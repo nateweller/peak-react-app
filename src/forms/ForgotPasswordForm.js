@@ -1,16 +1,14 @@
-import { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { API } from './../api';
+import { useAlerts } from './../hooks';
 
-import Alert from './../components/Alert';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 function ForgotPasswordForm() {
 
-    const [alert, setAlert] = useState({
-        type: 'info',
-        message: ''
-    });
+    const alerts = useAlerts();
 
     const initialValues = {
         email: ''
@@ -23,15 +21,15 @@ function ForgotPasswordForm() {
     const onSubmit = (values, { setSubmitting }) => {
         API.post('forgot', values)
             .then((response) => {
-                setAlert({
+                alerts.replace({
                     type: 'success',
-                    message: response.data.message
-                });
+                    message: response?.data?.message || 'Success'
+                })
             })
             .catch((error) => {
-                setAlert({
+                alerts.replace({
                     type: 'danger',
-                    message: error.response.data.message
+                    message: error?.response?.data?.message || 'Error'
                 });
             })
             .finally(() => {
@@ -41,28 +39,24 @@ function ForgotPasswordForm() {
 
     return (
         <>
-            { alert.message ? <Alert type={alert.type} message={alert.message} /> : null }
+            { alerts.render() }
 
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-                {({ errors, touched, isSubmitting }) => (
-                    <Form>
+                {({ isSubmitting }) => (
+                    <Form className="space-y-6">
 
-                        <div className="mb-3">
-                            <label htmlFor="email" className="form-label">
-                                Email
-                            </label>
-                            <Field 
-                                type="email"
+                        <div className="mt-1">
+                            <Input
                                 name="email"
-                                className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} 
-                                aria-describedby="email-validation"
+                                type="email"
+                                label="Email Address"
+                                required 
                             />
-                            <ErrorMessage name="email" id="email-validation" component="div" className="invalid-feedback d-block" />
                         </div>
 
-                        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                        <Button type="submit" disabled={ isSubmitting }>
                             Reset Password
-                        </button>
+                        </Button>
 
                     </Form>
                 )}

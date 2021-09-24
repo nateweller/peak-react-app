@@ -129,8 +129,6 @@ function MobileUserMenu() {
 function AppLayout(props) {
 
   const location = useLocation();
-
-  const user = useSelector(state => state.auth.user);
   
   const [isOpen, setIsOpen] = useState(false);
 

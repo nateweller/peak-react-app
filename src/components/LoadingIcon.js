@@ -1,4 +1,3 @@
-import { RefreshIcon } from '@heroicons/react/outline';
 import { BiLoaderAlt } from 'react-icons/bi';
 
 function LoadingIcon({ isFullScreen, isLarge }) {
