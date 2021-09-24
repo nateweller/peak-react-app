@@ -5,7 +5,7 @@ export const API = {
     baseURL: 'http://192.168.50.114:8888/api',
     getApiToken: () => {
         const state = store.getState();
-        return state?.global?.user?.token;
+        return state?.auth?.user?.token;
     },
     getDefaultRequestConfig: function() {
         const defaultConfig = {};

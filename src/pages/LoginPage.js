@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 function LoginPage() {
 
-    const user = useSelector(state => state.global.user);
+    const user = useSelector(state => state.auth.user);
 
     if (user) {
         return (

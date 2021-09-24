@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { App as CapacitorApp } from '@capacitor/app';
-import { setMenuIsActive, setUser } from './redux-store';
+import { setUser } from './redux-store';
 import { developmentLog } from './utils';
 import { API } from './api';
 
@@ -25,8 +25,10 @@ import { default as AdminClimbsPage } from './pages/Admin/Climbs/ClimbsPage';
 import { default as AdminEditClimbPage } from './pages/Admin/Climbs/EditClimbPage';
 import { default as AdminViewClimbPage } from './pages/Admin/Climbs/ViewClimbPage';
 import { default as AdminNewClimbPage } from './pages/Admin/Climbs/NewClimbPage';
-import { default as AdminOrganizationPage } from './pages/Admin/OrganizationPage';
-import { default as AdminLocationsPage } from './pages/Admin/LocationsPage';
+import { default as AdminOrganizationPage } from './pages/Admin/Settings/OrganizationPage';
+import { default as AdminLocationsPage } from './pages/Admin/Settings/LocationsPage';
+import { default as AdminGradingSystemsPage } from './pages/Admin/Settings/GradingSystemsPage';
+import { default as AdminClimbColorsPage } from './pages/Admin/Settings/ClimbColorsPage';
 
 import OrganizationProvider from './providers/OrganizationProvider';
 
@@ -34,7 +36,7 @@ function App(props) {
 
   const dispatch = useDispatch();
   const history = props.history;
-  const user = useSelector(state => state.global.user);
+  const user = useSelector(state => state.auth.user);
 
   const [userLoaded, setUserLoaded] = useState(false);
   const [appInitialized, setAppInitialized] = useState(false);
@@ -50,7 +52,7 @@ function App(props) {
 
       if (!user && localStorage.getItem('token')) {
         // token in local storage, set into state
-        dispatch(setUser({ ...user, token: localStorage.getItem('token') }));
+        dispatch(setUser({ token: localStorage.getItem('token') }));
       }
 
       if (user && user.token && !user.id) {
@@ -89,12 +91,11 @@ function App(props) {
   /*
    * Navigation Change Listener
    */
-  useEffect(() => {
-    history.listen((location, action) => {
-      // close menu
-      dispatch(setMenuIsActive(null));
-    });
-  }, [history, dispatch]);
+  // useEffect(() => {
+  //   history.listen((location, action) => {
+
+  //   });
+  // }, [history, dispatch]);
 
   useEffect(() => {
     CapacitorApp.addListener('backButton', () => {
@@ -126,12 +127,15 @@ function App(props) {
 
       <Route path="/admin">
         <OrganizationProvider>
-          <AuthRoute exact path="/admin/organization" component={AdminOrganizationPage} />
-          <AuthRoute exact path="/admin/locations" component={AdminLocationsPage} />
           <AuthRoute exact path="/admin/climbs" component={AdminClimbsPage} />
           <AuthRoute exact path="/admin/climbs/new" component={AdminNewClimbPage} />
           <AuthRoute exact path="/admin/climbs/:climbId(\d+)" component={AdminViewClimbPage} />
           <AuthRoute exact path="/admin/climbs/:climbId(\d+)/edit" component={AdminEditClimbPage} />
+          <AuthRoute exact path="/admin/settings/organization" component={AdminOrganizationPage} />
+          <AuthRoute exact path="/admin/settings/locations" component={AdminLocationsPage} />
+          <AuthRoute exact path="/admin/settings/grading" component={AdminGradingSystemsPage} />
+          <AuthRoute exact path="/admin/settings/colors" component={AdminClimbColorsPage} />
+          <AuthRoute exact path="/admin/settings" component={AdminOrganizationPage} />
           <AuthRoute exact path="/admin" component={AdminHomePage} />
         </OrganizationProvider>
       </Route>

@@ -11,30 +11,39 @@ function ClimbPage(props) {
     const climbId = props.match.params.climbId;
     
     const dataStore = useDataStore();
-    const { dataSynced: climbData } = useDataStoreItem(`climbs/${climbId}`, { useCache: true, syncCache: true });
-
+    const { dataSynced: climbData } = useDataStoreItem(`climbs/${climbId}`, { useCache: true, forceDataFetch: true });
     const [showSendForm, setShowSendForm] = useState(false);
 
     const getClimbInfo = () => {
-        if (climbData === undefined) return undefined;
-        if (! climbData || climbData.length) return [];
-
         return [
             {
                 label: 'Name',
-                value: climbData.name
+                value: climbData?.name || ''
             },
             {
                 label: 'Discipline',
-                value: climbData.discipline
+                value: climbData?.discipline || ''
             },
             {
                 label: 'Grade',
-                value: climbData.grade
+                value: climbData?.grade?.name || ''
+            },
+            {
+                label: 'Community Grade',
+                value: 
+                    climbData?.community_grade
+                        ? <>
+                            {climbData?.community_grade?.name} 
+                            {' '}
+                            <span className="text-xs text-gray-400">
+                                ({climbData?.community_grade?.vote_count} votes)
+                            </span>
+                          </>
+                        : 'No Votes'
             },
             {
                 label: 'Total Sends',
-                value: climbData.send_count
+                value: climbData?.send_count !== undefined ? climbData.send_count : ''
             }
         ];
     }
@@ -42,8 +51,10 @@ function ClimbPage(props) {
     const pageHeader = (
         <div className="md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
-                <h2 className="text-2xl font-bold leading-7 text-white sm:text-3xl sm:truncate">
-                    { climbData?.name }
+                <h2 
+                    className={`${climbData === undefined ? 'opacity-0' : 'opacity-100'} text-2xl font-bold leading-7 text-white sm:text-3xl sm:truncate transition`}
+                >
+                    { climbData?.name || 'Unnamed Climb'}
                 </h2>
             </div>
             <div className="mt-4 flex md:mt-0 md:ml-4">

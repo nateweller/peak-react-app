@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 function AuthRoute({ component: Component, ...rest }) {
 
     // to do: user permission levels
-    const user = useSelector(state => state.global.user);
+    const user = useSelector(state => state.auth.user);
 
     return (
         <Route 

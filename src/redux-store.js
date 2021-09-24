@@ -1,39 +1,24 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-/*
- * Global Application State via Redux
+/**
+ * Authentication Slice
  */
-
-const globalState = createSlice({
-    name: 'global',
+const auth = createSlice({
+    name: 'auth',
     initialState: {
-        isLoading: false,
-        menuIsActive: false,
-        screenTitle: '',
-        user: null,
-        organization: null
+        user: undefined
     },
     reducers: {
-        setIsLoading: (state, action) => {
-            state.isLoading = Boolean(action.payload);
-        },
-        setMenuIsActive: (state, action) => {
-            state.menuIsActive = Boolean(action.payload);
-        },
-        setScreenTitle: (state, action) => {
-            state.screenTitle = action.payload;
-        },
         setUser: (state, action) => {
             state.user = action.payload;
-        },
-        setOrganization: (state, action) => {
-            state.organization = action.payload;
         }
     }
 });
 
+export const { setUser } = auth.actions;
+
 /**
- * API Cache
+ * Data Store Slice
  */
 const dataStore = createSlice({
     name: 'dataStore',
@@ -45,13 +30,14 @@ const dataStore = createSlice({
     }
 });
 
-export const { setIsLoading, setMenuIsActive, setScreenTitle, setUser, setOrganization } = globalState.actions;
-
 export const { setDataStoreItem } = dataStore.actions;
 
+/**
+ * Redux Store
+ */
 export const store = configureStore({
     reducer: {
-        global: globalState.reducer,
+        auth: auth.reducer,
         dataStore: dataStore.reducer
     }
 });

@@ -68,7 +68,7 @@ function HomePage() {
                         },
                         {
                             label: 'Grade',
-                            value: <span className="text-sm">{ climbData.grade }</span>
+                            value: <span className="text-sm">{ climbData?.grade?.name }</span>
                         },
                         {
                             label: 'Sends',

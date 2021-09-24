@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 function RegisterPage() {
 
-    const user = useSelector(state => state.global.user);
+    const user = useSelector(state => state.auth.user);
 
     if (user) {
         return (

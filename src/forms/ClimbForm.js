@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import LoadingIcon from './../components/LoadingIcon';
 import { disciplines, grades } from './../enums';
 import { API } from './../api';
-import { setIsLoading } from '../redux-store';
 
 import { useAlerts } from './../hooks';
 
@@ -14,8 +12,6 @@ import Input from './../components/Input';
 import Select from './../components/Select';
 
 function ClimbForm({ climbId }) {
-
-    const dispatch = useDispatch();
 
     const isNew = ! parseInt(climbId);
 
@@ -71,7 +67,6 @@ function ClimbForm({ climbId }) {
     };
 
     const loadLocations = useCallback(() => {
-        dispatch(setIsLoading(true));
         API.get('locations')
             .then(response => {
                 setLocations(response.data);
@@ -81,14 +76,10 @@ function ClimbForm({ climbId }) {
                     message: error.message,
                     type: 'danger'
                 });
-            })
-            .finally(() => {
-                dispatch(setIsLoading(false));
             });
-    }, [alerts, dispatch]);
+    }, [alerts]);
 
     const loadClimb = useCallback(() => {
-        dispatch(setIsLoading(false));
         API.get(`climbs/${climbId}`)
             .then(response => {
                 setClimbData(response.data);
@@ -98,11 +89,8 @@ function ClimbForm({ climbId }) {
                     message: error.message,
                     type: 'danger'
                 });
-            })
-            .finally(() => {
-                dispatch(setIsLoading(false));
             });
-    }, [alerts, dispatch, climbId]);
+    }, [alerts, climbId]);
 
     useEffect(() => {
         // set default climb data

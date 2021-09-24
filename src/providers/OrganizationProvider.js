@@ -7,7 +7,7 @@ export const OrganizationContext = createContext(undefined);
 
 function OrganizationProvider(props) {
 
-    const user = useSelector(state => state.global.user);
+    const user = useSelector(state => state.auth.user);
 
     const [organization, setOrganization] = useState(undefined);
 

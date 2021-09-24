@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { API } from './../api';
 
 import Alert from './../components/Alert';
+import Input from './../components/Input';
 
 function OrganizationForm() {
 
@@ -47,21 +48,14 @@ function OrganizationForm() {
                     <Form>
                         
                         <div className="mb-3">
-                            <label htmlFor="name" className="form-label">
-                                Organization Name
-                            </label>
-                            <Field 
+                            <Input
                                 type="text" 
                                 name="name" 
+                                label="Organization Name"
                                 className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} 
-                                aria-describedby="name-validation" 
+                                required
                             />
-                            <ErrorMessage name="name" id="name-validation" component="div" className="invalid-feedback d-block" />
                         </div>
-
-                        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                            Update
-                        </button>
 
                     </Form>
                 )}

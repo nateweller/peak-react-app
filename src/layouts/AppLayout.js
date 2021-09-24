@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import OutsideClickHandler from 'react-outside-click-handler';
 
 function UserMenu() {
+
   const location = useLocation();
+
+  const user = useSelector(state => state.auth.user);
+
   const [isOpen, setIsOpen] = useState(false);
   
   const displayClassName = isOpen ? '' : 'hidden';
@@ -19,17 +24,28 @@ function UserMenu() {
     <OutsideClickHandler onOutsideClick={() => setIsOpen(false)}>
       <div className="ml-3 relative">
         <div>
-          <button 
-            type="button" 
-            className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" 
-            id="user-menu-button" 
-            aria-expanded={isOpen}
-            aria-haspopup="true"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <span className="sr-only">Open user menu</span>
-            <img className="h-8 w-8 rounded-full" src="https://img.olympicchannel.com/images/image/private/t_1-1_600/f_auto/v1538355600/primary/slewmn5tkzrgg1gwo4lw" alt="" />
-          </button>
+          { user
+            ? (
+              <button 
+                type="button" 
+                className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" 
+                id="user-menu-button" 
+                aria-expanded={isOpen}
+                aria-haspopup="true"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <span className="sr-only">Open user menu</span>
+                <img className="h-8 w-8 rounded-full" src="https://img.olympicchannel.com/images/image/private/t_1-1_600/f_auto/v1538355600/primary/slewmn5tkzrgg1gwo4lw" alt="" />
+              </button>
+            )
+            : (
+              <Link 
+                to="/login" 
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Sign In
+              </Link>
+           )}
         </div>
 
         <div 
@@ -60,34 +76,40 @@ function MobileUserMenu() {
 
   const location = useLocation();
 
-  const menuItems = [
-    {
-      name: 'Sign out',
-      url: '/signout'
-    }
-  ];
+  const user = useSelector(state => state.auth.user);
+
+  const menuItems = user 
+    ? [
+        {
+          name: 'Sign out',
+          url: '/signout'
+        }
+      ]
+    : [
+        {
+          name: 'Sign In',
+          url: '/login'
+        }
+    ];
 
   return (
-    <div className="pt-4 pb-3 border-t border-gray-700">
-      <div className="flex items-center px-5">
-        <div className="flex-shrink-0">
-          <img className="h-10 w-10 rounded-full" src="https://img.olympicchannel.com/images/image/private/t_1-1_600/f_auto/v1538355600/primary/slewmn5tkzrgg1gwo4lw" alt="" />
-        </div>
-        <div className="ml-3">
-          <div className="text-base font-medium leading-none text-white">
-            Madame Honda
+    <div className="py-3 border-t border-gray-700">
+      { user && (
+        <div className="flex items-center px-5 mb-3">
+          <div className="flex-shrink-0">
+            <img className="h-10 w-10 rounded-full" src="https://img.olympicchannel.com/images/image/private/t_1-1_600/f_auto/v1538355600/primary/slewmn5tkzrgg1gwo4lw" alt="" />
           </div>
-          <div className="text-sm font-medium leading-none text-gray-400">
-            515@example.com
+          <div className="ml-3">
+            <div className="text-base font-medium leading-none text-white">
+              { user?.name }
+            </div>
+            <div className="text-sm font-medium leading-none text-gray-400">
+              { user?.email }
+            </div>
           </div>
         </div>
-        <button type="button" className="ml-auto bg-gray-800 flex-shrink-0 p-1 text-gray-400 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-          <span className="sr-only">
-            View notifications
-          </span>
-        </button>
-      </div>
-      <div className="mt-3 px-2 space-y-1">
+      )}
+      <div className="px-2 space-y-1">
         {menuItems.map((menuItem, loopIndex) => {
           const className = menuItem.url === location.pathname
             ? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
@@ -104,9 +126,11 @@ function MobileUserMenu() {
   );
 }
 
-function AdminLayout(props) {
+function AppLayout(props) {
 
   const location = useLocation();
+
+  const user = useSelector(state => state.auth.user);
   
   const [isOpen, setIsOpen] = useState(false);
 
@@ -166,11 +190,10 @@ function AdminLayout(props) {
                 </div>
                 <div className="hidden md:block">
                   <div className="ml-4 flex items-center md:ml-6">
-                    <UserMenu />
+                    <UserMenu /> 
                   </div>
                 </div>
                 <div className="-mr-2 flex md:hidden">
-                  {/* <!-- Mobile menu button --> */}
                   <button 
                     type="button" 
                     className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" 
@@ -219,4 +242,4 @@ function AdminLayout(props) {
   );
 }
 
-export default AdminLayout;
+export default AppLayout;

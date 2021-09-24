@@ -24,7 +24,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
 
     const [gradeOptions] = useState(grades.BOULDER.V);
 
-    const user = useSelector(state => state.global.user);
+    const user = useSelector(state => state.auth.user);
 
     const validationSchema = Yup.object().shape({
         grade: Yup.string(),

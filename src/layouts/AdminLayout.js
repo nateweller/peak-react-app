@@ -118,6 +118,10 @@ function AdminLayout(props) {
     {
       name: 'Climbs',
       url: '/admin/climbs'
+    },
+    {
+      name: 'Settings',
+      url: '/admin/settings/organization'
     }
   ];
 
@@ -208,7 +212,7 @@ function AdminLayout(props) {
 
       <main className="-mt-32">
         <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
+          <div className={ `bg-white rounded-lg ${! props.isBorderless ? 'px-5 py-6 sm:px-6 shadow' : ''}` }>
             {props.children}
           </div>
         </div>

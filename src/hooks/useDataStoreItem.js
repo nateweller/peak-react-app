@@ -2,52 +2,16 @@ import { useCallback, useEffect, useReducer } from 'react'
 import { useSelector } from 'react-redux';
 import useDataStore from './useDataStore';
 
-function reducer(state, action) {
-    switch (action.type) {
-        case 'SET_IS_LOADING':
-            return {
-                ...state,
-                isLoading: true
-            };
-        case 'SET_DATA_FROM_FETCH':
-            return {
-                ...state,
-                data: action.payload,
-                dataFetched: true,
-                isLoading: false
-            };
-        case 'SET_DATA_FROM_FORCE_FETCH':
-            if (state.data === undefined) {
-                return {
-                    ...state,
-                    data: action.payload,
-                    dataFetched: true,
-                    isLoading: false 
-                };
-            } else {
-                return {
-                    ...state,
-                    dataForced: action.payload,
-                    dataFetched: true,
-                    isLoading: false
-                };
-            }
-        case 'SET_DATA_FROM_SYNC':
-            return {
-                ...state,
-                dataSynced: action.payload
-            };
-        case 'SET_DATA_FROM_ERROR':
-            return {
-                ...state,
-                data: null,
-                dataFetched: true,
-                isLoading: false
-            }
-        default:
-            throw new Error();
-    }
-}
+/**
+ * useDataStoreItem()
+ * 
+ * @param {string} key
+ * @param {object} config
+ * @param {bool}   config.useCache 
+ * @param {bool}   config.forceDataFetch
+ * 
+ * @returns {object} 
+ */
 
 function useDataStoreItem(key, config) {
 
@@ -74,35 +38,94 @@ function useDataStoreItem(key, config) {
         forceDataFetch
     } = config || {};
 
+    /**
+     * Batch state updates with reducer
+     */
+    const reducer = (state, action) => {
+        switch (action.type) {
+            case 'SET_IS_LOADING':
+                return {
+                    ...state,
+                    isLoading: true
+                };
+            case 'SET_DATA_FROM_FETCH':
+                return {
+                    ...state,
+                    data: action.payload,
+                    dataFetched: true,
+                    isLoading: false
+                };
+            case 'SET_DATA_FROM_FORCE_FETCH':
+                if (state.data === undefined) {
+                    return {
+                        ...state,
+                        data: action.payload,
+                        dataFetched: true,
+                        isLoading: false 
+                    };
+                } else {
+                    return {
+                        ...state,
+                        dataForced: action.payload,
+                        dataFetched: true,
+                        isLoading: false
+                    };
+                }
+            case 'SET_DATA_FROM_SYNC':
+                return {
+                    ...state,
+                    dataSynced: action.payload
+                };
+            case 'SET_DATA_FROM_ERROR':
+                return {
+                    ...state,
+                    data: null,
+                    dataFetched: true,
+                    isLoading: false
+                }
+            default:
+                throw new Error();
+        }
+    };
+
     const dataStore = useDataStore();
 
     // load the cached value from the redux dataStore.
     const cacheValue = useSelector(state => state.dataStore[key]);
     const defaultValue = useCache && cacheValue !== undefined ? cacheValue : undefined;
 
+    /**
+     * Default State
+     */
     const [state, dispatch] = useReducer(reducer, {
         data: defaultValue,
-        updatedData: undefined, 
+        dataForced: undefined, 
+        dataSynced: defaultValue,
         isLoading: false,
         dataFetched: false,
         error: undefined
     });
 
+    /**
+     * Should Fetch
+     * 
+     * @returns {bool}
+     */
     const shouldFetch = useCallback(() => {
+        if (state.dataFetched) return false;
         if (state.isLoading) return false;
         if (state.error) return false;
         if (state.data !== undefined && ! forceDataFetch) return false;
-        if (state.updatedData !== undefined && forceDataFetch) return false;
+        if (state.dataForced !== undefined && forceDataFetch) return false;
 
         return true;
     }, [state, forceDataFetch]);
 
     const fetch = useCallback(() => {
-        // setItem({ ...item, isLoading: true });
         dispatch({ type: 'SET_IS_LOADING', payload: true });
         dataStore.get(key, config)
             .then(data => {
-                // when using cache, provide the fetched value as "updatedData"
+                // when using cache, provide the fetched value as "dataForced"
                 // so that update can be handled by specific implementations.
                 if (forceDataFetch) {
                     dispatch({ type: 'SET_DATA_FROM_FORCE_FETCH', payload: data });

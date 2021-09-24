@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { setIsLoading, setScreenTitle } from '../../../redux-store';
 import { API } from '../../../api';
 import LoadingIcon from '../../../components/LoadingIcon';
 import AdminLayout from '../../../layouts/AdminLayout';
@@ -14,14 +12,11 @@ import Alert from '../../../components/Alert';
 
 function ClimbsPage() {
 
-    const dispatch = useDispatch();
-
     const [alert, setAlert] = useState(null);
 
     const [climbs, setClimbs] = useState(null);
 
     const loadClimbs = useCallback(() => {
-        dispatch(setIsLoading(true));
         API.get('climbs')
             .then(response => {
                 setClimbs(response.data);
@@ -31,17 +26,13 @@ function ClimbsPage() {
                     message: `Could not load climbs due to the following error: ${error.message}.`,
                     type: 'danger'
                 });
-            })
-            .finally(() => {
-                dispatch(setIsLoading(false));
             });
-    }, [dispatch]);
+    }, []);
     
     useEffect(() => {
-        dispatch(setScreenTitle('Climbs'));
         loadClimbs();
         return () => {};
-    }, [dispatch, loadClimbs]);
+    }, [loadClimbs]);
 
     const climbsList = () => {
         if (!climbs) {
@@ -85,7 +76,7 @@ function ClimbsPage() {
                         },
                         {
                             label: 'Grade',
-                            value: <span className="text-sm">{ climb.grade }</span>
+                            value: <span className="text-sm">{ climb?.grade?.name }</span>
                         }
                     ]);
                     return data;
@@ -125,7 +116,7 @@ function ClimbsPage() {
     );
 
     return (
-        <AdminLayout header={pageHeader}>
+        <AdminLayout header={pageHeader} isBorderless={ true }>
             {alert && (
                 <Alert type={ alert.type } className="mb-3">
                     {alert.message}
