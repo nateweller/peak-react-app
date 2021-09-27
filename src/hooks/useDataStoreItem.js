@@ -46,7 +46,7 @@ function useDataStoreItem(key, config) {
             case 'SET_IS_LOADING':
                 return {
                     ...state,
-                    isLoading: true
+                    isLoading: action.payload
                 };
             case 'SET_DATA_FROM_FETCH':
                 return {
@@ -82,7 +82,12 @@ function useDataStoreItem(key, config) {
                     data: null,
                     dataFetched: true,
                     isLoading: false
-                }
+                };
+            case 'SET_DATA_FROM_KEY_UPDATE':
+                return {
+                    ...state,
+                    dataFetched: false
+                };
             default:
                 throw new Error();
         }
@@ -112,16 +117,24 @@ function useDataStoreItem(key, config) {
      * @returns {bool}
      */
     const shouldFetch = useCallback(() => {
+        // no key provided, nothing to fetch
+        if (! key) return false;
+        // data is only ever fetched once
         if (state.dataFetched) return false;
+        // data is already being fetched
         if (state.isLoading) return false;
+        // something went wrong
         if (state.error) return false;
+        // already have data and not forcing a fetch
         if (state.data !== undefined && ! forceDataFetch) return false;
+        // forcing a fetch and no force-fetched data set
         if (state.dataForced !== undefined && forceDataFetch) return false;
 
         return true;
-    }, [state, forceDataFetch]);
+    }, [key, state, forceDataFetch]);
 
     const fetch = useCallback(() => {
+        console.log('FETCH SET IS LOADING');
         dispatch({ type: 'SET_IS_LOADING', payload: true });
         dataStore.get(key, config)
             .then(data => {

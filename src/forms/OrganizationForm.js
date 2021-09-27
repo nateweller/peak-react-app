@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { API } from './../api';
+import { OrganizationContext } from './../providers/OrganizationProvider';
+import { useAlerts } from './../hooks';
 
-import Alert from './../components/Alert';
 import Input from './../components/Input';
+import LoadingIcon from './../components/LoadingIcon';
 
 function OrganizationForm() {
 
-    const organization_id = 0; // to do: this
+    const alerts = useAlerts();
 
-    const [alert, setAlert] = useState(null);
+    const { organization, setOrganization } = useContext(OrganizationContext);
 
     const initialValues = {
-        name: ''
+        name: organization?.name || ''
     };
 
     const validationSchema = Yup.object().shape({
@@ -21,15 +23,16 @@ function OrganizationForm() {
     });
 
     const onSubmit = (values, { setSubmitting }) => {
-        API.post(`organization/${organization_id}`)
-            .then(response => {
-                setAlert({
+        API.patch(`organizations/${organization.id}`, values)
+            .then((response) => {
+                setOrganization(response.data);
+                alerts.replace({
                     message: 'Organization updated.',
                     type: 'success'
                 })
             })
-            .catch(error => {
-                setAlert({
+            .catch((error) => {
+                alerts.replace({
                     message: error?.data?.message || 'An error occurred.',
                     type: 'danger'
                 })
@@ -39,13 +42,19 @@ function OrganizationForm() {
             });
     };
 
+    if (! organization) {
+        return (
+            <LoadingIcon isLarge={ true } />
+        );
+    }
+
     return (
         <>
-            { alert ? <Alert type={alert.type} message={alert.message} /> : null }
+            { alerts.render('mb-4') }
 
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
                 {({ errors, touched, isSubmitting }) => (
-                    <Form>
+                    <Form id="organization-form">
                         
                         <div className="mb-3">
                             <Input

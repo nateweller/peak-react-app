@@ -9,17 +9,24 @@ import { API } from './api';
 import AuthRoute from './components/AuthRoute';
 import LoadingIcon from './components/LoadingIcon';
 
+import OrganizationProvider from './providers/OrganizationProvider';
+
 import './styles/app.scss';
 
+/**
+ * Import Pages
+ */
 import NotFoundPage from './pages/NotFoundPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import LogoutPage from './pages/LogoutPage';
+// Auth
+import LoginPage from './pages/Auth/LoginPage';
+import RegisterPage from './pages/Auth/RegisterPage';
+import ResetPasswordPage from './pages/Auth/ResetPasswordPage';
+import LogoutPage from './pages/Auth/LogoutPage';
+// Public
 import HomePage from './pages/HomePage';
 import ClimbPage from './pages/ClimbPage';
 import ScanPage from './pages/ScanPage';
-
+// Admin
 import { default as AdminHomePage } from './pages/Admin/HomePage';
 import { default as AdminClimbsPage } from './pages/Admin/Climbs/ClimbsPage';
 import { default as AdminEditClimbPage } from './pages/Admin/Climbs/EditClimbPage';
@@ -30,8 +37,9 @@ import { default as AdminLocationsPage } from './pages/Admin/Settings/LocationsP
 import { default as AdminGradingSystemsPage } from './pages/Admin/Settings/GradingSystemsPage';
 import { default as AdminClimbColorsPage } from './pages/Admin/Settings/ClimbColorsPage';
 
-import OrganizationProvider from './providers/OrganizationProvider';
-
+/**
+ * App
+ */
 function App(props) {
 
   const dispatch = useDispatch();
@@ -41,6 +49,9 @@ function App(props) {
   const [userLoaded, setUserLoaded] = useState(false);
   const [appInitialized, setAppInitialized] = useState(false);
 
+  /**
+   * App Initialization Hook
+   */
   useEffect(() => {
 
     if (!appInitialized) {
@@ -97,6 +108,9 @@ function App(props) {
   //   });
   // }, [history, dispatch]);
 
+  /**
+   * Back Button Listener
+   */
   useEffect(() => {
     CapacitorApp.addListener('backButton', () => {
       history.goBack()

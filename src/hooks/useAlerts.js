@@ -14,17 +14,23 @@ function useAlerts() {
         replace: (alert) => {
             setAlerts([ alert ]);
         },
-        render: () => {
+        render: (wrapperClassName) => {
+            if (! alerts || ! alerts.length) {
+                return null;
+            }
+            
             return (
-                alerts.map((alert, loopIndex) => (
-                    <Alert
-                        type={ alert.type }
-                        key={ loopIndex }
-                        className={ loopIndex !== alerts.length - 1 ? 'mb-4' : '' }
-                    >
-                        { alert.message }
-                    </Alert>
-                ))
+                <div className={ wrapperClassName }>
+                    { alerts.map((alert, loopIndex) => (
+                        <Alert
+                            type={ alert.type }
+                            key={ loopIndex }
+                            className={ loopIndex !== alerts.length - 1 ? 'mb-4' : '' }
+                        >
+                            { alert.message }
+                        </Alert>
+                    )) }
+                </div>
             );
         }
     }

@@ -1,7 +1,7 @@
-import ResetPasswordForm from '../forms/ResetPasswordForm';
-import ForgotPasswordForm from '../forms/ForgotPasswordForm';
+import ResetPasswordForm from '../../forms/ResetPasswordForm';
+import ForgotPasswordForm from '../../forms/ForgotPasswordForm';
 import { Link, useLocation } from 'react-router-dom';
-import AuthLayout from '../layouts/AuthLayout';
+import AuthLayout from '../../layouts/AuthLayout';
 
 function ResetPasswordPage() {
 

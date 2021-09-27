@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser } from './../redux-store';
+import { setUser } from '../../redux-store';
 
 function LogoutPage() {
 

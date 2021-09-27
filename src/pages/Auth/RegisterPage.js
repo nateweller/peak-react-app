@@ -1,9 +1,9 @@
-import LoginForm from '../forms/LoginForm';
+import RegisterForm from '../../forms/RegisterForm';
 import { Redirect, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import AuthLayout from '../layouts/AuthLayout';
+import AuthLayout from '../../layouts/AuthLayout';
 
-function LoginPage() {
+function RegisterPage() {
 
     const user = useSelector(state => state.auth.user);
 
@@ -15,7 +15,6 @@ function LoginPage() {
 
     return (
         <AuthLayout>
-            
             <div>
                 <img
                     className="h-12 w-auto"
@@ -23,23 +22,22 @@ function LoginPage() {
                     alt="Workflow"
                 />
                 <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                    Sign in to your account
+                    Create an account
                 </h2>
                 <p className="mt-2 text-sm text-gray-600">
-                    New here?
+                    Been here before?
                     {' '}
-                    <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-                        Create an account
+                    <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                        Sign in
                     </Link>
                 </p>
             </div>
 
             <div className="mt-8">
-                <LoginForm />
+                <RegisterForm />
             </div>
-
         </AuthLayout>
     );
 }
 
-export default LoginPage;
+export default RegisterPage;

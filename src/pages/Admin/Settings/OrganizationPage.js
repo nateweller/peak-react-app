@@ -14,7 +14,8 @@ function OrganizationPage() {
                 </h3>
                 <div className="mt-3 sm:mt-0 sm:ml-4">
                     <Button 
-                        type="button" 
+                        type="submit"
+                        form="organization-form" 
                     >
                         Save
                     </Button>

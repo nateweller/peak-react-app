@@ -8,6 +8,7 @@ import { API } from './../api';
 
 import { useAlerts } from './../hooks';
 
+import ColorPicker from './../components/ColorPicker';
 import Input from './../components/Input';
 import Select from './../components/Select';
 
@@ -23,7 +24,7 @@ function ClimbForm({ climbId }) {
         name: '',
         discipline: disciplines.BOULDER,
         grade: grades.BOULDER.V.V0,
-        color: '#000000',
+        color_id: '',
         location_id: ''
     });
 
@@ -31,24 +32,11 @@ function ClimbForm({ climbId }) {
 
     const [gradeOptions/*, setGradeOptions*/] = useState(grades.BOULDER.V);
 
-    // const getGradeOptions = (discipline) => {
-    //     switch (climbData.discipline) {
-    //         case disciplines.BOULDER:
-    //             return grades.BOULDER.V;
-    //         case disciplines.LEAD:
-    //         case disciplines.TOP_ROPE:
-    //             // to do:
-    //             return []; 
-    //         default:
-    //             return [];
-    //     }
-    // };
-
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('Climb name is required.'),
         discipline: Yup.string(),
         grade: Yup.string(),
-        color: Yup.string(),
+        color_id: Yup.number().required('Test'),
         location_id: Yup.number().required('Location is required.')
     });
 
@@ -99,7 +87,7 @@ function ClimbForm({ climbId }) {
                 name: '',
                 discipline: Object.values(disciplines)[0] || '',
                 grade: '',
-                color: '#000000',
+                color_id: '',
                 location_id: 1
             });
         }
@@ -154,10 +142,9 @@ function ClimbForm({ climbId }) {
                     </div>
 
                     <div className="mt-4">
-                        <Input 
-                            name="color"
-                            type="color"
-                            label="Color"
+                        <ColorPicker 
+                            name="color_id"
+                            label="Hold Color"
                         />
                     </div>
                     

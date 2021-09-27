@@ -41,7 +41,7 @@ function ClimbsPage() {
 
         if (!climbs.length) {
             return (
-                <div className="text-center my-10">
+                <div className="text-center py-10">
                     <EmojiHappyIcon className="mx-auto h-12 w-12 text-gray-400 stroke-1" />
                     <h3 className="mt-2 text-sm font-medium text-gray-900">
                         No climbs set... yet!

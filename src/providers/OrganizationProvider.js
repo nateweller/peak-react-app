@@ -30,7 +30,7 @@ function OrganizationProvider(props) {
     }, [user]);
 
     return (
-        <OrganizationContext.Provider value={ organization }>
+        <OrganizationContext.Provider value={{ organization, setOrganization }}>
             { props.children }
         </OrganizationContext.Provider>
     );

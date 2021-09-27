@@ -1,9 +1,12 @@
-// import LocationsForm from '../../../forms/OrganizationForm';
 import AdminSettingsLayout from '../../../layouts/AdminSettingsLayout';
-
+import { useDataStoreItem } from './../../../hooks';
+import Table from './../../../components/Table';
 import Button from './../../../components/Button';
 
 function LocationsPage() {
+
+    const { data: locationsData } = useDataStoreItem('locations');
+    console.log(locationsData);
 
     return (
         <AdminSettingsLayout>
@@ -13,15 +16,26 @@ function LocationsPage() {
                     Locations Settings
                 </h3>
                 <div className="mt-3 sm:mt-0 sm:ml-4">
-                    <Button 
+                    {/* <Button 
                         type="button" 
                     >
                         Save
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
 
-            {/* <LocationsForm /> */}
+            <Table
+                data={ locationsData && locationsData.map(locationData => ([
+                    {
+                        label: 'Location',
+                        value: <span className="text-sm">{ locationData.name }</span>
+                    },
+                    {
+                        label: '',
+                        value: <div className="text-right"><Button onClick={() => {}}>Edit</Button></div>
+                    }
+                ]))}
+            />
 
         </AdminSettingsLayout>
     );

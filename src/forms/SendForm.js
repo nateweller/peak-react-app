@@ -34,7 +34,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
 
     const onSubmit = (values, { setSubmitting }) => {
         if (sendId === 'new') {
-            API.post(`climbs/${climbId}/sends`, values)
+            API.post(`sends`, { ...values, climb_id: climbId })
                 .then((response) => afterSubmit(response))
                 .catch(() => {
                     alerts.add({
@@ -46,7 +46,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
                     setSubmitting(false);
                 });
         } else {
-            API.patch(`climbs/${climbId}/sends/${sendId}`, values)
+            API.patch(`sends/${sendId}`, { ...values, climb_id: climbId })
                 .then((response) => afterSubmit(response))
                 .catch(() => alerts.add({
                     'message': 'Error.',
@@ -59,7 +59,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
     };
 
     const loadClimbSend = useCallback(() => {
-        API.get(`climbs/${climbId}/sends/${sendId}`)
+        API.get(`sends/${sendId}`)
             .then(response => {
                 setSendData(response.data);
             })
@@ -69,7 +69,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
                     type: 'danger'
                 });
             });
-    }, [alerts, climbId, sendId]);
+    }, [alerts, sendId]);
 
     useEffect(() => {
         // set default send data 
@@ -93,7 +93,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
     if (! user) {
         return (
             <div>
-                <h2>Sign In</h2>
+                <h2>Create an account</h2>
                 <RegisterForm />
             </div>
         );
