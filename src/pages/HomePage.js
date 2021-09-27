@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 function HomePage() {
 
     const alerts = useAlerts();
-    const { data, error, isLoading } = useDataStoreItem('climbs', { useCache: true, forceDataFetch: true });
+    const { data, error, isLoading } = useDataStoreItem('climbs', { useCache: true, alwaysFetch: true });
 
     useEffect(() => {
         if (error) {

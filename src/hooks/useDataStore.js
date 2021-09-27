@@ -17,7 +17,6 @@ function useDataStore() {
     }, [dispatch]);
 
     const get = useCallback((key, config) => {
-        console.log('GET')
         return new Promise((resolve, reject) => {
             // return data from redux store / cache if requested and available
             if (config?.useCache && dataStore[key] !== undefined) {

@@ -6,7 +6,6 @@ import Button from './../../../components/Button';
 import Table from './../../../components/Table';
 import Dialog from './../../../components/Dialog';
 import ColorForm from '../../../forms/ColorForm';
-import LoadingIcon from '../../../components/LoadingIcon';
 
 function ClimbColorsPage() {
 
@@ -14,8 +13,7 @@ function ClimbColorsPage() {
 
     const dataStore = useDataStore();
 
-    const { dataSynced: colorsData } = useDataStoreItem('climb_colors');
-    // console.log('colors is loading', isLoading);
+    const { useData: colorsData } = useDataStoreItem('climb_colors');
 
     // ID of color to edit, or 'new' to insert a new color
     const [addEditId, setAddEditId] = useState(false);

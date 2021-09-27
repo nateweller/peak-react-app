@@ -6,7 +6,6 @@ import Button from './../../../components/Button';
 function LocationsPage() {
 
     const { data: locationsData } = useDataStoreItem('locations');
-    console.log(locationsData);
 
     return (
         <AdminSettingsLayout>

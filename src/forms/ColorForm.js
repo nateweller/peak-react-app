@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useAlerts, useDataStore } from './../hooks';
+import { useAlerts, useDataStore, useDataStoreItem } from './../hooks';
 import { API } from './../api';
 
 import LoadingIcon from './../components/LoadingIcon';
@@ -16,7 +15,7 @@ function ColorForm({ colorId, afterSubmit }) {
 
     const dataStore = useDataStore();
 
-    const [colorData, setColorData] = useState(undefined);
+    const { useData: colorData, isLoading } = useDataStoreItem(isNew ? undefined : `climb_colors/${colorId}`);
 
     const initialValues = { 
         name: '', 
@@ -35,6 +34,8 @@ function ColorForm({ colorId, afterSubmit }) {
                     if (response?.data?.id) {
                         dataStore.set(`colors/${response.data.id}`, response.data);
                     }
+
+                    setSubmitting(false);
                     
                     if (typeof afterSubmit === 'function') {
                         afterSubmit(response);
@@ -45,8 +46,6 @@ function ColorForm({ colorId, afterSubmit }) {
                         message: error?.data?.message || 'Error',
                         type: 'danger'
                     });
-                })
-                .finally(() => {
                     setSubmitting(false);
                 });
         } else {
@@ -55,6 +54,8 @@ function ColorForm({ colorId, afterSubmit }) {
                     if (response?.data?.id) {
                         dataStore.set(`colors/${response.data.id}`, response.data);
                     }
+
+                    setSubmitting(false);
                     
                     if (typeof afterSubmit === 'function') {
                         afterSubmit(response);
@@ -65,27 +66,12 @@ function ColorForm({ colorId, afterSubmit }) {
                         message: error?.data?.message || 'Error',
                         type: 'danger'
                     });
-                })
-                .finally(() => {
                     setSubmitting(false);
                 });
         }
     };
 
-    useEffect(() => {
-        if (parseInt(colorId) && colorData === undefined) {
-            dataStore.get(`climb_colors/${colorId}`)
-                .then(data => {
-                    setColorData(data);
-                })
-                .catch(error => {
-                    console.error(error);
-                    setColorData(null);
-                });
-        }
-    }, [dataStore, colorId, colorData]);
-
-    if (! isNew && colorData === undefined) {
+    if (! isNew && (isLoading || colorData === undefined)) {
         return <LoadingIcon isLarge={true} />;
     }
 

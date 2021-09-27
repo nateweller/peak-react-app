@@ -3,44 +3,57 @@ import { useSelector } from 'react-redux';
 import useDataStore from './useDataStore';
 
 /**
- * useDataStoreItem()
+ * useDataStoreItem() Hook
  * 
- * @param {string} key
- * @param {object} config
- * @param {bool}   config.useCache 
- * @param {bool}   config.forceDataFetch
+ * @param {string} key     The data store item's key.
+ * @param {object} config  Configuration settings for the hook instance.
  * 
- * @returns {object} 
+ * @returns {object}  The hook state. See defaultState for parameters.
  */
+function useDataStoreItem(key, config = {}) {
 
-function useDataStoreItem(key, config) {
-
-    const { 
-        /**
-         * Use Cache
-         * 
-         * When enabled, attempts to load data using useDataStore() hook.
-         * Will fetch data from API if undefined in the data store.
-         * 
-         * @type {bool}
-         */
-        useCache,
-
-        /**
-         * Force Data Fetch
-         * 
-         * When enabled, triggers an API call even when caching is enabled and the 
-         * value is available from the data store. Useful for showing cached value
-         * immediatley and loading fresh data in the background.
-         * 
-         * @type {bool}
-         */
-        forceDataFetch
-    } = config || {};
+    const dataStore = useDataStore();
 
     /**
-     * Batch state updates with reducer
+     * Configuration
+     * 
+     * @param {bool}  useCache     When enabled, attempts to load data using useDataStore() hook. 
+     *                             Will fetch data from API if undefined in the data store.
+     * 
+     * @param {bool}  alwaysFetch  When enabled, triggers an API call even when caching is enabled and the 
+     *                             value is available from the data store. Useful for showing cached value
+     *                             immediatley and loading fresh data in the background.
      */
+    const { 
+        useCache = false, 
+        alwaysFetch = false 
+    } = config;
+
+    /**
+     * Load the cached value from the redux dataStore.
+     */
+    const cacheValue = useSelector(state => state.dataStore[key]);
+    const defaultValue = useCache && cacheValue;
+
+    /**
+     * Default State
+     * 
+     * @type {object} 
+     * 
+     * @property {*}      data         The data store item's value.
+     * @property {*}      useData      The data store item's value, synced with datastore
+     * @property {bool}   isLoading    True when a data store request is currently in progress.
+     * @property {bool}   dataFetched  True once a request has completed.
+     * @property {object} error        Error data returned from the data store request.
+     */
+    const defaultState = {
+        data: defaultValue,
+        useData: defaultValue,
+        isLoading: false,
+        dataFetched: false,
+        error: undefined
+    };
+
     const reducer = (state, action) => {
         switch (action.type) {
             case 'SET_IS_LOADING':
@@ -48,71 +61,37 @@ function useDataStoreItem(key, config) {
                     ...state,
                     isLoading: action.payload
                 };
-            case 'SET_DATA_FROM_FETCH':
+            case 'DATA_FETCHED':
                 return {
                     ...state,
                     data: action.payload,
                     dataFetched: true,
                     isLoading: false
                 };
-            case 'SET_DATA_FROM_FORCE_FETCH':
-                if (state.data === undefined) {
-                    return {
-                        ...state,
-                        data: action.payload,
-                        dataFetched: true,
-                        isLoading: false 
-                    };
-                } else {
-                    return {
-                        ...state,
-                        dataForced: action.payload,
-                        dataFetched: true,
-                        isLoading: false
-                    };
-                }
-            case 'SET_DATA_FROM_SYNC':
+            case 'DATA_SYNCED':
                 return {
                     ...state,
-                    dataSynced: action.payload
+                    useData: action.payload
                 };
-            case 'SET_DATA_FROM_ERROR':
+            case 'ERROR':
                 return {
                     ...state,
                     data: null,
                     dataFetched: true,
-                    isLoading: false
-                };
-            case 'SET_DATA_FROM_KEY_UPDATE':
-                return {
-                    ...state,
-                    dataFetched: false
+                    isLoading: false,
+                    error: action.payload
                 };
             default:
                 throw new Error();
         }
     };
 
-    const dataStore = useDataStore();
-
-    // load the cached value from the redux dataStore.
-    const cacheValue = useSelector(state => state.dataStore[key]);
-    const defaultValue = useCache && cacheValue !== undefined ? cacheValue : undefined;
-
-    /**
-     * Default State
-     */
-    const [state, dispatch] = useReducer(reducer, {
-        data: defaultValue,
-        dataForced: undefined, 
-        dataSynced: defaultValue,
-        isLoading: false,
-        dataFetched: false,
-        error: undefined
-    });
+    const [state, dispatch] = useReducer(reducer, defaultState);
 
     /**
      * Should Fetch
+     * 
+     * Determines if a data store request needs to be made.
      * 
      * @returns {bool}
      */
@@ -126,40 +105,51 @@ function useDataStoreItem(key, config) {
         // something went wrong
         if (state.error) return false;
         // already have data and not forcing a fetch
-        if (state.data !== undefined && ! forceDataFetch) return false;
-        // forcing a fetch and no force-fetched data set
-        if (state.dataForced !== undefined && forceDataFetch) return false;
+        if (state.data !== undefined && ! alwaysFetch) return false;
 
         return true;
-    }, [key, state, forceDataFetch]);
+    }, [key, state, alwaysFetch]);
 
+    /**
+     * Fetch
+     * 
+     * Gets the item from the data store.
+     * Triggers state updates after the request is complete.
+     * 
+     * @return {void}
+     */
     const fetch = useCallback(() => {
-        console.log('FETCH SET IS LOADING');
         dispatch({ type: 'SET_IS_LOADING', payload: true });
         dataStore.get(key, config)
             .then(data => {
-                // when using cache, provide the fetched value as "dataForced"
-                // so that update can be handled by specific implementations.
-                if (forceDataFetch) {
-                    dispatch({ type: 'SET_DATA_FROM_FORCE_FETCH', payload: data });
+                if (state.data !== undefined && alwaysFetch) {
+                    // this fetch happened in the background, and since 
+                    // dataStore.get will have updated the cache value already,
+                    // there is nothing to do
                     return;
                 }
 
-                dispatch({ type: 'SET_DATA_FROM_FETCH', payload: data });
+                dispatch({ type: 'DATA_FETCHED', payload: data });
             })
             .catch(error => {
-                dispatch({ type: 'SET_DATA_FROM_ERROR' });
+                dispatch({ type: 'ERROR', payload: error });
             });
-    }, [ dataStore, key, config, forceDataFetch]);
+    }, [alwaysFetch, config, dataStore, key, state.data]);
 
+    /**
+     * Fetch data when necessary.
+     */
     useEffect(() => {
         if (! shouldFetch()) return;
 
         fetch();
-    }, [shouldFetch, fetch]);
+    }, [fetch, shouldFetch]);
 
+    /**
+     * Sync cache updates with state.useData
+     */
     useEffect(() => {
-        dispatch({ type: 'SET_DATA_FROM_SYNC', payload: cacheValue });
+        dispatch({ type: 'DATA_SYNCED', payload: cacheValue });
     }, [cacheValue]);
 
     return state;

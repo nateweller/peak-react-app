@@ -21,10 +21,10 @@ function ColorPicker(props) {
             <Fragment key={ color.id }>
                 <div 
                     key={ color.id }
-                    className={ `w-12 h-12 rounded-full mr-3 border shadow-sm ${color.id === value ? 'ring-2 ring-offset-2 ring-indigo-500' : ''}` }
+                    className={ `w-12 h-12 rounded-full mr-3 border border-black border-opacity-20 ${color.id === value ? 'ring-2 ring-offset-2 ring-gray-700' : ''}` }
                     style={{ 
                         backgroundColor: color.color,
-                        boxShadow: color.id === value ? `rgb(255, 255, 255) 0px 0px 0px 2px, ${color.color} 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px` : undefined
+                        // boxShadow: color.id === value ? `rgb(255, 255, 255) 0px 0px 0px 2px, ${color.color} 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px` : undefined
                     }} 
                     onClick={ () => setValue(color.id) }
                 />

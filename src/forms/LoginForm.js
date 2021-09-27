@@ -34,7 +34,7 @@ function LoginForm() {
             .catch((error) => {
                 alerts.replace({
                     type: 'danger',
-                    message: error?.response?.data?.message || 'Error'
+                    message: error?.response?.data?.message || error?.message || 'Error'
                 })
                 setSubmitting(false);
             });

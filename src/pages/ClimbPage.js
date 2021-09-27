@@ -11,7 +11,7 @@ function ClimbPage(props) {
     const climbId = props.match.params.climbId;
     
     const dataStore = useDataStore();
-    const { dataSynced: climbData } = useDataStoreItem(`climbs/${climbId}`, { useCache: true, forceDataFetch: true });
+    const { useData: climbData } = useDataStoreItem(`climbs/${climbId}`, { useCache: true, alwaysFetch: true });
     const [showSendForm, setShowSendForm] = useState(false);
 
     const getClimbInfo = () => {

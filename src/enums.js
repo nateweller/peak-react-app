@@ -30,4 +30,4 @@ export const grades = {
         // TO DO: UK Tech
     }
     // TO DO: Lead/Top-Rope
-}
+};
