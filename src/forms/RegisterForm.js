@@ -37,7 +37,8 @@ function RegisterForm() {
             .catch((error) => {
                 alerts.replace({
                     type: 'danger',
-                    message: error?.response?.data?.message || 'Error'
+                    message: error?.response?.data?.message || 'Error',
+                    isDismissable: true
                 });
                 setSubmitting(false);
             });

@@ -35,7 +35,9 @@ function Table(props) {
                             <tbody className="bg-white divide-y divide-gray-200">
                                 { (data === undefined && isLoading) ?
                                     <tr>
-                                        <LoadingIcon isLarge={true} />
+                                        <td>
+                                            <LoadingIcon isLarge={true} />
+                                        </td>
                                     </tr>
                                   : null
                                 }

@@ -9,37 +9,18 @@ import { PlusIcon } from '@heroicons/react/solid';
 
 import Table from '../../../components/Table';
 import Alert from '../../../components/Alert';
+import { useDataStoreItem } from '../../../hooks';
 
 function ClimbsPage() {
 
-    const [alert, setAlert] = useState(null);
-
-    const [climbs, setClimbs] = useState(null);
-
-    const loadClimbs = useCallback(() => {
-        API.get('climbs')
-            .then(response => {
-                setClimbs(response.data);
-            })
-            .catch(error => {
-                setAlert({
-                    message: `Could not load climbs due to the following error: ${error.message}.`,
-                    type: 'danger'
-                });
-            });
-    }, []);
-    
-    useEffect(() => {
-        loadClimbs();
-        return () => {};
-    }, [loadClimbs]);
+    const { useData: climbs } = useDataStoreItem('climbs');
 
     const climbsList = () => {
-        if (!climbs) {
+        if (climbs === undefined) {
             return <LoadingIcon isLarge={true} />
         }
 
-        if (!climbs.length) {
+        if (! climbs.length) {
             return (
                 <div className="text-center py-10">
                     <EmojiHappyIcon className="mx-auto h-12 w-12 text-gray-400 stroke-1" />
@@ -75,27 +56,38 @@ function ClimbsPage() {
                             )
                         },
                         {
+                            label: 'Discipline',
+                            value: <span className="text-sm">{ climb?.discipline }</span>
+                        },
+                        {
+                            label: 'Color',
+                            value: <span className="text-sm">{ climb?.color?.name }</span>
+                        },
+                        {
                             label: 'Grade',
                             value: <span className="text-sm">{ climb?.grade?.name }</span>
+                        },
+                        {
+                            label: 'Sends',
+                            value: <span className="text-sm">{ climb.send_count }</span>
+                        },
+                        {
+                            label: '',
+                            value: (
+                                <div className="text-right text-sm font-medium">
+                                    <Button use={ Link } to={ `/admin/climbs/${climb.id}` } className="mr-2">
+                                        View
+                                    </Button>
+                                    <Button use={ Link } to={ `/admin/climbs/${climb.id}/edit` }>
+                                        Edit
+                                    </Button>
+                                </div>
+                            )
                         }
                     ]);
                     return data;
                 }, [])}
             />
-            // <div className="list-group">
-            //     {climbs.map((climb, key) => {
-            //         return (
-            //             <Link 
-            //                 to={`/climbs/${climb.id}`} 
-            //                 className="list-group-item list-group-item-action" 
-            //                 key={key}
-            //             >
-            //                 {climb.name}
-            //             </Link>
-            //         );
-            //     })}
-            //     {!climbs.length && (<div className="list-group-item text-center">No Results.</div>)}
-            // </div>
         );
     };
 
@@ -117,12 +109,6 @@ function ClimbsPage() {
 
     return (
         <AdminLayout header={pageHeader} isBorderless={ true }>
-            {alert && (
-                <Alert type={ alert.type } className="mb-3">
-                    {alert.message}
-                </Alert>
-            )}
-
             { climbsList() }
         </AdminLayout>
     );

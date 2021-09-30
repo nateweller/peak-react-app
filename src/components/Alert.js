@@ -1,12 +1,17 @@
-import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
+import { useState } from 'react';
+import { CheckCircleIcon, XCircleIcon, InformationCircleIcon, XIcon } from '@heroicons/react/solid';
 
 function Alert(props) {
 
     const { 
-        type, 
+        afterDismissed = () => {},
         children, 
-        className: customClassName 
+        className: customClassName,
+        type = 'info',
+        isDismissable = false
     } = props;
+
+    const [isDismissed, setIsDismissed] = useState(false);
 
     const getClassName = () => {
         let className = `rounded-md p-4`;
@@ -24,7 +29,13 @@ function Alert(props) {
                 break;
         }
 
-        className += ` ${customClassName}`;
+        if (customClassName) {
+            className += ` ${customClassName}`;
+        }
+
+        if (isDismissed) {
+            className += ' hidden';
+        }
 
         return className;
     };
@@ -37,8 +48,24 @@ function Alert(props) {
                 return <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />;
             case 'info':
             default:
-                return null;
+                return <InformationCircleIcon className="h5 w-5 text-indigo-400" aria-hidden="true" />;
         }
+    };
+
+    const renderCloseIcon = () => {
+        let colorClassName;
+        switch (type) {
+            case 'success':
+                colorClassName = 'text-green-400';
+                break;
+            case 'danger':
+                colorClassName = 'text-red-400';
+                break;
+            case 'info':
+            default:
+                colorClassName = '';
+        }
+        return <XIcon className={ `h-4 w-4 ${colorClassName}` } />;
     };
 
     return (
@@ -47,11 +74,22 @@ function Alert(props) {
                 <div className="flex-shrink-0">
                     { renderIcon() }
                 </div>
-                <div className="ml-3">
+                <div className="flex-1 ml-3">
                     <div className="text-sm font-medium">
                         { children }
                     </div>
                 </div>
+                { isDismissable && 
+                    <div 
+                        className="flex-shrink-0 flex items-center cursor-pointer"
+                        onClick={ () => {
+                            setIsDismissed(true);
+                            afterDismissed(); 
+                        } }
+                    >
+                        { renderCloseIcon() }
+                    </div>
+                }
             </div>
         </div>
     );

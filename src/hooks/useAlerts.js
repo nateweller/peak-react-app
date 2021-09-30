@@ -26,6 +26,13 @@ function useAlerts() {
                             type={ alert.type }
                             key={ loopIndex }
                             className={ loopIndex !== alerts.length - 1 ? 'mb-4' : '' }
+                            isDismissable={ alert.isDismissable || false }
+                            afterDismissed={ () => {
+                                setAlerts(
+                                    ...alerts.slice(0, loopIndex),
+                                    ...alerts.slice(loopIndex + 1)
+                                );
+                            } }
                         >
                             { alert.message }
                         </Alert>

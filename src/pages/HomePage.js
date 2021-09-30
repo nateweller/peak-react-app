@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 function HomePage() {
 
     const alerts = useAlerts();
-    const { data, error, isLoading } = useDataStoreItem('climbs', { useCache: true, alwaysFetch: true });
+    const { useData: data, error, isLoading } = useDataStoreItem('climbs', { useCache: true, alwaysFetch: true });
 
     useEffect(() => {
         if (error) {
@@ -43,7 +43,7 @@ function HomePage() {
     );
 
     const renderClimbsTable = () => {
-        if (isLoading) {
+        if (data === undefined && isLoading) {
             return <LoadingIcon isLarge={ true } />;
         }
 
@@ -67,8 +67,12 @@ function HomePage() {
                             value: <span className="text-sm">{ climbData.discipline }</span>
                         },
                         {
+                            label: 'Color',
+                            value: <span className="text-sm">{ climbData?.color?.name || 'N/A' }</span>
+                        },
+                        {
                             label: 'Grade',
-                            value: <span className="text-sm">{ climbData?.grade?.name }</span>
+                            value: <span className="text-sm">{ climbData?.grade?.name || 'N/A' }</span>
                         },
                         {
                             label: 'Sends',

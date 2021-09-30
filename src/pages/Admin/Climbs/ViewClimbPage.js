@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import QRCode from 'qrcode.react';
 import AdminLayout from '../../../layouts/AdminLayout';
 import Button from '../../../components/Button';
@@ -31,7 +32,7 @@ function ViewClimb(props) {
                 </h2>
             </div>
             <div className="mt-4 flex md:mt-0 md:ml-4">
-                <Button className="inline-flex items-center">
+                <Button use={ Link } to={ `/admin/climbs/${climbId}/edit` } className="inline-flex items-center">
                     Edit
                 </Button>
             </div>

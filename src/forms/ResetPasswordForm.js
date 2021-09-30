@@ -27,13 +27,15 @@ function ResetPasswordForm(props) {
             .then((response) => {
                 alerts.replace({
                     type: 'success',
-                    message: response?.data?.message || 'Success'
+                    message: response?.data?.message || 'Success',
+                    isDismissable: true
                 });
             })
             .catch((error) => {
                 alerts.replace({
                     type: 'danger',
-                    message: error?.response?.data?.message || 'Error'
+                    message: error?.response?.data?.message || 'Error',
+                    isDismissable: true
                 });
             })
             .finally(() => {

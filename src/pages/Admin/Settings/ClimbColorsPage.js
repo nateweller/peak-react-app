@@ -13,7 +13,7 @@ function ClimbColorsPage() {
 
     const dataStore = useDataStore();
 
-    const { useData: colorsData } = useDataStoreItem('climb_colors');
+    const { useData: colorsData, isLoading } = useDataStoreItem('climb_colors');
 
     // ID of color to edit, or 'new' to insert a new color
     const [addEditId, setAddEditId] = useState(false);
@@ -61,7 +61,7 @@ function ClimbColorsPage() {
 
                 { alerts.render('mb-4') }
 
-                <Table data={ getColorsTableData() } />
+                <Table data={ getColorsTableData() } isLoading={ isLoading } />
 
             </AdminSettingsLayout>
             

@@ -39,7 +39,8 @@ function SendForm({ sendId, climbId, afterSubmit }) {
                 .catch(() => {
                     alerts.add({
                         'message': 'Error.',
-                        'type': 'danger'
+                        'type': 'danger',
+                        isDismissable: true
                     })
                 })
                 .finally(() => {
@@ -49,8 +50,9 @@ function SendForm({ sendId, climbId, afterSubmit }) {
             API.patch(`sends/${sendId}`, { ...values, climb_id: climbId })
                 .then((response) => afterSubmit(response))
                 .catch(() => alerts.add({
-                    'message': 'Error.',
-                    'type': 'danger'
+                    message: 'Error.',
+                    type: 'danger',
+                    isDismissable: true
                 }))
                 .finally(() => {
                     setSubmitting(false);

@@ -5,6 +5,8 @@ import useDataStore from './useDataStore';
 /**
  * useDataStoreItem() Hook
  * 
+ * Work with a single item from the data store. 
+ * 
  * @param {string} key     The data store item's key.
  * @param {object} config  Configuration settings for the hook instance.
  * 
@@ -31,9 +33,11 @@ function useDataStoreItem(key, config = {}) {
 
     /**
      * Load the cached value from the redux dataStore.
+     * 
+     * @todo add support for falsey cache values
      */
     const cacheValue = useSelector(state => state.dataStore[key]);
-    const defaultValue = useCache && cacheValue;
+    const defaultValue = (useCache && cacheValue) || undefined;
 
     /**
      * Default State

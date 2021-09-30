@@ -3,12 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setDataStoreItem } from '../redux-store';
 import { API } from '../api';
 
+/**
+ * useDataStore() Hook
+ * 
+ * Fetch, cache, and fetch cached API data.
+ * 
+ * @returns {object} The data store object.
+ */
 function useDataStore() {
 
     const dispatch = useDispatch();
 
     const dataStore = useSelector(state => state.dataStore);
 
+    /**
+     * Set
+     */
     const set = useCallback((key, value) => {
         dispatch(setDataStoreItem({
             key,
@@ -16,10 +26,25 @@ function useDataStore() {
         }));
     }, [dispatch]);
 
-    const get = useCallback((key, config) => {
+    /**
+     * Get
+     * 
+     * @param {string} key 
+     * @param {object} config
+     */
+    const get = useCallback((key, config = {}) => {
         return new Promise((resolve, reject) => {
+            /**
+             * Configuration
+             * 
+             * @property {bool} useCache
+             */
+            const { 
+                useCache = false 
+            } = config;
+
             // return data from redux store / cache if requested and available
-            if (config?.useCache && dataStore[key] !== undefined) {
+            if (useCache && dataStore[key] !== undefined) {
                 resolve(dataStore[key]);
             }
 
@@ -38,11 +63,7 @@ function useDataStore() {
                     resolve(null);
                 })
                 .catch(error => {
-                    if (error !== undefined) {
-                        reject(error);
-                    } else {
-                        reject();
-                    }
+                    reject(error);
                 });
         });
     }, [dataStore, set]);

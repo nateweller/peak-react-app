@@ -1,18 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import LoadingIcon from './../components/LoadingIcon';
-import { disciplines, grades } from './../enums';
+import { disciplines } from './../enums';
 import { API } from './../api';
 
-import { useAlerts } from './../hooks';
+import { useAlerts, useDataStoreItem } from './../hooks';
 
 import ColorPicker from './../components/ColorPicker';
 import Input from './../components/Input';
 import Select from './../components/Select';
 
-function ClimbForm({ climbId }) {
+function ClimbForm(props) {
+
+    const { climbId } = props;
 
     const isNew = ! parseInt(climbId);
 
@@ -20,23 +22,18 @@ function ClimbForm({ climbId }) {
 
     const [redirect, setRedirect] = useState(null);
 
-    const [climbData, setClimbData] = useState({
-        name: '',
-        discipline: disciplines.BOULDER,
-        grade: grades.BOULDER.V.V0,
-        color_id: '',
-        location_id: ''
-    });
+    const { useData: climbData } = useDataStoreItem(isNew ? undefined : `climbs/${climbId}`);
 
-    const [locations, setLocations] = useState(null);
+    const { useData: locations } = useDataStoreItem('locations');
 
-    const [gradeOptions/*, setGradeOptions*/] = useState(grades.BOULDER.V);
+    /** @todo select grading system based on discipline */
+    const { useData: gradeOptions } = useDataStoreItem('grading_grades');
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('Climb name is required.'),
         discipline: Yup.string(),
-        grade: Yup.string(),
-        color_id: Yup.number().required('Test'),
+        grade_id: Yup.number(),
+        color_id: Yup.number(),
         location_id: Yup.number().required('Location is required.')
     });
 
@@ -45,8 +42,20 @@ function ClimbForm({ climbId }) {
             API.post('climbs', values)
                 .then((response) => setRedirect(`/admin/climbs/${response.data.id}`))
                 .catch(() => alerts.add({
-                    'message': 'Error.',
-                    'type': 'danger'
+                    message: 'Error.',
+                    type: 'danger',
+                    isDismissable: true
+                }))
+                .finally(() => {
+                    setSubmitting(false);
+                });
+        } else {
+            API.patch(`climbs/${climbId}`, values)
+                .then((response) => setRedirect(`/admin/climbs/${response.data.id}`))
+                .catch(error => alerts.add({
+                    message: 'Error.',
+                    type: 'danger',
+                    isDismissable: true
                 }))
                 .finally(() => {
                     setSubmitting(false);
@@ -54,61 +63,11 @@ function ClimbForm({ climbId }) {
         }
     };
 
-    const loadLocations = useCallback(() => {
-        API.get('locations')
-            .then(response => {
-                setLocations(response.data);
-            })
-            .catch(error => {
-                alerts.add({
-                    message: error.message,
-                    type: 'danger'
-                });
-            });
-    }, [alerts]);
-
-    const loadClimb = useCallback(() => {
-        API.get(`climbs/${climbId}`)
-            .then(response => {
-                setClimbData(response.data);
-            })
-            .catch(error => {
-                alerts.add({
-                    message: error.message,
-                    type: 'danger'
-                });
-            });
-    }, [alerts, climbId]);
-
-    useEffect(() => {
-        // set default climb data
-        if (!climbData && !climbId) {
-            setClimbData({
-                name: '',
-                discipline: Object.values(disciplines)[0] || '',
-                grade: '',
-                color_id: '',
-                location_id: 1
-            });
-        }
-        // load climb data from ID
-        if (parseInt(climbId) && !climbData) {
-            loadClimb();
-        }
-        // load locations
-        if (!locations) {
-            loadLocations();
-        }
-
-        return () => {};
-
-    }, [climbId, locations, loadLocations, loadClimb, climbData]);
-
     if (redirect) {
         return <Redirect to={ redirect } />;
     }
 
-    if (!isNew && !climbData) {
+    if (! isNew && climbData === undefined) {
         return <LoadingIcon isLarge={true} />;
     }
 
@@ -135,9 +94,9 @@ function ClimbForm({ climbId }) {
 
                     <div className="mt-4">
                         <Select 
-                            name="grade"
+                            name="grade_id"
                             label="Grade"
-                            options={Object.values(gradeOptions).map(grade => ({ value: grade, label: grade }))}
+                            options={[]}
                         />
                     </div>
 

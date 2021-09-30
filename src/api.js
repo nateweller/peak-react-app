@@ -17,6 +17,9 @@ export const API = {
         }
         return defaultConfig;
     },
+    getErrorMessage: function(error) {
+        return error?.response?.data?.message || error?.message || 'Unknown Error';
+    },
     get: function (endpoint, config) {
         return axios.get(`${this.baseURL}/${endpoint}`, {
             ...this.getDefaultRequestConfig(), 
@@ -40,5 +43,10 @@ export const API = {
             ...this.getDefaultRequestConfig(),
             config
         });
+    },
+    upsert: function (baseEndpoint, id = null, requestBody = {}, config = {}) {
+        const method = parseInt(id) ? 'patch' : 'post';
+        const url = parseInt(id) ? `${baseEndpoint}/${id}` : baseEndpoint;
+        return this[method](url, requestBody, config);
     }
 };

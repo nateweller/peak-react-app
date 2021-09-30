@@ -28,13 +28,15 @@ function OrganizationForm() {
                 setOrganization(response.data);
                 alerts.replace({
                     message: 'Organization updated.',
-                    type: 'success'
+                    type: 'success',
+                    isDismissable: true
                 })
             })
             .catch((error) => {
                 alerts.replace({
                     message: error?.data?.message || 'An error occurred.',
-                    type: 'danger'
+                    type: 'danger',
+                    isDismissable: true
                 })
             })
             .finally(() => {
@@ -61,7 +63,6 @@ function OrganizationForm() {
                                 type="text" 
                                 name="name" 
                                 label="Organization Name"
-                                className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} 
                                 required
                             />
                         </div>
