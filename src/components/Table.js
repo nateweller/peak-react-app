@@ -7,31 +7,38 @@ function Table(props) {
         isLoading
     } = props;
 
+    const renderTableHead = () => {
+        if (! data || ! data.length) {
+            return null;
+        }
+
+        return (
+            <thead className="bg-gray-50">
+                <tr>
+                    {Boolean(data[0]) ? data[0].map((dataRow, loopIndex) => (
+                        <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            key={ loopIndex }
+                        >
+                            { dataRow.label }
+                        </th>
+                    )) : null }
+                    <th className="p-3 flex justify-end align-items-center">
+                        { isLoading ? <LoadingIcon isSmall={true} /> : null }
+                    </th>
+                </tr>
+            </thead>
+        );
+    };
+
     return (
         <div className="flex flex-col">
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                         <table className="min-w-full divide-y divide-gray-200">
-                            { Boolean(data?.length) ? 
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        {Boolean(data[0]) ? data[0].map((dataRow, loopIndex) => (
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                                key={ loopIndex }
-                                            >
-                                                { dataRow.label }
-                                            </th>
-                                        )) : null }
-                                        <th className="p-3 flex justify-end align-items-center">
-                                            { isLoading ? <LoadingIcon isSmall={true} /> : null }
-                                        </th>
-                                    </tr>
-                                </thead>
-                                : null
-                            }
+                            { renderTableHead() }
                             <tbody className="bg-white divide-y divide-gray-200">
                                 { (data === undefined && isLoading) ?
                                     <tr>

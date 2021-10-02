@@ -1,12 +1,8 @@
-import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import LoadingIcon from './../components/LoadingIcon';
 import { disciplines } from './../enums';
-import { API } from './../api';
-
-import { useAlerts, useDataStoreItem } from './../hooks';
+import { useForm, useDataStoreItem } from './../hooks';
 
 import ColorPicker from './../components/ColorPicker';
 import Input from './../components/Input';
@@ -14,69 +10,52 @@ import Select from './../components/Select';
 
 function ClimbForm(props) {
 
-    const { climbId } = props;
+    const { 
+        id = null,
+        onSuccess = () => {}
+     } = props;
 
-    const isNew = ! parseInt(climbId);
-
-    const alerts = useAlerts();
-
-    const [redirect, setRedirect] = useState(null);
-
-    const { useData: climbData } = useDataStoreItem(isNew ? undefined : `climbs/${climbId}`);
+    const form = useForm({
+        id,
+        apiCommand: 'climbs',
+        onSuccess
+    });
 
     const { useData: locations } = useDataStoreItem('locations');
 
     /** @todo select grading system based on discipline */
-    const { useData: gradeOptions } = useDataStoreItem('grading_grades');
+    // const { useData: gradeOptions } = useDataStoreItem('grading_grades');
+
+    const initialValues = {
+        name: '',
+        discipline: '',
+        grade_id: '',
+        color_id: '',
+        location_id: ''
+    };
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('Climb name is required.'),
         discipline: Yup.string(),
-        grade_id: Yup.number(),
-        color_id: Yup.number(),
+        grade_id: Yup.number().nullable(),
+        color_id: Yup.number().nullable(),
         location_id: Yup.number().required('Location is required.')
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
-        if (climbId === 'new') {
-            API.post('climbs', values)
-                .then((response) => setRedirect(`/admin/climbs/${response.data.id}`))
-                .catch(() => alerts.add({
-                    message: 'Error.',
-                    type: 'danger',
-                    isDismissable: true
-                }))
-                .finally(() => {
-                    setSubmitting(false);
-                });
-        } else {
-            API.patch(`climbs/${climbId}`, values)
-                .then((response) => setRedirect(`/admin/climbs/${response.data.id}`))
-                .catch(error => alerts.add({
-                    message: 'Error.',
-                    type: 'danger',
-                    isDismissable: true
-                }))
-                .finally(() => {
-                    setSubmitting(false);
-                });
-        }
-    };
-
-    if (redirect) {
-        return <Redirect to={ redirect } />;
-    }
-
-    if (! isNew && climbData === undefined) {
+    if (id && form.data === undefined) {
         return <LoadingIcon isLarge={true} />;
     }
 
     return (
-        <Formik initialValues={climbData || {}} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {() => (
+        <Formik 
+            initialValues={ form.data || initialValues } 
+            validationSchema={ validationSchema } 
+            onSubmit={ form.onSubmit }
+        >
+            { () => (
                 <Form id="climb-form">
 
-                    { alerts.render() }
+                    { form.alerts.render() }
 
                     <Input 
                         name="name"

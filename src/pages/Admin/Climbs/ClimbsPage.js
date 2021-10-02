@@ -1,6 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { API } from '../../../api';
 import LoadingIcon from '../../../components/LoadingIcon';
 import AdminLayout from '../../../layouts/AdminLayout';
 import Button from '../../../components/Button';
@@ -8,7 +6,6 @@ import { EmojiHappyIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/solid';
 
 import Table from '../../../components/Table';
-import Alert from '../../../components/Alert';
 import { useDataStoreItem } from '../../../hooks';
 
 function ClimbsPage() {
@@ -102,6 +99,10 @@ function ClimbsPage() {
                 <Button use={ Link } to="/admin/climbs/new" className="inline-flex items-center">
                     <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
                     New Climb
+                </Button>
+                <Button use={ Link } to="/admin/sets/new" className="inline-flex items-center ml-4">
+                    <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                    New Set
                 </Button>
             </div>
         </div>

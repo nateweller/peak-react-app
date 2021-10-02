@@ -8,6 +8,7 @@ function ColorPicker(props) {
 
     const { data: colors } = useDataStoreItem('climb_colors', { useCache: true });
 
+    // eslint-disable-next-line
     const [field, meta, helpers] = useField(name);
     const { value } = meta;
     const { setValue } = helpers;

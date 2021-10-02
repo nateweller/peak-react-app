@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import QRCode from 'qrcode.react';
+import { useDataStoreItem } from './../../../hooks';
 import AdminLayout from '../../../layouts/AdminLayout';
 import Button from '../../../components/Button';
-import { API } from '../../../api';
+import InfoList from './../../../components/InfoList';
 
 function ViewClimb(props) {
 
@@ -11,24 +11,13 @@ function ViewClimb(props) {
 
     const climbURL = `${process.env.REACT_APP_URL}/climbs/${climbId}`;
 
-    const [climbData, setClimbData] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        if (! climbData && ! isLoading) {
-            setIsLoading(true);
-            API.get(`climbs/${climbId}`)
-                .then(response => setClimbData(response.data))
-                .catch(err => console.error(err))
-                .finally(() => setIsLoading(false));
-        }
-    }, [climbData, climbId, isLoading]);
+    const { useData: climb } = useDataStoreItem(`climbs/${climbId}`);
 
     const pageHeader = (
         <div className="md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
                 <h2 className="text-2xl font-bold leading-7 text-white sm:text-3xl sm:truncate">
-                    { climbData?.name }
+                    { climb?.name }
                 </h2>
             </div>
             <div className="mt-4 flex md:mt-0 md:ml-4">
@@ -40,10 +29,53 @@ function ViewClimb(props) {
     );
 
     return (
-        <AdminLayout header={pageHeader}>
-            <div data-qr={climbURL}>
-                <QRCode value={climbURL} />
-            </div>
+        <AdminLayout header={pageHeader} isBorderless={ true }>
+            <InfoList
+                isLoading={ climb === undefined }
+                info={[
+                    {
+                        label: 'Name',
+                        value: climb?.name || ''
+                    },
+                    {
+                        label: 'Discipline',
+                        value: climb?.discipline || ''
+                    },
+                    {
+                        label: 'Grade',
+                        value: climb?.grade?.name || ''
+                    },
+                    {
+                        label: 'Color',
+                        value: climb?.color?.name || ''
+                    },
+                    {
+                        label: 'Community Grade',
+                        value: 
+                            climb?.community_grade
+                                ? <>
+                                    { climb?.community_grade?.name } 
+                                    {' '}
+                                    <span className="text-xs text-gray-400">
+                                        ({ climb?.community_grade?.vote_count } votes)
+                                    </span>
+                                  </>
+                                : 'No Votes'
+                    },
+                    {
+                        label: 'Total Sends',
+                        value: climb?.send_count !== undefined ? climb.send_count : ''
+                    },
+                    {
+                        label: 'QR Code',
+                        value: (
+                            <div data-qr={climbURL}>
+                                <QRCode value={climbURL} />
+                            </div>
+                        )
+                    }
+                ]}
+            />
         </AdminLayout>
     );
 }
