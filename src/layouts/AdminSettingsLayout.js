@@ -45,14 +45,14 @@ function AdminSettingsLayout(props) {
 
     const { children } = props;
 
-    const pageHeading = (
+    const pageHeader = (
         <h2 className="text-2xl font-bold leading-7 text-white sm:text-3xl sm:truncate">
             Settings
         </h2>
     );
 
     return (
-        <AdminLayout heading={ pageHeading }>
+        <AdminLayout header={ pageHeader }>
             <div className="flex">
                 <div className="flex-auto w-1/5">
                     <SettingsNavigation />

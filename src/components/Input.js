@@ -17,9 +17,11 @@ function Input(props) {
 
     return (
         <div>
-            <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-                {label}
-            </label>
+            { Boolean(label) && (
+                <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+                    {label}
+                </label>
+            ) }
             <div className="mt-1">
                 <Field
                     type={type}
@@ -44,7 +46,7 @@ function Input(props) {
 
 Input.propTypes = {
     name: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     type: PropTypes.string,
     placeholder: PropTypes.string,
     description: PropTypes.string

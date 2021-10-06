@@ -30,7 +30,7 @@ function ColorForm(props) {
     });
 
     if (id && form.data === undefined) {
-        return <LoadingIcon isLarge={true} />;
+        return <LoadingIcon isLarge={ true } />;
     }
 
     return (
@@ -58,7 +58,7 @@ function ColorForm(props) {
                         />
                     </div>
                     
-                    <Button type="submit" isLoading={isSubmitting}>
+                    <Button type="submit" isLoading={ isSubmitting }>
                         Save
                     </Button>
                     

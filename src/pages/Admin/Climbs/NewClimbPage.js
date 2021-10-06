@@ -1,8 +1,13 @@
+import { useState } from 'react';
+import { Redirect } from 'react-router-dom';
+
 import AdminLayout from '../../../layouts/AdminLayout';
 import ClimbForm from '../../../forms/ClimbForm';
 import Button from '../../../components/Button';
 
 function ViewClimb() {
+
+    const [redirect, setRedirect] = useState();
 
     const pageHeader = (
         <div className="md:flex md:items-center md:justify-between">
@@ -19,9 +24,20 @@ function ViewClimb() {
         </div>
     );
 
+    if (redirect) {
+        return <Redirect to={ redirect } />;
+    }
+
     return (
         <AdminLayout header={pageHeader}>
-            <ClimbForm climbId="new"  />
+            <ClimbForm 
+                climbId="new"  
+                onSuccess={ (response) => {
+                    if (response?.data?.id) {
+                        setRedirect(`/admin/climbs/${response.data.id}`);
+                    }
+                } }
+            />
         </AdminLayout>
     );
 }

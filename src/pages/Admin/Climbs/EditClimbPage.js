@@ -21,7 +21,7 @@ function EditClimbPage(props) {
 
     return (
         <AdminLayout header={ pageHeader }>
-            <ClimbForm climbId={ props.match.params.climbId }  />
+            <ClimbForm id={ props.match.params.climbId }  />
         </AdminLayout>
     );
 }

@@ -72,6 +72,12 @@ function useDataStoreItem(key, config = {}) {
                     dataFetched: true,
                     isLoading: false
                 };
+            case 'DATA_FETCHED_IN_BACKGROUND':
+                return {
+                    ...state,
+                    dataFetched: true,
+                    isLoading: false
+                };
             case 'DATA_SYNCED':
                 return {
                     ...state,
@@ -127,9 +133,7 @@ function useDataStoreItem(key, config = {}) {
         dataStore.get(key, config)
             .then(data => {
                 if (state.data !== undefined && alwaysFetch) {
-                    // this fetch happened in the background, and since 
-                    // dataStore.get will have updated the cache value already,
-                    // there is nothing to do
+                    dispatch({ type: 'DATA_FETCHED_IN_BACKGROUND' });
                     return;
                 }
 

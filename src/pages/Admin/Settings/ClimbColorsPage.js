@@ -13,9 +13,8 @@ function ClimbColorsPage() {
 
     const dataStore = useDataStore();
 
-    const { useData: colorsData, isLoading } = useDataStoreItem('climb_colors');
+    const { useData: colorsData, isLoading } = useDataStoreItem('climb_colors', { useCache: true, alwaysFetch: true });
 
-    // ID of color to edit, or 'new' to insert a new color
     const [addEditId, setAddEditId] = useState(false);
 
     const getColorsTableData = () => {
@@ -61,22 +60,26 @@ function ClimbColorsPage() {
 
                 { alerts.render('mb-4') }
 
-                <Table data={ getColorsTableData() } isLoading={ isLoading } />
+                <Table 
+                    data={ getColorsTableData() } 
+                    isLoading={ isLoading } 
+                />
 
             </AdminSettingsLayout>
             
-            <Dialog isOpen={addEditId} setIsOpen={setAddEditId}>
+            <Dialog isOpen={ addEditId } setIsOpen={ setAddEditId }>
                 <ColorForm 
-                    colorId={addEditId} 
-                    key={String(addEditId)}
-                    afterSubmit={() => {
+                    id={ addEditId !== 'new' ? addEditId : null } 
+                    key={ String(addEditId) }
+                    onSuccess={ () => {
                         dataStore.get('climb_colors');
                         setAddEditId(null);
                         alerts.replace({
                             type: 'success',
-                            message: 'Color saved.'
+                            message: 'Color saved.',
+                            isDismissable: true
                         });
-                    }} 
+                    } } 
                 />
             </Dialog>
         </>
