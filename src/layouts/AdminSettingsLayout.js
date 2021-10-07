@@ -53,11 +53,14 @@ function AdminSettingsLayout(props) {
 
     return (
         <AdminLayout header={ pageHeader }>
-            <div className="flex">
-                <div className="flex-auto w-1/5">
+            <div className="flex flex-wrap">
+                <div className="flex-auto mb-4 w-full md:w-1/5">
+                    <h3 className="md:hidden text-lg leading-6 font-medium text-gray-900 mb-2">
+                        Settings Menu
+                    </h3>
                     <SettingsNavigation />
                 </div>
-                <div className="flex-auto w-4/5 pl-6">
+                <div className="flex-auto w-full md:w-4/5 md:pl-6">
                     { children }
                 </div>
             </div>

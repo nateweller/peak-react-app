@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import OutsideClickHandler from 'react-outside-click-handler';
+import { useAuth } from './../hooks';
+import Avatar from '../components/Avatar';
 
 function UserMenu() {
 
   const location = useLocation();
 
-  const user = useSelector(state => state.auth.user);
+  const { user } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   
@@ -35,7 +36,7 @@ function UserMenu() {
                 onClick={() => setIsOpen(!isOpen)}
               >
                 <span className="sr-only">Open user menu</span>
-                <img className="h-8 w-8 rounded-full" src="https://img.olympicchannel.com/images/image/private/t_1-1_600/f_auto/v1538355600/primary/slewmn5tkzrgg1gwo4lw" alt="" />
+                <Avatar className="w-8 h-8 rounded-full" />
               </button>
             )
             : (
@@ -76,13 +77,13 @@ function MobileUserMenu() {
 
   const location = useLocation();
 
-  const user = useSelector(state => state.auth.user);
+  const { user } = useAuth();
 
   const menuItems = user 
     ? [
         {
           name: 'Sign out',
-          url: '/signout'
+          url: '/logout'
         }
       ]
     : [
@@ -97,7 +98,7 @@ function MobileUserMenu() {
       { user && (
         <div className="flex items-center px-5 mb-3">
           <div className="flex-shrink-0">
-            <img className="h-10 w-10 rounded-full" src="https://img.olympicchannel.com/images/image/private/t_1-1_600/f_auto/v1538355600/primary/slewmn5tkzrgg1gwo4lw" alt="" />
+            <Avatar className="w-10 h-10 rounded-full" />
           </div>
           <div className="ml-3">
             <div className="text-base font-medium leading-none text-white">

@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useAuth } from './../hooks';
 import { API } from './../api';
 import { developmentLog } from '../utils';
 
@@ -7,7 +7,7 @@ export const OrganizationContext = createContext(undefined);
 
 function OrganizationProvider(props) {
 
-    const user = useSelector(state => state.auth.user);
+    const { user } = useAuth();
 
     const [organization, setOrganization] = useState(undefined);
 

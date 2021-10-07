@@ -1,11 +1,11 @@
 import RegisterForm from '../../forms/RegisterForm';
 import { Redirect, Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useAuth } from './../../hooks';
 import AuthLayout from '../../layouts/AuthLayout';
 
 function RegisterPage() {
 
-    const user = useSelector(state => state.auth.user);
+    const { user } = useAuth();
 
     if (user) {
         return (

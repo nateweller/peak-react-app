@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { App as CapacitorApp } from '@capacitor/app';
+
 import { setUser } from './redux-store';
+import { useAuth } from './hooks';
 import { developmentLog } from './utils';
-import { API } from './api';
+
+import OrganizationProvider from './providers/OrganizationProvider';
 
 import AuthRoute from './components/AuthRoute';
 import LoadingIcon from './components/LoadingIcon';
-
-import OrganizationProvider from './providers/OrganizationProvider';
 
 import './styles/app.scss';
 
@@ -44,7 +45,7 @@ function App(props) {
 
   const dispatch = useDispatch();
   const history = props.history;
-  const user = useSelector(state => state.auth.user);
+  const { user, initializeCurrentUser } = useAuth();
 
   const [userLoaded, setUserLoaded] = useState(false);
   const [appInitialized, setAppInitialized] = useState(false);
@@ -68,21 +69,7 @@ function App(props) {
 
       if (user && user.token && !user.id) {
         // user data missing in state
-        API.get('user')
-          .then(response => {
-            // set user data into state
-            dispatch(setUser({ ...user, ...response.data }));
-          })
-          .catch(error => {
-            // delete user token
-            // to do: this is not needed in cases such as network error,
-            //        needs more conditionals.
-            localStorage.removeItem('token');
-            dispatch(setUser(null));
-
-            developmentLog('Error fetching user data:');
-            developmentLog(error);
-          })
+        initializeCurrentUser()
           .finally(() => {
             setUserLoaded(true);
           });
@@ -97,16 +84,7 @@ function App(props) {
       developmentLog(user?.id ? `User ID: ${user.id}` : 'Signed Out');
     }
 
-  }, [user, dispatch, userLoaded, appInitialized]);
-
-  /*
-   * Navigation Change Listener
-   */
-  // useEffect(() => {
-  //   history.listen((location, action) => {
-
-  //   });
-  // }, [history, dispatch]);
+  }, [user, dispatch, userLoaded, appInitialized, initializeCurrentUser]);
 
   /**
    * Back Button Listener

@@ -22,3 +22,12 @@ Built with `create-react-app` and `electron`.
 
 1. `yarn build`
 2. `yarn electron-package`
+
+## Application Hooks
+
+The application framework is largely based on custom React hooks such as:
+
+* `useAlerts()`
+* `useAuth()`
+* `useDataStore()`
+* `useDataStoreItem()`

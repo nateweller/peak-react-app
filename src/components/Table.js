@@ -4,6 +4,7 @@ function Table(props) {
 
     const {
         data,
+        emptyContent,
         isLoading
     } = props;
 
@@ -38,7 +39,9 @@ function Table(props) {
                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                         <table className="min-w-full divide-y divide-gray-200">
+                            
                             { renderTableHead() }
+
                             <tbody className="bg-white divide-y divide-gray-200">
                                 { (data === undefined && isLoading) ?
                                     <tr>
@@ -48,6 +51,15 @@ function Table(props) {
                                     </tr>
                                   : null
                                 }
+                                
+                                { (data && ! data.length) && (
+                                    <tr>
+                                        <td>
+                                            { emptyContent }
+                                        </td>
+                                    </tr>
+                                ) }
+
                                 {Boolean(data?.length) && data.map((dataRow, loopIndex) => (
                                     <tr key={ loopIndex }>
                                         {dataRow.map((dataColumn, columnLoopIndex) => (

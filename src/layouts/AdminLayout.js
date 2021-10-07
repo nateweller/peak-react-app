@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import OutsideClickHandler from 'react-outside-click-handler';
+import { useAuth } from './../hooks';
+import Avatar from '../components/Avatar';
 
 function UserMenu() {
+  
   const location = useLocation();
+
+  const { user } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
   
   const displayClassName = isOpen ? '' : 'hidden';
@@ -19,17 +25,27 @@ function UserMenu() {
     <OutsideClickHandler onOutsideClick={() => setIsOpen(false)}>
       <div className="ml-3 relative">
         <div>
-          <button 
-            type="button" 
-            className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" 
-            id="user-menu-button" 
-            aria-expanded={isOpen}
-            aria-haspopup="true"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <span className="sr-only">Open user menu</span>
-            <img className="h-8 w-8 rounded-full" src="https://img.olympicchannel.com/images/image/private/t_1-1_600/f_auto/v1538355600/primary/slewmn5tkzrgg1gwo4lw" alt="" />
-          </button>
+          { user
+            ? (
+              <button 
+                type="button" 
+                className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" 
+                id="user-menu-button" 
+                aria-expanded={isOpen}
+                aria-haspopup="true"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <span className="sr-only">Open user menu</span>
+                <Avatar className="h-8 w-8 rounded-full" />
+              </button>
+            ) : (
+              <Link 
+                to="/login" 
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Sign In
+              </Link>
+            ) }
         </div>
 
         <div 
@@ -60,35 +76,41 @@ function MobileUserMenu() {
 
   const location = useLocation();
 
-  const menuItems = [
-    {
-      name: 'Sign out',
-      url: '/signout'
-    }
-  ];
+  const { user } = useAuth();
+
+  const menuItems = user 
+    ? [
+        {
+          name: 'Sign out',
+          url: '/logout'
+        }
+      ]
+    : [
+        {
+          name: 'Sign In',
+          url: '/login'
+        }
+    ];
 
   return (
     <div className="pt-4 pb-3 border-t border-gray-700">
-      <div className="flex items-center px-5">
-        <div className="flex-shrink-0">
-          <img className="h-10 w-10 rounded-full" src="https://img.olympicchannel.com/images/image/private/t_1-1_600/f_auto/v1538355600/primary/slewmn5tkzrgg1gwo4lw" alt="" />
-        </div>
-        <div className="ml-3">
-          <div className="text-base font-medium leading-none text-white">
-            Madame Honda
+      { user && (
+        <div className="flex items-center px-5 mb-3">
+          <div className="flex-shrink-0">
+            <Avatar className="h-10 w-10 rounded-full" />
           </div>
-          <div className="text-sm font-medium leading-none text-gray-400">
-            515@example.com
+          <div className="ml-3">
+            <div className="text-base font-medium leading-none text-white">
+              { user?.name }
+            </div>
+            <div className="text-sm font-medium leading-none text-gray-400">
+              { user?.email }
+            </div>
           </div>
         </div>
-        <button type="button" className="ml-auto bg-gray-800 flex-shrink-0 p-1 text-gray-400 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-          <span className="sr-only">
-            View notifications
-          </span>
-        </button>
-      </div>
-      <div className="mt-3 px-2 space-y-1">
-        {menuItems.map((menuItem, loopIndex) => {
+      ) }
+      <div className="px-2 space-y-1">
+        { menuItems.map((menuItem, loopIndex) => {
           const className = menuItem.url === location.pathname
             ? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
             : 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium';
@@ -98,7 +120,7 @@ function MobileUserMenu() {
               {menuItem.name}
             </Link>
           );
-        })}
+        }) }
       </div>
     </div>
   );

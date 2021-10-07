@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import LoadingIcon from './../components/LoadingIcon';
 import { grades } from './../enums';
 import { API } from './../api';
-import { useAlerts, useLoadingMonitor } from './../hooks';
+import { useAlerts, useAuth, useLoadingMonitor } from './../hooks';
 import RegisterForm from './RegisterForm';
 
 import Input from './../components/Input';
@@ -24,7 +23,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
 
     const [gradeOptions] = useState(grades.BOULDER.V);
 
-    const user = useSelector(state => state.auth.user);
+    const { user } = useAuth();
 
     const validationSchema = Yup.object().shape({
         grade: Yup.string(),

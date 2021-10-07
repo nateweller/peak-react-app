@@ -1,19 +1,16 @@
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { API } from './../api';
-import { setUser } from './../redux-store';
-import { useAlerts } from './../hooks';
+import { useAlerts, useAuth } from './../hooks';
 
 import Button from './../components/Button';
 import Input from './../components/Input';
 
 function LoginForm() {
 
-    const dispatch = useDispatch();
-
     const alerts = useAlerts();
+
+    const { signIn } = useAuth();
 
     const initialValues = {
         email: '',
@@ -25,17 +22,13 @@ function LoginForm() {
         password: Yup.string().required('Password is required.')
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
-        API.post('login', values)
-            .then((response) => {
-                localStorage.setItem('token', response.data.token);
-                dispatch(setUser({ ...response.data.user, token: response.data.token }));
-            })
+    const onSubmit = ({ email, password }, { setSubmitting }) => {
+        signIn(email, password)
             .catch((error) => {
                 alerts.replace({
                     type: 'danger',
                     message: error?.response?.data?.message || error?.message || 'Error'
-                })
+                });
                 setSubmitting(false);
             });
     };
@@ -44,7 +37,11 @@ function LoginForm() {
         <>
             { alerts.render() }
 
-            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+            <Formik 
+                initialValues={ initialValues } 
+                validationSchema={ validationSchema } 
+                onSubmit={ onSubmit }
+            >
                 {({ isSubmitting }) => (
                     <Form className="space-y-6">
 

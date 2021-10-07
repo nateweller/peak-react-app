@@ -9,7 +9,7 @@ function Dialog(props) {
         <div className={ `${ isOpen ? 'fixed' : 'hidden' } z-10 inset-0 overflow-y-auto` } aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div className="flex items-end justify-center min-h-screen p-4 text-center bg-gray-900 bg-opacity-75 sm:block sm:p-0">
                 <OutsideClickHandler onOutsideClick={ () => setIsOpen(false) } >
-                    <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all w-full sm:my-8 sm:align-middle sm:max-w-lg sm:p-6">
+                    <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transition-all w-full sm:my-8 sm:align-middle sm:max-w-lg sm:p-6">
                         <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                             <button 
                                 type="button" 

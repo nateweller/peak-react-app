@@ -1,18 +1,15 @@
-import { useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { setUser } from './../redux-store';
-import { useAlerts } from './../hooks';
-import { API } from './../api';
+import { useAlerts, useAuth } from './../hooks';
 
 import Input from './../components/Input';
 import Button from './../components/Button';
 
 function RegisterForm() {
 
-    const dispatch = useDispatch();
-
     const alerts = useAlerts();
+
+    const { signUp } = useAuth();
 
     const initialValues = {
         name: '',
@@ -28,16 +25,12 @@ function RegisterForm() {
         password_confirmation: Yup.string().required('Confirm Password is required.')
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
-        API.post('register', values)
-            .then((response) => {
-                localStorage.setItem('token', response.data.token);
-                dispatch(setUser({ ...response.data.user, token: response.data.token }));
-            })
-            .catch((error) => {
+    const onSubmit = ({ name, email, password, password_confirmation: passwordConfirmation}, { setSubmitting }) => {
+        signUp(name, email, password, passwordConfirmation)
+            .catch((errorMessage) => {
                 alerts.replace({
                     type: 'danger',
-                    message: error?.response?.data?.message || 'Error',
+                    message: errorMessage,
                     isDismissable: true
                 });
                 setSubmitting(false);

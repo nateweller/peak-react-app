@@ -24,7 +24,7 @@ function ScanPage() {
         return () => {
             BarcodeScanner.showBackground();
             BarcodeScanner.stopScan();
-        }
+        };
     }, []);
 
     if (scanResult && scanResult.indexOf(process.env.REACT_APP_URL) >= 0) {

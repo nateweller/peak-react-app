@@ -1,10 +1,9 @@
 import { Route, Redirect } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useAuth } from './../hooks';
 
 function AuthRoute({ component: Component, ...rest }) {
 
-    // to do: user permission levels
-    const user = useSelector(state => state.auth.user);
+    const { user } = useAuth();
 
     return (
         <Route 

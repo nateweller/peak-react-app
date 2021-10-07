@@ -1,7 +1,6 @@
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { API } from './../api';
-import { useAlerts } from './../hooks';
+import { useAlerts, useAuth } from './../hooks';
 
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -9,6 +8,8 @@ import Button from '../components/Button';
 function ForgotPasswordForm() {
 
     const alerts = useAlerts();
+
+    const { sendPasswordReset } = useAuth();
 
     const initialValues = {
         email: ''
@@ -18,8 +19,8 @@ function ForgotPasswordForm() {
         email: Yup.string().email('Invalid email address.').required('Email address is required.')
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
-        API.post('forgot', values)
+    const onSubmit = ({ email }, { setSubmitting }) => {
+        sendPasswordReset(email)
             .then((response) => {
                 alerts.replace({
                     type: 'success',

@@ -1,15 +1,13 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../../redux-store';
+import { useAuth } from './../../hooks';
 
 function LogoutPage() {
 
-    const dispatch = useDispatch();
+    const { signOut } = useAuth();
 
     useEffect(() => {
-        localStorage.removeItem('token');
-        dispatch(setUser(null));
-    }, [dispatch]);
+        signOut();
+    }, [signOut]);
 
     return null;
 }

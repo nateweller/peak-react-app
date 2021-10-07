@@ -65,7 +65,7 @@ function useForm(config = {}) {
             .catch((error) => {
                 // add the error message to the form alerts
                 alerts.add({
-                    message: error?.data?.message || error?.message || 'Unknown Error',
+                    message: error?.response?.data?.message || error?.message || 'Unknown Error',
                     type: 'danger',
                     isDismissable: true
                 });

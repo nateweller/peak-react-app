@@ -1,63 +1,78 @@
+import { useContext } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { API } from './../api';
-import { useAlerts, useDataStore, useDataStoreItem } from './../hooks';
+import { useAlerts, useForm, useDataStore, useDataStoreItem } from './../hooks';
+import { disciplines } from '../enums';
+import { OrganizationContext } from './../providers/OrganizationProvider';
 
 import Button from './../components/Button';
 import Input from './../components/Input';
+import Select from './../components/Select';
 import LoadingIcon from './../components/LoadingIcon';
+import GradesInput from '../components/GradesInput';
 
 function GradingSystemForm(props) {
     
     const { 
-        gradingSystemId = 'new',
-        afterSubmit = () => {}
+        id = 'new',
+        onSuccess = () => {}
     } = props;
 
     const alerts = useAlerts();
 
+    const form = useForm({
+        id,
+        apiCommand: 'grading_systems',
+        onSuccess
+    });
+
     const dataStore = useDataStore();
 
-    const isNew = ! parseInt(gradingSystemId);
+    const isNew = ! parseInt(id);
 
-    const { useData: gradingSystem } = useDataStoreItem(isNew ? undefined : `grading_system/${gradingSystemId}`)
+    const { organization } = useContext(OrganizationContext);
+
+    const { useData: gradingSystem } = useDataStoreItem(isNew ? undefined : `grading_system/${id}`)
 
     const initialValues = {
-        name: gradingSystem?.name || ''
+        name: gradingSystem?.name || '',
+        organization_id: organization?.id || ''
     };
 
     const validationSchema = Yup.object().shape({
+        organization_id: Yup.number().required('Organization ID is required.'),
         name: Yup.string().required('System name is required.')
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
-        API.upsert('grading_systems', gradingSystemId, values)
-            .then((response) => {
-                if (response?.data?.id) {
-                    dataStore.set(`grading_systems/${response.data.id}`, response.data);
-                }
+    // const onSubmit = (values, { setSubmitting }) => {
+    //     API.upsert('grading_systems', id, { ...values, organization_id: organization.id })
+    //         .then((response) => {
+    //             if (response?.data?.id) {
+    //                 dataStore.set(`grading_systems/${response.data.id}`, response.data);
+    //             }
 
-                alerts.replace({
-                    message: 'Organization updated.',
-                    type: 'success',
-                    isDismissable: true
-                });
+    //             alerts.replace({
+    //                 message: 'Organization updated.',
+    //                 type: 'success',
+    //                 isDismissable: true
+    //             });
                 
-                setSubmitting(false);
+    //             setSubmitting(false);
 
-                if (typeof afterSubmit === 'function') {
-                    afterSubmit(response);
-                }
-            })
-            .catch((error) => {
-                alerts.add({
-                    message: API.getErrorMessage(error),
-                    type: 'danger',
-                    isDismissable: true
-                });
-                setSubmitting(false);
-            });
-    };
+    //             if (typeof afterSubmit === 'function') {
+    //                 afterSubmit(response);
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             alerts.add({
+    //                 message: API.getErrorMessage(error),
+    //                 type: 'danger',
+    //                 isDismissable: true
+    //             });
+    //             setSubmitting(false);
+    //         });
+    // };
 
     if (! isNew && gradingSystem === undefined) {
         return (
@@ -67,19 +82,44 @@ function GradingSystemForm(props) {
 
     return (
         <>
-            { alerts.render('mb-4') }
+            { form.alerts.render() }
 
-            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+            <Formik 
+                initialValues={ initialValues } 
+                validationSchema={ validationSchema } 
+                onSubmit={ form.onSubmit }
+            >
                 {({ isSubmitting }) => (
-                    <Form id="grading-system-form">
+                    <Form id="grading-system-form" className="space-y-6">
+
+                        <Input 
+                            type="hidden"
+                            name="organization_id"
+                        />
                         
-                        <div className="mb-3">
+                        <div>
                             <Input
                                 type="text" 
                                 name="name" 
                                 label="System Name"
                                 required
                             />
+                        </div>
+
+                        <div>
+                            { /** @todo this could be a multi-select, i.e. Top Rope and Lead might share a grading system */}
+                            <Select
+                                name="discipline"
+                                label="Discipline"
+                                options={ Object.keys(disciplines).map((disciplineKey) => ({
+                                    label: disciplines[disciplineKey],
+                                    value: disciplineKey
+                                })) }
+                            />
+                        </div>
+
+                        <div>
+                            <GradesInput />
                         </div>
 
                         <Button type="submit" isLoading={ isSubmitting }>

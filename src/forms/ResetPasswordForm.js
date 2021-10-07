@@ -1,7 +1,6 @@
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { API } from './../api';
-import { useAlerts } from './../hooks';
+import { useAlerts, useAuth } from './../hooks';
 
 import Input from './../components/Input';
 import Button from './../components/Button';
@@ -11,6 +10,8 @@ function ResetPasswordForm(props) {
     const { token } = props;
 
     const alerts = useAlerts();
+
+    const { resetPassword } = useAuth();
 
     const initialValues = {
         password: '',
@@ -22,8 +23,8 @@ function ResetPasswordForm(props) {
         password_confirmation: Yup.string().required('Confirm Password is required.')
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
-        API.post('reset', { ...values, token })
+    const onSubmit = ({ password, password_confirmation: passwordConfirmation }, { setSubmitting }) => {
+        resetPassword(password, passwordConfirmation, token)
             .then((response) => {
                 alerts.replace({
                     type: 'success',

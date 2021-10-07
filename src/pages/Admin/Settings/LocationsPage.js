@@ -32,6 +32,7 @@ function LocationsPage() {
                 </div>
 
                 <Table
+                    isLoading={ locationsData === undefined }
                     data={ locationsData && locationsData.map(locationData => ([
                         {
                             label: 'Location',
