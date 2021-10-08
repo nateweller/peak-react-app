@@ -41,7 +41,7 @@ const GradeOptions = (props) => {
                                             className="flex items-center shadow-sm w-full sm:text-sm border border-gray-300 bg-white rounded-md px-3 py-2 mb-2"
                                         >
                                             <div className="flex-1">
-                                                { grade }
+                                                { grade.name }
                                             </div>
                                             <div {...provided.dragHandleProps}>
                                                 <MenuAlt4Icon className="w-4 h-4 cursor-move" />
@@ -71,9 +71,9 @@ const GradeOptions = (props) => {
                             if (e.charCode === 13) {
                                 e.preventDefault();
                                 if (value) {
-                                    setValue([ ...value, newGradeName ]);
+                                    setValue([ ...value, { name: newGradeName } ]);
                                 } else {
-                                    setValue([newGradeName]);
+                                    setValue([{ name: newGradeName }]);
                                 }
                                 setNewGradeName('');
                             }
@@ -84,9 +84,9 @@ const GradeOptions = (props) => {
                     <Button 
                         onClick={ () => {
                             if (value) {
-                                setValue([ ...value, newGradeName ]);
+                                setValue([ ...value, { name: newGradeName } ]);
                             } else {
-                                setValue([newGradeName]);
+                                setValue([{ name: newGradeName }]);
                             }
                             setNewGradeName('');
                         } }
@@ -99,7 +99,7 @@ const GradeOptions = (props) => {
     );
 };
 
-function GradesInput(props) {
+function GradesInput() {
 
     // eslint-disable-next-line
     const [field, meta, helpers] = useField('grades');

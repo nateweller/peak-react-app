@@ -36,6 +36,8 @@ function GradingSystemsPage() {
                     </div>
                 </div>
 
+                { alerts.render('mb-4') }
+
                 <Table
                     isLoading={ gradingSystemsData === undefined }
                     data={ gradingSystemsData && gradingSystemsData.map(gradingSystemData => ([
@@ -85,16 +87,17 @@ function GradingSystemsPage() {
 
             <Dialog isOpen={addEditId} setIsOpen={setAddEditId}>
                 <GradingSystemForm 
-                    id={addEditId} 
-                    key={String(addEditId)}
-                    onSuccess={() => {
+                    id={ addEditId !== 'new' ? addEditId : null } 
+                    key={ String(addEditId) }
+                    onSuccess={ () => {
                         dataStore.get('grading_systems');
                         setAddEditId(null);
                         alerts.replace({
                             type: 'success',
-                            message: 'Grading system saved.'
+                            message: 'Grading system saved.',
+                            isDismissable: true
                         });
-                    }} 
+                    } } 
                 />
             </Dialog>
         </>

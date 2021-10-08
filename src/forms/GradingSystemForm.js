@@ -1,8 +1,7 @@
 import { useContext } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { API } from './../api';
-import { useAlerts, useForm, useDataStore, useDataStoreItem } from './../hooks';
+import { useForm, useDataStoreItem } from './../hooks';
 import { disciplines } from '../enums';
 import { OrganizationContext } from './../providers/OrganizationProvider';
 
@@ -15,11 +14,9 @@ import GradesInput from '../components/GradesInput';
 function GradingSystemForm(props) {
     
     const { 
-        id = 'new',
+        id = null,
         onSuccess = () => {}
     } = props;
-
-    const alerts = useAlerts();
 
     const form = useForm({
         id,
@@ -27,52 +24,25 @@ function GradingSystemForm(props) {
         onSuccess
     });
 
-    const dataStore = useDataStore();
-
     const isNew = ! parseInt(id);
 
     const { organization } = useContext(OrganizationContext);
 
-    const { useData: gradingSystem } = useDataStoreItem(isNew ? undefined : `grading_system/${id}`)
+    const { useData: gradingSystem } = useDataStoreItem(isNew ? undefined : `grading_systems/${id}`)
 
     const initialValues = {
         name: gradingSystem?.name || '',
-        organization_id: organization?.id || ''
+        discipline: gradingSystem?.discipline || '',
+        organization_id: organization?.id || '',
+        grades: gradingSystem?.grades || []
     };
 
     const validationSchema = Yup.object().shape({
         organization_id: Yup.number().required('Organization ID is required.'),
-        name: Yup.string().required('System name is required.')
+        name: Yup.string().required('System name is required.'),
+        discipline: Yup.string(),
+        grades: Yup.array()
     });
-
-    // const onSubmit = (values, { setSubmitting }) => {
-    //     API.upsert('grading_systems', id, { ...values, organization_id: organization.id })
-    //         .then((response) => {
-    //             if (response?.data?.id) {
-    //                 dataStore.set(`grading_systems/${response.data.id}`, response.data);
-    //             }
-
-    //             alerts.replace({
-    //                 message: 'Organization updated.',
-    //                 type: 'success',
-    //                 isDismissable: true
-    //             });
-                
-    //             setSubmitting(false);
-
-    //             if (typeof afterSubmit === 'function') {
-    //                 afterSubmit(response);
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             alerts.add({
-    //                 message: API.getErrorMessage(error),
-    //                 type: 'danger',
-    //                 isDismissable: true
-    //             });
-    //             setSubmitting(false);
-    //         });
-    // };
 
     if (! isNew && gradingSystem === undefined) {
         return (
