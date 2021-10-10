@@ -1,28 +1,30 @@
 import LoadingIcon from "./LoadingIcon";
+import { ArrowRightIcon } from "@heroicons/react/solid";
 
 function Table(props) {
 
     const {
         data,
         emptyContent,
-        isLoading
+        isLoading,
+        onRowClick = () => {}
     } = props;
 
     const renderTableHead = () => {
-        if (! data || ! data.length) {
+        if (! data || ! data[0].columns || ! data[0].columns.length) {
             return null;
         }
 
         return (
             <thead className="bg-gray-50">
                 <tr>
-                    {Boolean(data[0]) ? data[0].map((dataRow, loopIndex) => (
+                    {(data[0] && data[0].columns) ? data[0].columns.map((dataColumn, loopIndex) => (
                         <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             key={ loopIndex }
                         >
-                            { dataRow.label }
+                            { dataColumn.label }
                         </th>
                     )) : null }
                     <th className="p-3 flex justify-end align-items-center">
@@ -61,18 +63,22 @@ function Table(props) {
                                 ) }
 
                                 {Boolean(data?.length) && data.map((dataRow, loopIndex) => (
-                                    <tr key={ loopIndex }>
-                                        {dataRow.map((dataColumn, columnLoopIndex) => (
+                                    <tr key={ loopIndex } onClick={dataRow.onClick} className="group hover:bg-gray-50 cursor-pointer">
+                                        {dataRow.columns.map((dataColumn, columnLoopIndex) => (
                                             <td 
                                                 className="px-6 py-4 whitespace-nowrap"
                                                 key={ columnLoopIndex }
-                                                colSpan={ columnLoopIndex === dataRow.length - 1 ? 2 : 1 }
+                                                colSpan={ columnLoopIndex === dataRow.length - 1 ? 2 : 1 }                                            
                                             >
                                                 { dataColumn.value }
                                             </td>
                                         ))}
+                                        <td>
+                                            <ArrowRightIcon className="w-4 text-gray-300 opacity-0 group-hover:opacity-100" />
+                                        </td>
                                     </tr>
                                 ))}
+
                             </tbody>
                         </table>
                     </div>

@@ -33,26 +33,28 @@ function LocationsPage() {
 
                 <Table
                     isLoading={ locationsData === undefined }
-                    data={ locationsData && locationsData.map(locationData => ([
-                        {
-                            label: 'Location',
-                            value: (
-                                <span className="text-sm">
-                                    { locationData.name }
-                                </span>
-                            )
-                        },
-                        {
-                            label: '',
-                            value: (
-                                <div className="text-right">
-                                    <Button onClick={ () => setAddEditId(locationData.id) }>
-                                        Edit
-                                    </Button>
-                                </div>
-                            )
-                        }
-                    ]))}
+                    data={ locationsData && locationsData.map(locationData => ({
+                        columns: [
+                            {
+                                label: 'Location',
+                                value: (
+                                    <span className="text-sm">
+                                        { locationData.name }
+                                    </span>
+                                )
+                            },
+                            {
+                                label: '',
+                                value: (
+                                    <div className="text-right">
+                                        <Button onClick={ () => setAddEditId(locationData.id) }>
+                                            Edit
+                                        </Button>
+                                    </div>
+                                )
+                            }
+                        ]
+                    }))}
                 />
 
             </AdminSettingsLayout>

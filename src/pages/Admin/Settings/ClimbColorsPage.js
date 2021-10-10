@@ -20,24 +20,26 @@ function ClimbColorsPage() {
     const getColorsTableData = () => {
         if (! colorsData || ! colorsData.length) return colorsData;
 
-        return colorsData.map(colorData => [
-            {
-                label: 'Color',
-                value: (
-                    <span className="text-sm">
-                        { colorData.name }
-                    </span>
-                )
-            },
-            {
-                label: '',
-                value: (
-                    <div className="text-right">
-                        <Button onClick={ () => setAddEditId(colorData.id) }>Edit</Button>
-                    </div>
-                )
-            }
-        ]);
+        return colorsData.map(colorData => ({
+            columns: [
+                {
+                    label: 'Color',
+                    value: (
+                        <span className="text-sm">
+                            { colorData.name }
+                        </span>
+                    )
+                },
+                {
+                    label: '',
+                    value: (
+                        <div className="text-right">
+                            <Button onClick={ () => setAddEditId(colorData.id) }>Edit</Button>
+                        </div>
+                    )
+                }
+            ]
+        }));
     };
 
     return (

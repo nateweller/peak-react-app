@@ -40,48 +40,50 @@ function ClimbsPage() {
         return (
             <Table 
                 data={climbs.reduce((data, climb) => {
-                    data.push([
-                        {
-                            label: 'Climb',
-                            value: (
-                                <Link 
-                                    to={`/admin/climbs/${climb.id}`} 
-                                    className="list-group-item list-group-item-action text-sm" 
-                                >
-                                    { climb.name }
-                                </Link>
-                            )
-                        },
-                        {
-                            label: 'Discipline',
-                            value: <span className="text-sm">{ climb?.discipline }</span>
-                        },
-                        {
-                            label: 'Color',
-                            value: <span className="text-sm">{ climb?.color?.name }</span>
-                        },
-                        {
-                            label: 'Grade',
-                            value: <span className="text-sm">{ climb?.grade?.name }</span>
-                        },
-                        {
-                            label: 'Sends',
-                            value: <span className="text-sm">{ climb.send_count }</span>
-                        },
-                        {
-                            label: '',
-                            value: (
-                                <div className="text-right text-sm font-medium">
-                                    <Button use={ Link } to={ `/admin/climbs/${climb.id}` } className="mr-2">
-                                        View
-                                    </Button>
-                                    <Button use={ Link } to={ `/admin/climbs/${climb.id}/edit` }>
-                                        Edit
-                                    </Button>
-                                </div>
-                            )
-                        }
-                    ]);
+                    data.push({
+                        columns: [
+                            {
+                                label: 'Climb',
+                                value: (
+                                    <Link 
+                                        to={`/admin/climbs/${climb.id}`} 
+                                        className="list-group-item list-group-item-action text-sm" 
+                                    >
+                                        { climb.name }
+                                    </Link>
+                                )
+                            },
+                            {
+                                label: 'Discipline',
+                                value: <span className="text-sm">{ climb?.discipline }</span>
+                            },
+                            {
+                                label: 'Color',
+                                value: <span className="text-sm">{ climb?.color?.name }</span>
+                            },
+                            {
+                                label: 'Grade',
+                                value: <span className="text-sm">{ climb?.grade?.name }</span>
+                            },
+                            {
+                                label: 'Sends',
+                                value: <span className="text-sm">{ climb.send_count }</span>
+                            },
+                            {
+                                label: '',
+                                value: (
+                                    <div className="text-right text-sm font-medium">
+                                        <Button use={ Link } to={ `/admin/climbs/${climb.id}` } className="mr-2">
+                                            View
+                                        </Button>
+                                        <Button use={ Link } to={ `/admin/climbs/${climb.id}/edit` }>
+                                            Edit
+                                        </Button>
+                                    </div>
+                                )
+                            }
+                        ]
+                    });
                     return data;
                 }, [])}
             />

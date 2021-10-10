@@ -40,26 +40,28 @@ function GradingSystemsPage() {
 
                 <Table
                     isLoading={ gradingSystemsData === undefined }
-                    data={ gradingSystemsData && gradingSystemsData.map(gradingSystemData => ([
-                        {
-                            label: 'System',
-                            value: (
-                                <span className="text-sm">
-                                    { gradingSystemData.name }
-                                </span>
-                            )
-                        },
-                        {
-                            label: '',
-                            value: (
-                                <div className="text-right">
-                                    <Button onClick={ () => setAddEditId(gradingSystemData.id) }>
-                                        Edit
-                                    </Button>
-                                </div>
-                            )
-                        }
-                    ]))}
+                    data={ gradingSystemsData && gradingSystemsData.map(gradingSystemData => ({
+                        columns: [
+                            {
+                                label: 'System',
+                                value: (
+                                    <span className="text-sm">
+                                        { gradingSystemData.name }
+                                    </span>
+                                )
+                            },
+                            {
+                                label: '',
+                                value: (
+                                    <div className="text-right">
+                                        <Button onClick={ () => setAddEditId(gradingSystemData.id) }>
+                                            Edit
+                                        </Button>
+                                    </div>
+                                )
+                            }
+                        ]
+                    }))}
                     emptyContent={ (
                         <div className="text-center py-10">
                             <h3 className="mt-2 text-sm font-medium text-gray-900">

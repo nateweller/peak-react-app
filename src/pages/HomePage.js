@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import { useDataStoreItem, useAlerts } from '../hooks';
 import Table from '../components/Table';
@@ -10,6 +10,9 @@ import { useEffect } from 'react';
 function HomePage() {
 
     const alerts = useAlerts();
+    
+    const history = useHistory();
+
     const { useData: data, error, isLoading } = useDataStoreItem('climbs', { useCache: true, alwaysFetch: true });
 
     useEffect(() => {
@@ -50,47 +53,46 @@ function HomePage() {
         return (
             <Table 
                 data={Boolean(data?.length) && data.reduce((data, climbData) => {
-                    data.push([
-                        {
-                            label: 'Climb',
-                            value: (
-                                <Link 
-                                    to={`/climbs/${climbData.id}`} 
-                                    className="list-group-item list-group-item-action text-sm" 
-                                >
-                                    { climbData.name }
-                                </Link>
-                            )
-                        },
-                        {
-                            label: 'Discipline',
-                            value: <span className="text-sm">{ climbData.discipline }</span>
-                        },
-                        {
-                            label: 'Color',
-                            value: <span className="text-sm">{ climbData?.color?.name || 'N/A' }</span>
-                        },
-                        {
-                            label: 'Grade',
-                            value: <span className="text-sm">{ climbData?.grade?.name || 'N/A' }</span>
-                        },
-                        {
-                            label: 'Sends',
-                            value: <span className="text-sm">{ climbData.send_count }</span>
-                        },
-                        {
-                            label: '',
-                            value: (
-                                <div className="text-right text-sm font-medium">
-                                    <Button use={ Link } to={ `/climbs/${climbData.id}` }>
-                                        View
-                                    </Button>
-                                </div>
-                            )
-                        }
-                    ]);
+                    data.push({
+                        onClick: () => history.push(`/climbs/${climbData.id}`),
+                        columns: [
+                            {
+                                label: 'Climb',
+                                value: (
+                                    <Link 
+                                        to={`/climbs/${climbData.id}`} 
+                                        className="list-group-item list-group-item-action text-sm" 
+                                    >
+                                        { climbData.name }
+                                    </Link>
+                                )
+                            },
+                            {
+                                label: 'Grade',
+                                value: <span className="text-sm">{ climbData?.grade?.name || 'N/A' }</span>
+                            },
+                            {
+                                label: 'Color',
+                                value: (
+                                    <div className="flex items-center">
+                                        <div className="w-3 h-3 mr-2 rounded-full bg-gray-200" style={{ backgroundColor: climbData?.color?.color }} />
+                                        <span className="text-sm">{ climbData?.color?.name }</span>
+                                    </div>
+                                )
+                            },
+                            {
+                                label: 'Discipline',
+                                value: <span className="text-sm">{ climbData.discipline }</span>
+                            },
+                            {
+                                label: 'Sends',
+                                value: <span className="text-sm">{ climbData.send_count }</span>
+                            }
+                        ]
+                    });
                     return data;
                 }, [])}
+                onRowClick={(rowItem) => history.push(`/climbs/${rowItem.id}`)}
             />
         )
     };
