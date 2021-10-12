@@ -18,15 +18,15 @@ function ClimbPage(props) {
         return [
             {
                 label: 'Name',
-                value: climbData?.name || ''
+                value: climbData !== undefined ? (climbData?.name || 'Unnamed Climb') : ''
             },
             {
                 label: 'Discipline',
-                value: climbData?.discipline || ''
+                value: climbData !== undefined ? climbData?.discipline || 'Unknown' : ''
             },
             {
                 label: 'Grade',
-                value: climbData?.grade?.name || ''
+                value: climbData !== undefined ? (climbData?.grade?.name || 'Ungraded') : ''
             },
             {
                 label: 'Community Grade',

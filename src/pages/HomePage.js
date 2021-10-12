@@ -1,11 +1,14 @@
+import { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
+import { Formik } from 'formik';
 import { useDataStoreItem, useAlerts } from '../hooks';
+import Select from '../components/Select';
 import Table from '../components/Table';
 import AppLayout from '../layouts/AppLayout';
 import LoadingIcon from '../components/LoadingIcon';
 import Button from '../components/Button';
-import { useEffect } from 'react';
+import ClimbCard from '../components/ClimbCard';
 
 function HomePage() {
 
@@ -13,7 +16,9 @@ function HomePage() {
     
     const history = useHistory();
 
-    const { useData: data, error, isLoading } = useDataStoreItem('climbs', { useCache: true, alwaysFetch: true });
+    const [dataStoreItemKey, setDataStoreItemKey] = useState('climbs');
+
+    const { useData: data, error, isLoading } = useDataStoreItem(dataStoreItemKey, { useCache: true, alwaysFetch: true });
 
     useEffect(() => {
         if (error) {
@@ -45,6 +50,48 @@ function HomePage() {
         </div>
     );
 
+    const filters = (
+        <Formik initialValues={ { sort: 'date' } } onSubmit={() => {}}>
+            { ({setFieldValue}) => (
+                <Select 
+                    name="sort"
+                    label="Sort By"
+                    onChange={(e) => {
+                        console.log('changed', e.target.value);
+                        setDataStoreItemKey(`climbs?sort=${e.target.value}`);
+                        setFieldValue('sort', e.target.value);
+                    } }
+                    options={ [
+                        {
+                            label: 'Date Added',
+                            value: 'date'
+                        },
+                        {
+                            label: 'Grade',
+                            value: 'grade'
+                        }
+                    ] }
+                />
+            )}
+        </Formik>
+    );
+
+    const renderClimbCards = () => {
+        if (data === undefined && isLoading) {
+            return <LoadingIcon isLarge={ true } />;
+        }
+
+        if (! data || ! data.length) {
+            return null;
+        }
+
+        return (
+            <div className="md:hidden flex-col space-y-4">
+                { data.map(climbData => <ClimbCard key={climbData.id} data={climbData} />) }
+            </div>
+        );
+    };
+
     const renderClimbsTable = () => {
         if (data === undefined && isLoading) {
             return <LoadingIcon isLarge={ true } />;
@@ -52,6 +99,7 @@ function HomePage() {
 
         return (
             <Table 
+                className="hidden md:block"
                 data={Boolean(data?.length) && data.reduce((data, climbData) => {
                     data.push({
                         onClick: () => history.push(`/climbs/${climbData.id}`),
@@ -100,6 +148,8 @@ function HomePage() {
     return (
         <AppLayout header={ pageHeader } isBorderless={ true }>
             { alerts.render() }
+            { filters }
+            { renderClimbCards() }
             { renderClimbsTable() }
         </AppLayout>
     );

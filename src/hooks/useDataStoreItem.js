@@ -83,6 +83,11 @@ function useDataStoreItem(key, config = {}) {
                     ...state,
                     useData: action.payload
                 };
+            case 'KEY_CHANGED':
+                return {
+                    ...state,
+                    dataFetched: false
+                };
             case 'ERROR':
                 return {
                     ...state,
@@ -152,6 +157,10 @@ function useDataStoreItem(key, config = {}) {
 
         fetch();
     }, [fetch, shouldFetch]);
+
+    useEffect(() => {
+        dispatch({ type: 'KEY_CHANGED', payload: key });
+    }, [key]);
 
     /**
      * Sync cache updates with state.useData

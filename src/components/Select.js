@@ -6,7 +6,8 @@ function Select(props) {
     const {
         name,
         options,
-        label
+        label,
+        onChange
     } = props;
 
     return (
@@ -27,6 +28,7 @@ function Select(props) {
                         </option>
                     )) 
                 ]}
+                onChange={ onChange }
             />
             <ErrorMessage name={name} component="div" className="mt-2 text-sm text-red-600" id={`${name}-error`} />
         </div>

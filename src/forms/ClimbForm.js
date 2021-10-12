@@ -1,4 +1,4 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import LoadingIcon from './../components/LoadingIcon';
 import { disciplines } from './../enums';
@@ -23,8 +23,7 @@ function ClimbForm(props) {
 
     const { useData: locations } = useDataStoreItem('locations');
 
-    /** @todo select grading system based on discipline */
-    // const { useData: gradeOptions } = useDataStoreItem('grading_grades');
+    const { useData: gradeSystems } = useDataStoreItem('grading_systems');
 
     const initialValues = {
         name: '',
@@ -41,6 +40,29 @@ function ClimbForm(props) {
         color_id: Yup.number().nullable(),
         location_id: Yup.number().required('Location is required.')
     });
+
+    const GradeSelect = () => {
+        const { values } = useFormikContext();
+
+        let gradeOptions = [];
+        if (gradeSystems) {
+            const gradeSystem = gradeSystems.filter(gradeSystem => gradeSystem?.discipline === values.discipline)[0];
+            if (gradeSystem) {
+                gradeOptions = gradeSystem.grades.map(grade => ({
+                    label: grade.name,
+                    value: grade.id
+                }));
+            }
+        }
+
+        return (
+            <Select 
+                name="grade_id"
+                label="Grade"
+                options={gradeOptions}
+            />
+        );
+    };
 
     if (id && form.data === undefined) {
         return <LoadingIcon isLarge={true} />;
@@ -67,16 +89,12 @@ function ClimbForm(props) {
                         <Select 
                             name="discipline"
                             label="Discipline"
-                            options={Object.values(disciplines).map((discipline) => ({ value: discipline, label: discipline }))}
+                            options={Object.keys(disciplines).map((key) => ({ value: key, label: disciplines[key] }))}
                         />
                     </div>
 
                     <div className="mt-4">
-                        <Select 
-                            name="grade_id"
-                            label="Grade"
-                            options={[]}
-                        />
+                        <GradeSelect />
                     </div>
 
                     <div className="mt-4">
