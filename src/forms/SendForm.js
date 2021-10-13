@@ -1,95 +1,45 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import LoadingIcon from './../components/LoadingIcon';
-import { grades } from './../enums';
-import { API } from './../api';
-import { useAlerts, useAuth, useLoadingMonitor } from './../hooks';
+import { useAuth, useDataStoreItem, useForm } from './../hooks';
 import RegisterForm from './RegisterForm';
 
 import Input from './../components/Input';
 import Select from './../components/Select';
 import Button from '../components/Button';
 
-function SendForm({ sendId, climbId, afterSubmit }) {
+function SendForm({ id, climbId, onSuccess }) {
 
-    const alerts = useAlerts();
+    const form = useForm({
+        id,
+        apiCommand: 'sends',
+        onSuccess
+    });
     
-    const isNew = ! parseInt(sendId);
-    
-    const [sendData, setSendData] = useState(undefined);
-
-    const loader = useLoadingMonitor([ sendData ]);
-
-    const [gradeOptions] = useState(grades.BOULDER.V);
+    const { useData: climbData } = useDataStoreItem(`climbs/${climbId}`);
+    const { useData: gradingSystems } = useDataStoreItem('grading_systems');
 
     const { user } = useAuth();
 
+    const getGradeOptions = () => {
+        if (! climbData || ! gradingSystems) return [];
+        
+        const gradesData = gradingSystems.filter(system => system.discipline === climbData.discipline)[0].grades;
+        return gradesData.map(grade => ({ label: grade.name, value: grade.value }));
+    };
+
     const validationSchema = Yup.object().shape({
-        grade: Yup.string(),
+        climb_id: Yup.number().required('Climb ID is required.'),
+        grade_id: Yup.number(),
         rating: Yup.number(),
         feedback: Yup.string()
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
-        if (sendId === 'new') {
-            API.post(`sends`, { ...values, climb_id: climbId })
-                .then((response) => afterSubmit(response))
-                .catch(() => {
-                    alerts.add({
-                        'message': 'Error.',
-                        'type': 'danger',
-                        isDismissable: true
-                    })
-                })
-                .finally(() => {
-                    setSubmitting(false);
-                });
-        } else {
-            API.patch(`sends/${sendId}`, { ...values, climb_id: climbId })
-                .then((response) => afterSubmit(response))
-                .catch(() => alerts.add({
-                    message: 'Error.',
-                    type: 'danger',
-                    isDismissable: true
-                }))
-                .finally(() => {
-                    setSubmitting(false);
-                });
-        }
+    const initialValues = {
+        climb_id: climbId,
+        grade_id: '',
+        rating: '',
+        feedback: ''
     };
-
-    const loadClimbSend = useCallback(() => {
-        API.get(`sends/${sendId}`)
-            .then(response => {
-                setSendData(response.data);
-            })
-            .catch(error => {
-                alerts.add({
-                    message: error.message,
-                    type: 'danger'
-                });
-            });
-    }, [alerts, sendId]);
-
-    useEffect(() => {
-        // set default send data 
-        if (isNew && sendData === undefined) {
-            setSendData({
-                grade: '',
-                rating: '',
-                feedback: ''
-            });
-        }
-        // load send data
-        if (! isNew && sendData === undefined && ! loader.isLoading) {
-            loadClimbSend();
-        }
-    }, [climbId, loader.isLoading, isNew, loadClimbSend, sendData]);
-
-    if (! loader.requirementsLoaded) {
-        return <LoadingIcon isFullScreen={true} />;
-    }
 
     if (! user) {
         return (
@@ -101,26 +51,29 @@ function SendForm({ sendId, climbId, afterSubmit }) {
     }
 
     return (
-        <Formik initialValues={ sendData || {} } validationSchema={ validationSchema } onSubmit={ onSubmit }>
+        <Formik 
+            initialValues={ initialValues } 
+            validationSchema={ validationSchema } 
+            onSubmit={ form.onSubmit }
+        >
             {({ isSubmitting }) => (
                 <Form id="send-form">
 
-                    { alerts.render() }
+                    { form.alerts.render() }
 
-                    {/* <div className="mt-4">
-                        <Select 
+                    <div className="mt-4">
+                        <Input
                             name="climb_id"
-                            label="Climb"
-                            initialValue={ climbId }
-                            options={[]}
+                            type="hidden"
+                            value={ climbId }
                         />
-                    </div> */}
+                    </div>
 
                     <div className="mt-4">
                         <Select
-                            name="grade"
+                            name="grade_id"
                             label="Grade"
-                            options={Object.keys(gradeOptions).map(gradeKey => ({ label: gradeOptions[gradeKey], value: gradeKey }))}
+                            options={ getGradeOptions() }
                         />
                     </div>
 
@@ -129,6 +82,7 @@ function SendForm({ sendId, climbId, afterSubmit }) {
                             name="rating"
                             label="Rating"
                             options={[
+                                { label: '', value: '' },
                                 { label: '5 Stars', value: 5 },
                                 { label: '4 Stars', value: 4 },
                                 { label: '3 Stars', value: 3 },
@@ -150,7 +104,8 @@ function SendForm({ sendId, climbId, afterSubmit }) {
                     <div className="mt-4">
                         <Button 
                             type="submit"
-                            disabled={ isSubmitting }    
+                            disabled={ isSubmitting }  
+                            isLoading={ isSubmitting }  
                         >
                             Submit
                         </Button>

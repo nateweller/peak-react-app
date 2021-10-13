@@ -81,10 +81,13 @@ function GradingSystemForm(props) {
                             <Select
                                 name="discipline"
                                 label="Discipline"
-                                options={ Object.keys(disciplines).map((disciplineKey) => ({
-                                    label: disciplines[disciplineKey],
-                                    value: disciplineKey
-                                })) }
+                                options={ [
+                                    { value: '', label: '' },
+                                    ...Object.keys(disciplines).map((disciplineKey) => ({
+                                        label: disciplines[disciplineKey],
+                                        value: disciplineKey
+                                    })) 
+                                ] }
                             />
                         </div>
 

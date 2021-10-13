@@ -77,9 +77,9 @@ function ClimbPage(props) {
             <Dialog isOpen={ showSendForm } setIsOpen={ setShowSendForm }>
                 <h2 className="text-2xl font-bold mb-8">Log Your Send</h2>
                 <SendForm 
-                    sendId="new" 
+                    // id="new" 
                     climbId={ climbId }
-                    afterSubmit={ () => {
+                    onSuccess={ () => {
                         setShowSendForm(false);
                         dataStore.get(`climbs/${climbId}`);
                     } }

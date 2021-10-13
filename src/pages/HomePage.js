@@ -29,6 +29,11 @@ function HomePage() {
         }
     }, [error, alerts]);
 
+    const getDaysOld = (date1, date2) => {
+        const difference = date1.getTime() - date2.getTime();
+        return Math.ceil(difference / (1000 * 3600 * 24));
+    };
+
     const pageHeader = (
         <div className="md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
@@ -36,49 +41,66 @@ function HomePage() {
                     Explore Climbs
                 </h1>
             </div>
-            <div className="mt-4 flex md:mt-0 md:ml-4">
-                { Capacitor.isNativePlatform() &&
-                    <Button 
-                        use={ Link }
-                        to="/scan"
-                        className="inline-flex items-center" 
-                    >
-                        Scan QR
-                    </Button>
-                }
+            <div className="flex md:mt-0 md:ml-4">
+                
             </div>
         </div>
     );
 
     const filters = (
-        <Formik initialValues={ { sort: 'date' } } onSubmit={() => {}}>
-            { ({setFieldValue}) => (
-                <Select 
-                    name="sort"
-                    label="Sort By"
-                    onChange={(e) => {
-                        console.log('changed', e.target.value);
-                        setDataStoreItemKey(`climbs?sort=${e.target.value}`);
-                        setFieldValue('sort', e.target.value);
-                    } }
-                    options={ [
-                        {
-                            label: 'Date Added',
-                            value: 'date'
-                        },
-                        {
-                            label: 'Grade',
-                            value: 'grade'
-                        }
-                    ] }
-                />
-            )}
-        </Formik>
+        <div className="flex justify-end space-x-4 mb-4">
+            <Formik initialValues={ { sort: 'date' } } onSubmit={() => {}}>
+                { ({setFieldValue}) => (
+                    <div>
+                        <Select 
+                            name="sort"
+                            darkMode={true}
+                            onChange={(e) => {
+                                console.log('changed', e.target.value);
+                                setDataStoreItemKey(`climbs?sort=${e.target.value}`);
+                                setFieldValue('sort', e.target.value);
+                            } }
+                            options={ [
+                                {
+                                    label: 'Most Recent',
+                                    value: 'date_desc'
+                                },
+                                {
+                                    label: 'Oldest',
+                                    value: 'date_asc'
+                                },
+                                {
+                                    label: 'Easiest',
+                                    value: 'grade_asc'
+                                },
+                                {
+                                    label: 'Most Difficult',
+                                    value: 'grade_desc'
+                                }
+                            ] }
+                        />
+                    </div>
+                )}
+            </Formik>
+            { Capacitor.isNativePlatform() && 
+                <Button 
+                    use={ Link }
+                    to="/scan"
+                    className="inline-flex items-center" 
+                >
+                    Scan QR
+                </Button>
+            }
+        </div>
     );
 
     const renderClimbCards = () => {
         if (data === undefined && isLoading) {
-            return <LoadingIcon isLarge={ true } />;
+            return (
+                <div className="md:hidden">
+                    <LoadingIcon isLarge={ true } />
+                </div>
+            );
         }
 
         if (! data || ! data.length) {
@@ -93,53 +115,67 @@ function HomePage() {
     };
 
     const renderClimbsTable = () => {
-        if (data === undefined && isLoading) {
-            return <LoadingIcon isLarge={ true } />;
-        }
+        // if () {
+        //     return (
+        //         <div className="hidden md:block">
+        //             <LoadingIcon isLarge={ true } />
+        //         </div>
+        //     );
+        // }
 
         return (
             <Table 
                 className="hidden md:block"
-                data={Boolean(data?.length) && data.reduce((data, climbData) => {
-                    data.push({
-                        onClick: () => history.push(`/climbs/${climbData.id}`),
-                        columns: [
-                            {
-                                label: 'Climb',
-                                value: (
-                                    <Link 
-                                        to={`/climbs/${climbData.id}`} 
-                                        className="list-group-item list-group-item-action text-sm" 
-                                    >
-                                        { climbData.name }
-                                    </Link>
-                                )
-                            },
-                            {
-                                label: 'Grade',
-                                value: <span className="text-sm">{ climbData?.grade?.name || 'N/A' }</span>
-                            },
-                            {
-                                label: 'Color',
-                                value: (
-                                    <div className="flex items-center">
-                                        <div className="w-3 h-3 mr-2 rounded-full bg-gray-200" style={{ backgroundColor: climbData?.color?.color }} />
-                                        <span className="text-sm">{ climbData?.color?.name }</span>
-                                    </div>
-                                )
-                            },
-                            {
-                                label: 'Discipline',
-                                value: <span className="text-sm">{ climbData.discipline }</span>
-                            },
-                            {
-                                label: 'Sends',
-                                value: <span className="text-sm">{ climbData.send_count }</span>
-                            }
-                        ]
-                    });
-                    return data;
-                }, [])}
+                isLoading={ data === undefined && isLoading }
+                data={ (() => {
+                    if (data === undefined) return data;
+                    if (! data) return null;
+
+                    return data.reduce((data, climbData) => {
+                        data.push({
+                            onClick: () => history.push(`/climbs/${climbData.id}`),
+                            columns: [
+                                {
+                                    label: 'Climb',
+                                    value: (
+                                        <Link 
+                                            to={`/climbs/${climbData.id}`} 
+                                            className="list-group-item list-group-item-action text-sm" 
+                                        >
+                                            { climbData.name }
+                                        </Link>
+                                    )
+                                },
+                                {
+                                    label: 'Grade',
+                                    value: <span className="text-sm">{ climbData?.grade?.name || 'N/A' }</span>
+                                },
+                                {
+                                    label: 'Color',
+                                    value: (
+                                        <div className="flex items-center">
+                                            <div className="w-3 h-3 mr-2 rounded-full bg-gray-200" style={{ backgroundColor: climbData?.color?.color }} />
+                                            <span className="text-sm">{ climbData?.color?.name }</span>
+                                        </div>
+                                    )
+                                },
+                                {
+                                    label: 'Discipline',
+                                    value: <span className="text-sm">{ climbData.discipline }</span>
+                                },
+                                {
+                                    label: 'Sends',
+                                    value: <span className="text-sm">{ climbData.send_count }</span>
+                                },
+                                {
+                                    label: 'Days Old',
+                                    value: <span className="text-sm">{ getDaysOld(new Date(climbData.created_at), new Date()) }</span>
+                                }
+                            ]
+                        });
+                        return data;
+                    }, []);
+                })() }
                 onRowClick={(rowItem) => history.push(`/climbs/${rowItem.id}`)}
             />
         )

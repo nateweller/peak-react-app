@@ -59,7 +59,7 @@ function ClimbForm(props) {
             <Select 
                 name="grade_id"
                 label="Grade"
-                options={gradeOptions}
+                options={[ { value: '', label: '' }, ...gradeOptions ]}
             />
         );
     };
@@ -89,7 +89,10 @@ function ClimbForm(props) {
                         <Select 
                             name="discipline"
                             label="Discipline"
-                            options={Object.keys(disciplines).map((key) => ({ value: key, label: disciplines[key] }))}
+                            options={ [
+                                { name: '', label: '' },
+                                ...Object.keys(disciplines).map((key) => ({ value: key, label: disciplines[key] }))
+                            ] }
                         />
                     </div>
 
@@ -108,7 +111,10 @@ function ClimbForm(props) {
                         <Select 
                             name="location_id"
                             label="Location"
-                            options={locations ? locations.map(location => ({ value: location.id, label: location.name })) : []}
+                            options={ [
+                                { value: '', label: '' },
+                                (locations || []).map(location => ({ value: location.id, label: location.name }))
+                            ] }
                         />
                     </div>
                     
