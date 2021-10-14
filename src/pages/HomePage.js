@@ -9,6 +9,7 @@ import AppLayout from '../layouts/AppLayout';
 import LoadingIcon from '../components/LoadingIcon';
 import Button from '../components/Button';
 import ClimbCard from '../components/ClimbCard';
+import { disciplines } from '../enums';
 
 function HomePage() {
 
@@ -16,7 +17,20 @@ function HomePage() {
     
     const history = useHistory();
 
-    const [dataStoreItemKey, setDataStoreItemKey] = useState('climbs');
+    const [filters, setFilters] = useState({
+        sort: '',
+        discipline: ''
+    });
+    
+    const dataStoreItemKey = Object.keys(filters).reduce((carry, filterKey, loopIndex) => {
+        if (filters[filterKey] !== null) {
+            carry += `${filterKey}=${filters[filterKey]}`;
+            if (loopIndex < Object.keys(filters).length - 1) {
+                carry += '&';
+            }
+        }
+        return carry;
+    }, `climbs?`);
 
     const { useData: data, error, isLoading } = useDataStoreItem(dataStoreItemKey, { useCache: true, alwaysFetch: true });
 
@@ -47,18 +61,30 @@ function HomePage() {
         </div>
     );
 
-    const filters = (
+    const Filters = () => (
         <div className="flex justify-end space-x-4 mb-4">
-            <Formik initialValues={ { sort: 'date' } } onSubmit={() => {}}>
-                { ({setFieldValue}) => (
-                    <div>
+            <Formik initialValues={ { sort: filters.sort, discipline: filters.discipline } } onSubmit={() => {}} >
+                { () => (
+                    <div className="flex space-x-4">
+                        <Select 
+                            name="discipline"
+                            darkMode={ true }
+                            onChange={ (e) => {
+                                setFilters({ ...filters, discipline: e.target.value });
+                            } }
+                            options={ [
+                                { value: '', label: 'All Types' },
+                                ...Object.keys(disciplines).map(disciplineKey => ({
+                                    label: disciplines[disciplineKey],
+                                    value: disciplineKey
+                                })) 
+                            ] }
+                        />
                         <Select 
                             name="sort"
                             darkMode={true}
                             onChange={(e) => {
-                                console.log('changed', e.target.value);
-                                setDataStoreItemKey(`climbs?sort=${e.target.value}`);
-                                setFieldValue('sort', e.target.value);
+                                setFilters({ ...filters, sort: e.target.value });
                             } }
                             options={ [
                                 {
@@ -161,7 +187,7 @@ function HomePage() {
                                 },
                                 {
                                     label: 'Discipline',
-                                    value: <span className="text-sm">{ climbData.discipline }</span>
+                                    value: <span className="text-sm">{ disciplines[climbData.discipline] }</span>
                                 },
                                 {
                                     label: 'Sends',
@@ -184,7 +210,7 @@ function HomePage() {
     return (
         <AppLayout header={ pageHeader } isBorderless={ true }>
             { alerts.render() }
-            { filters }
+            <Filters />
             { renderClimbCards() }
             { renderClimbsTable() }
         </AppLayout>

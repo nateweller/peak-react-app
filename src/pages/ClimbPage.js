@@ -5,6 +5,7 @@ import Dialog from '../components/Dialog';
 import InfoList from '../components/InfoList';
 import Button from '../components/Button';
 import { useDataStore, useDataStoreItem } from '../hooks';
+import { disciplines } from '../enums';
 
 function ClimbPage(props) {
 
@@ -22,7 +23,7 @@ function ClimbPage(props) {
             },
             {
                 label: 'Discipline',
-                value: climbData !== undefined ? climbData?.discipline || 'Unknown' : ''
+                value: climbData !== undefined ? disciplines[climbData?.discipline] || 'Unknown' : ''
             },
             {
                 label: 'Grade',
@@ -44,6 +45,10 @@ function ClimbPage(props) {
             {
                 label: 'Total Sends',
                 value: climbData?.send_count !== undefined ? climbData.send_count : ''
+            },
+            {
+                label: 'Average Rating',
+                value: climbData?.average_rating
             }
         ];
     }

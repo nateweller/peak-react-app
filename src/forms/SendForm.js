@@ -24,7 +24,10 @@ function SendForm({ id, climbId, onSuccess }) {
         if (! climbData || ! gradingSystems) return [];
         
         const gradesData = gradingSystems.filter(system => system.discipline === climbData.discipline)[0].grades;
-        return gradesData.map(grade => ({ label: grade.name, value: grade.value }));
+        return [
+            { value: '', label: '' },
+            ...gradesData.map(grade => ({ label: grade.name, value: grade.value }))
+        ];
     };
 
     const validationSchema = Yup.object().shape({
