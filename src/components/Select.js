@@ -4,11 +4,11 @@ import { Field, ErrorMessage } from 'formik';
 function Select(props) {
 
     const {
+        darkMode = false,
+        label,
         name,
-        options = [],
-        label = null,
-        onChange = null,
-        darkMode = false
+        onChange,
+        options = []
     } = props;
 
     const passProps = {};
@@ -25,7 +25,7 @@ function Select(props) {
                         ${darkMode ? 'text-gray-400' : 'text-gray-700'}`
                     }
                 >
-                    {label}
+                    { label }
                 </label>
             ) }
 
@@ -45,14 +45,14 @@ function Select(props) {
                         </option>
                     )) 
                 }
-                {...passProps}
+                { ...passProps }
             />
 
             <ErrorMessage 
                 name={ name } 
                 component="div" 
                 className="mt-2 text-sm text-red-600" 
-                id={`${name}-error`} 
+                id={ `${name}-error` }
             />
 
         </div>

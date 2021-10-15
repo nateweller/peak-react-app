@@ -4,20 +4,20 @@ import { Field, ErrorMessage } from 'formik';
 function Input(props) {
 
     const { 
-        name, 
-        label, 
-        placeholder, 
-        type, 
-        description, 
-        required, 
-        autoComplete,
-        rows,
         as,
-        use: Use = Field,
-        className,
-        value,
+        autoComplete,
+        className = '',
+        description, 
+        label, 
+        name,
         onChange,
-        onKeyPress
+        onKeyPress,
+        placeholder, 
+        required = false, 
+        rows,
+        type, 
+        use: Use = Field,
+        value
     } = props;
 
     let conditionalProps = {};
@@ -33,38 +33,52 @@ function Input(props) {
             ) }
             <div>
                 <Use
-                    type={type}
-                    name={name}
-                    id={name}
+                    aria-describedby={ `${name}-description` }
+                    as={as}
+                    autoComplete={ autoComplete }
                     className={
                         `shadow-sm focus:ring-indigo-500 focus:border-indigo-500 
                         block w-full sm:text-sm border-gray-300 rounded-md 
                         ${className ? className : ''}`
                     }
-                    placeholder={placeholder || ''}
-                    aria-describedby={`${name}-description`}
-                    autoComplete={autoComplete}
+                    id={ name }
+                    name={ name }
+                    onKeyPress={onKeyPress}
+                    placeholder={ placeholder || '' }
                     required={required}
                     rows={rows}
-                    as={as}
-                    onKeyPress={onKeyPress}
+                    type={ type }
                     {...conditionalProps}
                 />
             </div>
-            <p className="mt-2 text-sm text-gray-500" id={`${name}-description`}>
+            <p className="mt-2 text-sm text-gray-500" id={ `${name}-description` }>
                 {description}
             </p>
-            <ErrorMessage name={name} component="div" className="mt-2 text-sm text-red-600" id={`${name}-error`} />
+            <ErrorMessage 
+                component="div" 
+                className="mt-2 text-sm text-red-600" 
+                name={ name } 
+                id={ `${name}-error` }
+            />
         </div>
     );
 }
 
 Input.propTypes = {
-    name: PropTypes.string.isRequired,
+    as: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+    autoComplete: PropTypes.string,
+    className: PropTypes.string,
+    description: PropTypes.string,
     label: PropTypes.string,
-    type: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    onChange: PropTypes.func,
+    onKeyPress: PropTypes.func,
     placeholder: PropTypes.string,
-    description: PropTypes.string
+    required: PropTypes.bool,
+    rows: PropTypes.number,
+    type: PropTypes.string,
+    use: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default Input;

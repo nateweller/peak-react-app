@@ -4,16 +4,16 @@ import { BiLoaderAlt } from 'react-icons/bi';
 function Button(props) {
 
     const { 
-        className: customClassName, 
-        type, 
-        children, 
-        disabled, 
-        href, 
+        children = null, 
+        className: customClassName = '', 
+        disabled = false, 
         form,
-        use: Use,
-        to,
+        href, 
+        isLoading = false,
         onClick,
-        isLoading
+        to,
+        type = 'button', 
+        use: Use = 'button'
     } = props;
 
     const className = `py-2 px-4 border border-transparent rounded-md shadow-sm 
@@ -23,20 +23,20 @@ function Button(props) {
 
     return (
         <Use
-            type={type || 'button'}
-            className={className}
-            disabled={disabled}
-            form={form}
-            href={href}
-            to={to}
-            onClick={onClick}
+            className={ className }
+            disabled={ disabled }
+            form={ form }
+            href={ href }
+            onClick={ onClick }
+            to={ to }
+            type={ type }
         >
             { children }
-            { isLoading && 
+            { isLoading && (
                 <span className="inline-block ml-2 animate-spin">
                     <BiLoaderAlt className="h-4 w-4 text-indigo-400" />
                 </span>
-            }
+            ) }
         </Use>
     );
 }
@@ -44,13 +44,12 @@ function Button(props) {
 Button.propTypes = {
     className: PropTypes.string,
     disabled: PropTypes.bool,
-    type: PropTypes.string,
-    isLoading: PropTypes.bool
-};
-
-Button.defaultProps = {
-    use: 'button',
-    isLoading: false
+    form: PropTypes.string,
+    href: PropTypes.string,
+    isLoading: PropTypes.bool,
+    onClick: PropTypes.func,
+    to: PropTypes.string,
+    type: PropTypes.string
 };
 
 export default Button;

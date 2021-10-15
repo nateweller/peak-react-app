@@ -68,14 +68,17 @@ function Table(props) {
                                             <td 
                                                 className="px-6 py-4 whitespace-nowrap"
                                                 key={ columnLoopIndex }
-                                                colSpan={ columnLoopIndex === dataRow.length - 1 ? 2 : 1 }                                            
+                                                colSpan={ columnLoopIndex === dataRow.columns.length - 1 && typeof dataRow.onClick !== 'function' ? 2 : 1 }                                            
                                             >
                                                 { dataColumn.value }
                                             </td>
                                         ))}
-                                        <td>
-                                            <ArrowRightIcon className="w-4 text-gray-300 opacity-0 group-hover:opacity-100" />
-                                        </td>
+
+                                        { typeof dataRow.onClick === 'function' && (
+                                            <td>
+                                                <ArrowRightIcon className="w-4 text-gray-300 opacity-0 group-hover:opacity-100" />
+                                            </td>
+                                        ) }
                                     </tr>
                                 ))}
 

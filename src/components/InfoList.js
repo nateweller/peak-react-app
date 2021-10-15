@@ -1,8 +1,12 @@
-import LoadingIcon from "./LoadingIcon";
+import LoadingIcon from './LoadingIcon';
 
 function InfoList(props) {
 
-    const { heading, info } = props;
+    const { 
+        heading = null, 
+        info = null,
+        emptyContent = "No data."
+    } = props;
 
     const renderHeading = () => {
         if (! heading) return null;
@@ -16,13 +20,13 @@ function InfoList(props) {
 
     const renderInfo = () => {
         if (info === undefined) {
-            return <LoadingIcon isLarge={ true } />
+            return <LoadingIcon isLarge={ true } />;
         }
 
         if (! info || ! info.length) {
             return (
                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    No data.
+                    { emptyContent }
                 </div>
             );
         }
@@ -31,7 +35,10 @@ function InfoList(props) {
             <dl>
                 { info.map((info, loopIndex) => (
                     <div 
-                        className={ `${ loopIndex % 2 ? 'bg-gray-50' : 'bg-white' } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`} 
+                        className={ 
+                            `px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 
+                            ${ loopIndex % 2 ? 'bg-gray-50' : 'bg-white' }` 
+                        } 
                         key={ loopIndex }    
                     >
                         <dt className="text-sm font-medium text-gray-500">

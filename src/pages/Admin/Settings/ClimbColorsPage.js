@@ -69,7 +69,7 @@ function ClimbColorsPage() {
 
             </AdminSettingsLayout>
             
-            <Dialog isOpen={ addEditId } setIsOpen={ setAddEditId }>
+            <Dialog isOpen={ Boolean(addEditId) } setIsOpen={ setAddEditId }>
                 <ColorForm 
                     id={ addEditId !== 'new' ? addEditId : null } 
                     key={ String(addEditId) }

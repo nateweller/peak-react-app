@@ -59,7 +59,7 @@ function LocationsPage() {
 
             </AdminSettingsLayout>
 
-            <Dialog isOpen={ addEditId } setIsOpen={ setAddEditId }>
+            <Dialog isOpen={ Boolean(addEditId) } setIsOpen={ setAddEditId }>
                 <LocationForm id={ addEditId !== 'new' ? addEditId : null } />
             </Dialog>
         </>

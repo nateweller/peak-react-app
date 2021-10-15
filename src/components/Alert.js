@@ -1,20 +1,25 @@
 import { useState } from 'react';
-import { CheckCircleIcon, XCircleIcon, InformationCircleIcon, XIcon } from '@heroicons/react/solid';
+import { 
+    CheckCircleIcon, 
+    XCircleIcon, 
+    InformationCircleIcon, 
+    XIcon 
+} from '@heroicons/react/solid';
 
 function Alert(props) {
 
     const { 
         afterDismissed = () => {},
-        children, 
+        children = null, 
         className: customClassName,
-        type = 'info',
-        isDismissable = false
+        isDismissable = false,
+        type = 'info'
     } = props;
 
     const [isDismissed, setIsDismissed] = useState(false);
 
     const getClassName = () => {
-        let className = `rounded-md p-4`;
+        let className = 'rounded-md p-4';
 
         switch (type) {
             case 'success':

@@ -7,7 +7,7 @@ function Avatar(props) {
 
     const { user } = useAuth();
 
-    if (! user) {
+    if (! user || ! user.email) {
         return null;
     }
     

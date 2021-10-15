@@ -1,11 +1,11 @@
 import { useState } from 'react';
+import { PlusIcon } from '@heroicons/react/solid';
 import { useAlerts, useDataStore, useDataStoreItem } from './../../../hooks';
 import AdminSettingsLayout from '../../../layouts/AdminSettingsLayout';
 import GradingSystemForm from '../../../forms/GradingSystemForm';
 import Button from './../../../components/Button';
 import Dialog from '../../../components/Dialog';
 import Table from './../../../components/Table';
-import { PlusIcon } from '@heroicons/react/solid';
 
 function GradingSystemsPage() {
 
@@ -87,7 +87,7 @@ function GradingSystemsPage() {
 
             </AdminSettingsLayout>
 
-            <Dialog isOpen={addEditId} setIsOpen={setAddEditId}>
+            <Dialog isOpen={ Boolean(addEditId) } setIsOpen={setAddEditId}>
                 <GradingSystemForm 
                     id={ addEditId !== 'new' ? addEditId : null } 
                     key={ String(addEditId) }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Field, useField } from 'formik';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { MenuAlt4Icon } from '@heroicons/react/solid';
+import { MenuAlt4Icon, XIcon} from '@heroicons/react/solid';
 // import { useDataStoreItem } from './../hooks';
 import Button from './Button';
 import Input from './Input';
@@ -43,8 +43,16 @@ const GradeOptions = (props) => {
                                             <div className="flex-1">
                                                 { grade.name }
                                             </div>
-                                            <div {...provided.dragHandleProps}>
-                                                <MenuAlt4Icon className="w-4 h-4 cursor-move" />
+                                            <div title="Move" {...provided.dragHandleProps}>
+                                                <MenuAlt4Icon className="w-4 h-4 mr-2 cursor-move" />
+                                            </div>
+                                            <div title="Delete" onClick={() => {
+                                                setValue([
+                                                    ...value.slice(0, loopIndex),
+                                                    ...value.slice(loopIndex + 1)
+                                                ]);
+                                            }}>
+                                                <XIcon className="w-4 h-4 cursor-pointer" />
                                             </div>
                                         </div>
                                     )}

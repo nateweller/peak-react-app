@@ -45,7 +45,7 @@ function HomePage() {
 
     const getDaysOld = (date1, date2) => {
         const difference = date1.getTime() - date2.getTime();
-        return Math.ceil(difference / (1000 * 3600 * 24));
+        return Math.ceil(difference / (1000 * 3600 * 24)) * -1;
     };
 
     const pageHeader = (
@@ -141,14 +141,6 @@ function HomePage() {
     };
 
     const renderClimbsTable = () => {
-        // if () {
-        //     return (
-        //         <div className="hidden md:block">
-        //             <LoadingIcon isLarge={ true } />
-        //         </div>
-        //     );
-        // }
-
         return (
             <Table 
                 className="hidden md:block"
@@ -203,6 +195,9 @@ function HomePage() {
                     }, []);
                 })() }
                 onRowClick={(rowItem) => history.push(`/climbs/${rowItem.id}`)}
+                emptyContent={(
+                    <p className="py-24 text-center">No Results</p>
+                )}
             />
         )
     };

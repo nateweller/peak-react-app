@@ -7,6 +7,7 @@ import { PlusIcon } from '@heroicons/react/solid';
 
 import Table from '../../../components/Table';
 import { useDataStoreItem } from '../../../hooks';
+import { disciplines } from '../../../enums';
 
 function ClimbsPage() {
 
@@ -55,11 +56,16 @@ function ClimbsPage() {
                             },
                             {
                                 label: 'Discipline',
-                                value: <span className="text-sm">{ climb?.discipline }</span>
+                                value: <span className="text-sm">{ disciplines[climb?.discipline] }</span>
                             },
                             {
                                 label: 'Color',
-                                value: <span className="text-sm">{ climb?.color?.name }</span>
+                                value: (
+                                    <div className="flex items-center">
+                                        <div className="w-3 h-3 mr-2 rounded-full bg-gray-200" style={{ backgroundColor: climb?.color?.color }} />
+                                        <span className="text-sm">{ climb?.color?.name }</span>
+                                    </div>
+                                )
                             },
                             {
                                 label: 'Grade',
