@@ -54,9 +54,9 @@ function InfoList(props) {
     }
 
     return (
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div className="bg-white">
             { renderHeading() }
-            <div className="border-t border-gray-200">
+            <div className={ heading ? 'border-t border-gray-200' : ''}>
                 { renderInfo() }
             </div>
         </div>

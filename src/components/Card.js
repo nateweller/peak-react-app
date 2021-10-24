@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 
-function Card(props) {
+export function Card(props) {
 
     const { 
         children = null, 
-        className: customClassName = '', 
+        className: customClassName = '',
         onClick 
     } = props;
 
@@ -16,9 +16,7 @@ function Card(props) {
 
     return (
         <div className={ className } onClick={ onClick }>
-            <div className="px-4 py-3">
-                { children }
-            </div>
+            { children }
         </div>
     );
 }
@@ -28,4 +26,24 @@ Card.propTypes = {
     onClick: PropTypes.func
 };
 
-export default Card;
+export function CardHeader(props) {
+
+    const { children } = props;
+
+    return (
+        <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
+            { children }
+        </div>
+    );
+}
+
+export function CardBody(props) {
+
+    const { children } = props;
+
+    return (
+        <div className="px-4 py-3">
+            { children }
+        </div>
+    );
+}

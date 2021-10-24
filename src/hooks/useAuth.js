@@ -14,6 +14,10 @@ function useAuth() {
             API.get('user')
                 .then(response => {
                     // set user data into state
+                    if (! response?.data) {
+                        reject();
+                    }
+                    
                     dispatch(setUser({ ...user, ...response.data }));
                     resolve();
                 })

@@ -4,6 +4,7 @@ import { useDataStoreItem } from './../../../hooks';
 import AdminLayout from '../../../layouts/AdminLayout';
 import Button from '../../../components/Button';
 import InfoList from './../../../components/InfoList';
+import { Card } from './../../../components/Card';
 
 function ViewClimb(props) {
 
@@ -30,52 +31,54 @@ function ViewClimb(props) {
 
     return (
         <AdminLayout header={pageHeader} isBorderless={ true }>
-            <InfoList
-                isLoading={ climb === undefined }
-                info={[
-                    {
-                        label: 'Name',
-                        value: climb?.name || ''
-                    },
-                    {
-                        label: 'Discipline',
-                        value: climb?.discipline || ''
-                    },
-                    {
-                        label: 'Grade',
-                        value: climb?.grade?.name || ''
-                    },
-                    {
-                        label: 'Color',
-                        value: climb?.color?.name || ''
-                    },
-                    {
-                        label: 'Community Grade',
-                        value: 
-                            climb?.community_grade
-                                ? <>
-                                    { climb?.community_grade?.name } 
-                                    {' '}
-                                    <span className="text-xs text-gray-400">
-                                        ({ climb?.community_grade?.vote_count } votes)
-                                    </span>
-                                  </>
-                                : 'No Votes'
-                    },
-                    {
-                        label: 'Total Sends',
-                        value: climb?.send_count !== undefined ? climb.send_count : ''
-                    },
-                    {
-                        label: 'QR Code',
-                        value: (
-                            <div data-qr={climbURL}>
-                                <QRCode value={climbURL} />
-                            </div>
-                        )
-                    }
-                ]}
-            />
+            <Card>
+                <InfoList
+                    isLoading={ climb === undefined }
+                    info={[
+                        {
+                            label: 'Name',
+                            value: climb?.name || ''
+                        },
+                        {
+                            label: 'Discipline',
+                            value: climb?.discipline || ''
+                        },
+                        {
+                            label: 'Grade',
+                            value: climb?.grade?.name || ''
+                        },
+                        {
+                            label: 'Color',
+                            value: climb?.color?.name || ''
+                        },
+                        {
+                            label: 'Community Grade',
+                            value: 
+                                climb?.community_grade
+                                    ? <>
+                                        { climb?.community_grade?.name } 
+                                        {' '}
+                                        <span className="text-xs text-gray-400">
+                                            ({ climb?.community_grade?.vote_count } votes)
+                                        </span>
+                                    </>
+                                    : 'No Votes'
+                        },
+                        {
+                            label: 'Total Sends',
+                            value: climb?.send_count !== undefined ? climb.send_count : ''
+                        },
+                        {
+                            label: 'QR Code',
+                            value: (
+                                <div data-qr={climbURL}>
+                                    <QRCode value={climbURL} />
+                                </div>
+                            )
+                        }
+                    ]}
+                />
+            </Card>
         </AdminLayout>
     );
 }

@@ -1,4 +1,6 @@
 import AdminLayout from '../../layouts/AdminLayout';
+import GradeDistributionChart from '../../components/GradeDistributionChart';
+import RecentFeedbackWidget from '../../components/RecentFeedbackWidget';
 
 function HomePage() {
     
@@ -10,7 +12,8 @@ function HomePage() {
 
     return (
         <AdminLayout header={pageHeader}>
-            <p>Admin Home</p>
+            <GradeDistributionChart />
+            <RecentFeedbackWidget />
         </AdminLayout>
     );
 }
