@@ -74,6 +74,7 @@ function Alert(props) {
     };
 
     return (
+
         <div className={ getClassName() }>
             <div className="flex">
                 <div className="flex-shrink-0">

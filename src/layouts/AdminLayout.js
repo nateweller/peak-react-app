@@ -128,6 +128,12 @@ function MobileUserMenu() {
 
 function AdminLayout(props) {
 
+  const { 
+    header = null, 
+    children = null, 
+    isBorderless = false 
+  } = props;
+
   const location = useLocation();
   
   const [isOpen, setIsOpen] = useState(false);
@@ -227,15 +233,15 @@ function AdminLayout(props) {
         </nav>
         <header className="py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {props.header}
+            {header}
           </div>
         </header>
       </div>
 
       <main className="-mt-32">
         <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
-          <div className={ `bg-white rounded-lg ${! props.isBorderless ? 'px-5 py-6 sm:px-6 shadow' : ''}` }>
-            {props.children}
+          <div className={ `bg-white rounded-lg ${! isBorderless ? 'px-5 py-6 sm:px-6 shadow' : ''}` }>
+            {children}
           </div>
         </div>
       </main>

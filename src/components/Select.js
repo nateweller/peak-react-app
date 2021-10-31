@@ -4,25 +4,26 @@ import { Field, ErrorMessage } from 'formik';
 function Select(props) {
 
     const {
+        className: customClassName = '',
         darkMode = false,
         label,
         name,
         onChange,
-        options = []
+        options = [],
     } = props;
 
     const passProps = {};
     if (onChange) passProps.onChange = onChange;
 
     return (
-        <div>
+        <div className={ customClassName }>
 
             { label && (
                 <label 
                     htmlFor={ name } 
                     className={ 
                         `block text-sm font-medium mb-1
-                        ${darkMode ? 'text-gray-400' : 'text-gray-700'}`
+                        ${ darkMode ? 'text-gray-400' : 'text-gray-700' }`
                     }
                 >
                     { label }

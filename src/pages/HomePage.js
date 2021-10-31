@@ -13,7 +13,7 @@ import { disciplines } from '../enums';
 
 function HomePage() {
 
-    const alerts = useAlerts();
+    const { add: addAlert, render: renderAlerts } = useAlerts();
     
     const history = useHistory();
 
@@ -36,12 +36,12 @@ function HomePage() {
 
     useEffect(() => {
         if (error) {
-            alerts.replace({
+            addAlert({
                 type: 'danger',
                 message: error?.message || 'Error'
             });
         }
-    }, [error, alerts]);
+    }, [error, addAlert]);
 
     const getDaysOld = (date1, date2) => {
         const difference = date1.getTime() - date2.getTime();
@@ -55,17 +55,20 @@ function HomePage() {
                     Explore Climbs
                 </h1>
             </div>
-            <div className="flex md:mt-0 md:ml-4">
-                
-            </div>
         </div>
     );
 
     const Filters = () => (
-        <div className="flex justify-end space-x-4 mb-4">
-            <Formik initialValues={ { sort: filters.sort, discipline: filters.discipline } } onSubmit={() => {}} >
+        <div className="flex flex-wrap w-full md:justify-end">
+            <Formik 
+                initialValues={ { 
+                    sort: filters.sort, 
+                    discipline: filters.discipline 
+                } } 
+                onSubmit={ () => {} } 
+            >
                 { () => (
-                    <div className="flex space-x-4">
+                    <>
                         <Select 
                             name="discipline"
                             darkMode={ true }
@@ -79,6 +82,7 @@ function HomePage() {
                                     value: disciplineKey
                                 })) 
                             ] }
+                            className="flex-1 mb-4 md:flex-none"
                         />
                         <Select 
                             name="sort"
@@ -104,15 +108,16 @@ function HomePage() {
                                     value: 'grade_desc'
                                 }
                             ] }
+                            className="flex-1 mb-4 ml-4 md:flex-none"
                         />
-                    </div>
+                    </>
                 )}
             </Formik>
-            { Capacitor.isNativePlatform() && 
+            { Capacitor.isNativePlatform() || true && 
                 <Button 
                     use={ Link }
                     to="/scan"
-                    className="inline-flex items-center" 
+                    className="inline-flex items-center w-full mb-4 md:w-auto md:ml-4" 
                 >
                     Scan QR
                 </Button>
@@ -204,7 +209,7 @@ function HomePage() {
 
     return (
         <AppLayout header={ pageHeader } isBorderless={ true }>
-            { alerts.render() }
+            { renderAlerts() }
             <Filters />
             { renderClimbCards() }
             { renderClimbsTable() }

@@ -70,6 +70,7 @@ function App(props) {
       if (user && user.token && !user.id) {
         // user data missing in state
         initializeCurrentUser()
+          .catch(() => {})
           .finally(() => {
             setUserLoaded(true);
           });
