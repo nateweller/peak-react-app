@@ -18,7 +18,7 @@ function HomePage() {
     const history = useHistory();
 
     const [filters, setFilters] = useState({
-        sort: '',
+        sort: 'date_desc',
         discipline: ''
     });
     

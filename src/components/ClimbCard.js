@@ -3,6 +3,7 @@ import invert from 'invert-color';
 import { BiStar } from 'react-icons/bi';
 import { IoPeopleCircleOutline } from 'react-icons/io5';
 import { Card, CardBody, CardHeader } from './Card';
+import { hexToRgb, getContrastTextColor } from '../utils';
 
 function ClimbCard(props) {
 
@@ -19,11 +20,12 @@ function ClimbCard(props) {
                             className="h-6 px-2 rounded-lg text-sm bg-gray-300 flex items-center" 
                             style={ { 
                                 backgroundColor: data?.color?.color, 
-                                color: invert(data?.color?.color, true),
+                                // color: invert(data?.color?.color, true),
+                                color: getContrastTextColor(hexToRgb(data?.color?.color)),
                                 minWidth: '1.5rem'
                             } }
                         >
-                            <span>
+                            <span className="font-semibold">
                                 { data?.grade?.name }
                             </span>
                         </div>

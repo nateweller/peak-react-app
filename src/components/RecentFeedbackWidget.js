@@ -12,7 +12,7 @@ function RecentFeedbackWidget() {
         
         if (! feedbackList || ! feedbackList.length) {
             return (
-                <p>No results.</p>
+                <p className="text-center p-8">No results.</p>
             );
         }
 
