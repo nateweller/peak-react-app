@@ -22,8 +22,6 @@ function useAlerts() {
         dispatch({ type: 'ADD', payload: alert });
     }, []);
 
-    console.log('useAlerts() re-renders');
-
     return {
         add,
         replace: (alert) => dispatch({ type: 'REPLACE', payload: alert }),

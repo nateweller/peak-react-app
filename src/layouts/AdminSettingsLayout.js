@@ -13,8 +13,12 @@ function SettingsNavigation() {
             label: 'Locations'
         },
         {
+            url: '/admin/settings/walls',
+            label: 'Walls'
+        },
+        {
             url: '/admin/settings/grading',
-            label: 'Grading System'
+            label: 'Grading Systems'
         },
         {
             url: '/admin/settings/colors',

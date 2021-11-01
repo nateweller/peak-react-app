@@ -1,5 +1,8 @@
 import { useHistory } from 'react-router';
-import { Card, CardBody } from './Card';
+import invert from 'invert-color';
+import { BiStar } from 'react-icons/bi';
+import { IoPeopleCircleOutline } from 'react-icons/io5';
+import { Card, CardBody, CardHeader } from './Card';
 
 function ClimbCard(props) {
 
@@ -9,34 +12,38 @@ function ClimbCard(props) {
 
     return (
         <Card className={className} onClick={() => history.push(`/climbs/${data.id}`)}>
-            <CardBody>
-                <h2 className="font-semibold text-lg mb-2">
-                    {data.name}
+            <CardHeader>
+                <h2 className="text-lg flex space-x-2 items-center">
+                    { Boolean(data.color) && (
+                        <div 
+                            className="h-6 px-2 rounded-lg text-sm bg-gray-300 flex items-center" 
+                            style={ { 
+                                backgroundColor: data?.color?.color, 
+                                color: invert(data?.color?.color, true),
+                                minWidth: '1.5rem'
+                            } }
+                        >
+                            <span>
+                                { data?.grade?.name }
+                            </span>
+                        </div>
+                    ) }
+                    
+                    <span>
+                        { data.name }
+                    </span>
                 </h2>
-                <div className="flex space-x-8 text-sm">
-
-                    {Boolean(data.grade) && (
-                        <div>
-                            {data.grade.name}
-                        </div>
-                    )}
-
-                    {Boolean(data.color) && (
-                        <div>
-                            <div className="flex items-center">
-                                <div className="h-3 w-3 mr-2 rounded-full bg-gray-300" style={{ backgroundColor: data?.color?.color }} />
-                                <span>
-                                    { data?.color?.name }
-                                </span>
-                            </div>
-                        </div>
-                    )}
-
-                    {Boolean(data.discipline) && (
-                        <div>
-                            {data.discipline}
-                        </div>
-                    )}
+            </CardHeader>
+            <CardBody>
+                <div className="flex text-xs text-gray-600">
+                    <span className="flex-1">
+                        <IoPeopleCircleOutline className="inline-block mr-2 text-lg -mt-0.5" />
+                        {data?.send_count || 0} Sends Logged
+                    </span>
+                    <span className="flex-1">
+                        <BiStar className="inline-block mr-2 text-lg -mt-0.5" />
+                        {data?.average_rating} / 5 Stars
+                    </span>
                 </div>
             </CardBody>
         </Card>

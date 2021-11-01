@@ -35,6 +35,7 @@ import { default as AdminViewClimbPage } from './pages/Admin/Climbs/ViewClimbPag
 import { default as AdminNewClimbPage } from './pages/Admin/Climbs/NewClimbPage';
 import { default as AdminOrganizationPage } from './pages/Admin/Settings/OrganizationPage';
 import { default as AdminLocationsPage } from './pages/Admin/Settings/LocationsPage';
+import { default as AdminWallsPage } from './pages/Admin/Settings/WallsPage';
 import { default as AdminGradingSystemsPage } from './pages/Admin/Settings/GradingSystemsPage';
 import { default as AdminClimbColorsPage } from './pages/Admin/Settings/ClimbColorsPage';
 
@@ -126,6 +127,7 @@ function App(props) {
           <AuthRoute exact path="/admin/climbs/:climbId(\d+)/edit" component={AdminEditClimbPage} />
           <AuthRoute exact path="/admin/settings/organization" component={AdminOrganizationPage} />
           <AuthRoute exact path="/admin/settings/locations" component={AdminLocationsPage} />
+          <AuthRoute exact path="/admin/settings/walls" component={AdminWallsPage} />
           <AuthRoute exact path="/admin/settings/grading" component={AdminGradingSystemsPage} />
           <AuthRoute exact path="/admin/settings/colors" component={AdminClimbColorsPage} />
           <AuthRoute exact path="/admin/settings" component={AdminOrganizationPage} />

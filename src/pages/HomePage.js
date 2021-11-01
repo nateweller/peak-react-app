@@ -113,7 +113,7 @@ function HomePage() {
                     </>
                 )}
             </Formik>
-            { Capacitor.isNativePlatform() || true && 
+            { Capacitor.isNativePlatform() && 
                 <Button 
                     use={ Link }
                     to="/scan"

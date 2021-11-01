@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import AppLayout from '../layouts/AppLayout';
 import SendForm from '../forms/SendForm';
+import { Card } from '../components/Card';
 import Dialog from '../components/Dialog';
 import InfoList from '../components/InfoList';
 import Button from '../components/Button';
@@ -76,7 +77,9 @@ function ClimbPage(props) {
     return (
         <>
             <AppLayout header={ pageHeader } isBorderless={ true }>
-                <InfoList info={ getClimbInfo() } />
+                <Card>
+                    <InfoList info={ getClimbInfo() } />
+                </Card>
             </AppLayout>
 
             <Dialog isOpen={ showSendForm } setIsOpen={ setShowSendForm }>

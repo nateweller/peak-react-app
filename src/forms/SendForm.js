@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useAuth, useDataStoreItem, useForm } from './../hooks';
 import RegisterForm from './RegisterForm';
+import LoginForm from './LoginForm';
 
 import Input from './../components/Input';
 import Select from './../components/Select';
@@ -19,6 +21,8 @@ function SendForm({ id, climbId, onSuccess }) {
     const { useData: gradingSystems } = useDataStoreItem('grading_systems');
 
     const { user } = useAuth();
+
+    const [showLogin, setShowLogin] = useState(false);
 
     const getGradeOptions = () => {
         if (! climbData || ! gradingSystems) return [];
@@ -45,13 +49,41 @@ function SendForm({ id, climbId, onSuccess }) {
     };
 
     if (! user) {
+        if (showLogin) {
+            return (
+                <div>
+                    <h2 className="text-xl font-semibold mb-2">Sign in</h2>
+                    <p className="mb-6">
+                        Or 
+                        {' '}
+                        <button class="font-medium text-indigo-600 hover:text-indigo-500" onClick={() => setShowLogin(false)}>
+                            sign up
+                        </button>
+                        {' '}
+                        for a new account.
+                    </p>
+                    <LoginForm />
+                </div>
+            )
+        }
+
         return (
             <div>
-                <h2>Create an account</h2>
+                <h2 className="text-xl font-semibold mb-2">Create an account to get started</h2>
+                <p className="mb-6">
+                    Or 
+                    {' '}
+                    <button class="font-medium text-indigo-600 hover:text-indigo-500" onClick={() => setShowLogin(true)}>
+                        sign in
+                    </button>
+                    {' '}
+                    to your existing account.
+                </p>
                 <RegisterForm />
             </div>
         );
     }
+
 
     return (
         <Formik 

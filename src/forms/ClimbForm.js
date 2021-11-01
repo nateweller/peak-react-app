@@ -21,7 +21,10 @@ function ClimbForm(props) {
         onSuccess
     });
 
-    const { useData: locations } = useDataStoreItem('locations');
+    /**
+     * @todo sort walls by location
+     */
+    const { useData: walls = [] } = useDataStoreItem('walls');
 
     const { useData: gradeSystems } = useDataStoreItem('grading_systems');
 
@@ -30,7 +33,7 @@ function ClimbForm(props) {
         discipline: '',
         grade_id: '',
         color_id: '',
-        location_id: ''
+        wall_id: ''
     };
 
     const validationSchema = Yup.object().shape({
@@ -38,7 +41,7 @@ function ClimbForm(props) {
         discipline: Yup.string(),
         grade_id: Yup.number().nullable(),
         color_id: Yup.number().nullable(),
-        location_id: Yup.number().required('Location is required.')
+        wall_id: Yup.number().required('Wall is required.')
     });
 
     const GradeSelect = () => {
@@ -109,11 +112,11 @@ function ClimbForm(props) {
                     
                     <div className="mt-4">
                         <Select 
-                            name="location_id"
-                            label="Location"
+                            name="wall_id"
+                            label="Wall"
                             options={ [
                                 { value: '', label: '' },
-                                (locations || []).map(location => ({ value: location.id, label: location.name }))
+                                ...walls.map(wall => ({ value: wall.id, label: wall.name }))
                             ] }
                         />
                     </div>
