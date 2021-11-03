@@ -1,9 +1,13 @@
 import { ResponsiveBar } from '@nivo/bar';
 import { useDataStoreItem } from './../hooks';
 
-function GradeDistributionChart() {
+function GradeDistributionChart(props) {
+
+    const { 
+        filters = {} 
+    } = props;
     
-    const { useData: data } = useDataStoreItem('reports/grade_summary');
+    const { useData: data } = useDataStoreItem(`reports/grade_summary?discipline=${ filters.discipline }`);
 
     // find largest data 
     let largestValue = 0;

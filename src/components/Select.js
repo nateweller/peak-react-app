@@ -9,7 +9,7 @@ function Select(props) {
         label,
         name,
         onChange,
-        options = [],
+        options = []
     } = props;
 
     const passProps = {};

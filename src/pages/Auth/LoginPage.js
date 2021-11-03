@@ -3,13 +3,15 @@ import { Redirect, Link } from 'react-router-dom';
 import { useAuth } from './../../hooks';
 import AuthLayout from '../../layouts/AuthLayout';
 
-function LoginPage() {
+function LoginPage(props) {
+
+    const { history } = props;
 
     const { user } = useAuth();
 
     if (user) {
         return (
-            <Redirect to="/" />
+            <Redirect to={ history?.location?.state?.from?.pathname || '/' } />
         );
     }
 

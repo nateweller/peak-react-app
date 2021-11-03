@@ -1,9 +1,14 @@
+import { useState } from 'react';
 import AdminLayout from '../../layouts/AdminLayout';
 import { Card, CardHeader, CardBody } from '../../components/Card';
 import GradeDistributionChart from '../../components/GradeDistributionChart';
 import RecentFeedbackWidget from '../../components/RecentFeedbackWidget';
+import { Formik, Form } from 'formik';
+import Select from '../../components/Select';
 
 function HomePage() {
+
+    const [gradeDistributionDiscipline, setGradeDistributionDiscipline] = useState('BOULDER');
     
     const pageHeader = (
         <h1 className="text-3xl font-bold text-white">
@@ -18,9 +23,20 @@ function HomePage() {
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                         Current Grade Distribution
                     </h3>
+                    <Formik initialValues={ { discipline: 'BOULDER' } } onSubmit={ () => {} }>
+                        <Select
+                            name="discipline"
+                            options={ [
+                                { label: 'Bouldering', value: 'BOULDER' },
+                                { label: 'Top-Rope', value: 'TOP_ROPE' },
+                                { label: 'Lead', value: 'LEAD' }
+                            ] }
+                            onChange={ (event) => setGradeDistributionDiscipline(event.target.value) }
+                        />
+                    </Formik>
                 </CardHeader>
                 <CardBody>
-                    <GradeDistributionChart />
+                    <GradeDistributionChart filters={ { discipline: gradeDistributionDiscipline } } />
                 </CardBody>
             </Card>
             <RecentFeedbackWidget />
