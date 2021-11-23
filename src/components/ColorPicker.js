@@ -1,12 +1,13 @@
 import { Fragment } from 'react';
 import { ErrorMessage, Field, useField } from 'formik';
-import { useDataStoreItem } from './../hooks';
 
 function ColorPicker(props) {
 
-    const { name, label } = props;
-
-    const { data: colors } = useDataStoreItem('climb_colors', { useCache: true });
+    const { 
+        name = 'color', 
+        label = 'Color', 
+        colors = [] 
+    } = props;
 
     // eslint-disable-next-line
     const [field, meta, helpers] = useField(name);
@@ -33,6 +34,8 @@ function ColorPicker(props) {
             </Fragment>
         ));
     }
+
+    if (! colors) return null;
 
     return (
         <>

@@ -14,7 +14,7 @@ function ClimbCard(props) {
         <Card className={className} onClick={() => history.push(`/climbs/${data.id}`)}>
             <CardHeader>
                 <h2 className="text-lg flex space-x-2 items-center">
-                    { Boolean(data.color) && (
+                    { Boolean(data?.color) && (
                         <div 
                             className="h-6 px-2 rounded-lg text-sm bg-gray-300 flex items-center" 
                             style={ { 
@@ -30,7 +30,7 @@ function ClimbCard(props) {
                     ) }
                     
                     <span>
-                        { data.name }
+                        { data?.name }
                     </span>
                 </h2>
             </CardHeader>

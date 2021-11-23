@@ -84,5 +84,6 @@
     "directories": {
       "buildResources": "assets"
     }
-  }
+  },
+  "license": "UNLICENSED"
 }

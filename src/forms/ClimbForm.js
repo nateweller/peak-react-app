@@ -28,6 +28,8 @@ function ClimbForm(props) {
 
     const { useData: gradeSystems } = useDataStoreItem('grading_systems');
 
+    const { useData: colors } = useDataStoreItem('climb_colors', { useCache: true });
+
     const initialValues = {
         name: '',
         discipline: '',
@@ -107,6 +109,7 @@ function ClimbForm(props) {
                         <ColorPicker 
                             name="color_id"
                             label="Hold Color"
+                            colors={ colors }
                         />
                     </div>
                     
