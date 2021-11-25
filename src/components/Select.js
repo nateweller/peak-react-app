@@ -9,11 +9,17 @@ function Select(props) {
         label,
         name,
         onChange,
-        options = []
+        options = [],
+        use: Use = Field
     } = props;
 
     const passProps = {};
     if (onChange) passProps.onChange = onChange;
+
+    const fieldProps = {};
+    if (Use.name === "Field") {
+        fieldProps.as = "select";
+    }
 
     return (
         <div className={ customClassName }>
@@ -30,10 +36,9 @@ function Select(props) {
                 </label>
             ) }
 
-            <Field
+            <Use
                 id={ name }
                 name={ name }
-                as="select"
                 className={
                     `block w-full pl-3 pr-10 py-2 text-base sm:text-sm rounded-md 
                     focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 
@@ -47,14 +52,17 @@ function Select(props) {
                     )) 
                 }
                 { ...passProps }
+                { ...fieldProps }
             />
 
-            <ErrorMessage 
-                name={ name } 
-                component="div" 
-                className="mt-2 text-sm text-red-600" 
-                id={ `${name}-error` }
-            />
+            { Use.name === "Field" && (
+                <ErrorMessage 
+                    name={ name } 
+                    component="div" 
+                    className="mt-2 text-sm text-red-600" 
+                    id={ `${name}-error` }
+                />
+            ) }
 
         </div>
     );

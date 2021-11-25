@@ -30,7 +30,7 @@ function SendForm({ id, climbId, onSuccess }) {
         const gradesData = gradingSystems.filter(system => system.discipline === climbData.discipline)[0].grades;
         return [
             { value: '', label: '' },
-            ...gradesData.map(grade => ({ label: grade.name, value: grade.value }))
+            ...gradesData.map(grade => ({ label: grade.name, value: grade.id }))
         ];
     };
 

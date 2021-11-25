@@ -1,5 +1,6 @@
 import LoadingIcon from "./LoadingIcon";
 import { ArrowRightIcon } from "@heroicons/react/solid";
+import { EmojiSadIcon } from "@heroicons/react/outline";
 
 function Table(props) {
 
@@ -45,7 +46,7 @@ function Table(props) {
                             { renderTableHead() }
 
                             <tbody className="bg-white divide-y divide-gray-200">
-                                { (data === undefined) ?
+                                { (data === undefined && isLoading !== false) ?
                                     <tr>
                                         <td>
                                             <LoadingIcon isLarge={true} />
@@ -53,6 +54,17 @@ function Table(props) {
                                     </tr>
                                   : null
                                 }
+
+                                {( data === undefined && isLoading === false) && (
+                                    <tr>
+                                        <td className="text-center py-24">
+                                            <EmojiSadIcon className="inline-block w-8 h-8 text-indigo-500 mb-2" />
+                                            <p className="text-xs text-gray-500">
+                                                Data could not be loaded.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                )}
                                 
                                 { (data && ! data.length) && (
                                     <tr>

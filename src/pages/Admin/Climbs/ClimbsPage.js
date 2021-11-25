@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import LoadingIcon from '../../../components/LoadingIcon';
 import AdminLayout from '../../../layouts/AdminLayout';
 import Button from '../../../components/Button';
-import { EmojiHappyIcon } from '@heroicons/react/outline';
+import { EmojiHappyIcon, EmojiSadIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/solid';
 
 import Table from '../../../components/Table';
@@ -11,11 +11,23 @@ import { disciplines } from '../../../enums';
 
 function ClimbsPage() {
 
-    const { useData: climbs } = useDataStoreItem('climbs');
+    const { useData: climbs, isLoading, error } = useDataStoreItem('climbs');
 
     const climbsList = () => {
+
+        if (climbs === undefined && error) {
+            return (
+                <div className="text-center py-24">
+                    <EmojiSadIcon className="inline-block w-8 h-8 text-indigo-500 mb-2" />
+                    <p className="text-xs text-gray-500">
+                        Data could not be loaded: { error?.message || 'Unknown Error'}
+                    </p>
+                </div>
+            );
+        }
+
         if (climbs === undefined) {
-            return <LoadingIcon isLarge={true} />
+            return <LoadingIcon isLarge={true} />;
         }
 
         if (! climbs.length) {

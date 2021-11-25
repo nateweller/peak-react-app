@@ -42,7 +42,7 @@ function ColorPicker(props) {
             <label htmlFor={ name } className="block text-sm font-medium text-gray-700">
                 { label }
             </label>
-            <div className="mt-4 flex">
+            <div className="mt-4 flex flex-wrap">
                 <Field 
                     name={ name } 
                     id={ name } 

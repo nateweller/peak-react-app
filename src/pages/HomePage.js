@@ -61,10 +61,7 @@ function HomePage() {
     const Filters = () => (
         <div className="flex flex-wrap w-full md:justify-end">
             <Formik 
-                initialValues={ { 
-                    sort: filters.sort, 
-                    discipline: filters.discipline 
-                } } 
+                initialValues={ filters } 
                 onSubmit={ () => {} } 
             >
                 { () => (
@@ -209,7 +206,7 @@ function HomePage() {
 
     return (
         <AppLayout header={ pageHeader } isBorderless={ true }>
-            { renderAlerts() }
+            { renderAlerts("mb-4") }
             <Filters />
             { renderClimbCards() }
             { renderClimbsTable() }
