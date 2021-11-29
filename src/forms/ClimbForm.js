@@ -78,6 +78,7 @@ function ClimbForm(props) {
             initialValues={ form.data || initialValues } 
             validationSchema={ validationSchema } 
             onSubmit={ form.onSubmit }
+            allowReinitialization={ true }
         >
             { () => (
                 <Form id="climb-form">
@@ -107,7 +108,7 @@ function ClimbForm(props) {
 
                     <div className="mt-4">
                         <ColorPicker 
-                            name="color_id"
+                            name="color.id"
                             label="Hold Color"
                             colors={ colors }
                         />
@@ -115,7 +116,7 @@ function ClimbForm(props) {
                     
                     <div className="mt-4">
                         <Select 
-                            name="wall_id"
+                            name="wall.id"
                             label="Wall"
                             options={ [
                                 { value: '', label: '' },

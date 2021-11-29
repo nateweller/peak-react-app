@@ -23,6 +23,7 @@ function LocationForm(props) {
     });
 
     const initialValues = {
+        organization_id: organization?.id,
         name: ''
     };
 

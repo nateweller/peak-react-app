@@ -18,6 +18,26 @@ const auth = createSlice({
 export const { setUser } = auth.actions;
 
 /**
+ * App Slice
+ */
+const app = createSlice({
+    name: 'app',
+    initialState: {
+        toasts: []
+    },
+    reducers: {
+        addToast: (state, action) => {
+            state.toasts = [ action.payload, ...state.toasts ]
+        },
+        clearToasts: (state) => {
+            state.toasts = []
+        }
+    }
+});
+
+export const { addToast, clearToasts } = app.actions;
+
+/**
  * Data Store Slice
  */
 const dataStore = createSlice({
@@ -38,6 +58,7 @@ export const { setDataStoreItem } = dataStore.actions;
 export const store = configureStore({
     reducer: {
         auth: auth.reducer,
+        app: app.reducer,
         dataStore: dataStore.reducer
     }
 });

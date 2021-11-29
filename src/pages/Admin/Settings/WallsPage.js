@@ -13,7 +13,7 @@ export default function WallsPage() {
 
     const dataStore = useDataStore();
 
-    const { useData: walls, isLoading } = useDataStoreItem('walls');
+    const { useData: walls, isLoading } = useDataStoreItem('walls', { useCache: true });
 
     const [addEditId, setAddEditId] = useState(false);
 
@@ -74,7 +74,7 @@ export default function WallsPage() {
 
                 <Table 
                     data={ getWallsTableData() }
-                    isLoading={ isLoading }
+                    isLoading={ walls === undefined }
                 />
 
             </AdminSettingsLayout>

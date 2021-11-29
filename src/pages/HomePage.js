@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import { Formik } from 'formik';
-import { useDataStoreItem, useAlerts } from '../hooks';
+import { useDataStoreItem } from '../hooks';
 import Select from '../components/Select';
 import Table from '../components/Table';
 import AppLayout from '../layouts/AppLayout';
@@ -12,8 +12,6 @@ import ClimbCard from '../components/ClimbCard';
 import { disciplines } from '../enums';
 
 function HomePage() {
-
-    const { add: addAlert, render: renderAlerts } = useAlerts();
     
     const history = useHistory();
 
@@ -32,16 +30,7 @@ function HomePage() {
         return carry;
     }, `climbs?`);
 
-    const { useData: data, error, isLoading } = useDataStoreItem(dataStoreItemKey, { useCache: true, alwaysFetch: true });
-
-    useEffect(() => {
-        if (error) {
-            addAlert({
-                type: 'danger',
-                message: error?.message || 'Error'
-            });
-        }
-    }, [error, addAlert]);
+    const { useData: data, isLoading } = useDataStoreItem(dataStoreItemKey, { useCache: true, alwaysFetch: true });
 
     const getDaysOld = (date1, date2) => {
         const difference = date1.getTime() - date2.getTime();
@@ -205,12 +194,13 @@ function HomePage() {
     };
 
     return (
-        <AppLayout header={ pageHeader } isBorderless={ true }>
-            { renderAlerts("mb-4") }
-            <Filters />
-            { renderClimbCards() }
-            { renderClimbsTable() }
-        </AppLayout>
+        <>
+            <AppLayout header={ pageHeader } isBorderless={ true }>
+                <Filters />
+                { renderClimbCards() }
+                { renderClimbsTable() }
+            </AppLayout>
+        </>
     );
 }
 

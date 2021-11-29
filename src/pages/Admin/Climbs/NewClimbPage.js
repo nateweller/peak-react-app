@@ -4,8 +4,12 @@ import { Redirect } from 'react-router-dom';
 import AdminLayout from '../../../layouts/AdminLayout';
 import ClimbForm from '../../../forms/ClimbForm';
 import Button from '../../../components/Button';
+import { addToast } from '../../../redux-store';
+import { useDispatch } from 'react-redux';
 
 function ViewClimb() {
+
+    const dispatch = useDispatch();
 
     const [redirect, setRedirect] = useState();
 
@@ -33,6 +37,7 @@ function ViewClimb() {
             <ClimbForm 
                 climbId="new"  
                 onSuccess={ (response) => {
+                    dispatch(addToast({ children: 'Climb saved.', color: 'green', duration: 5000 }));
                     if (response?.data?.id) {
                         setRedirect(`/admin/climbs/${response.data.id}`);
                     }

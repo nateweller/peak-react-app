@@ -1,15 +1,21 @@
 import { useState } from 'react';
 
 import AdminSettingsLayout from '../../../layouts/AdminSettingsLayout';
-import { useDataStoreItem } from './../../../hooks';
+import { useDataStore, useDataStoreItem } from './../../../hooks';
 import Table from './../../../components/Table';
 import Button from './../../../components/Button';
 import Dialog from '../../../components/Dialog';
 import LocationForm from '../../../forms/LocationForm';
+import { addToast } from '../../../redux-store';
+import { useDispatch } from 'react-redux';
 
 function LocationsPage() {
 
-    const { data: locationsData } = useDataStoreItem('locations', { useCache: true, alwaysFetch: true });
+    const dispatch = useDispatch();
+
+    const dataStore = useDataStore();
+
+    const { useData: locationsData, error } = useDataStoreItem('locations', { useCache: true, alwaysFetch: true });
 
     const [addEditId, setAddEditId] = useState(false);
 
@@ -33,6 +39,7 @@ function LocationsPage() {
 
                 <Table
                     isLoading={ locationsData === undefined }
+                    error={ error }
                     data={ locationsData && locationsData.map(locationData => ({
                         columns: [
                             {
@@ -60,7 +67,14 @@ function LocationsPage() {
             </AdminSettingsLayout>
 
             <Dialog isOpen={ Boolean(addEditId) } setIsOpen={ setAddEditId }>
-                <LocationForm id={ addEditId !== 'new' ? addEditId : null } />
+                <LocationForm 
+                    id={ addEditId !== 'new' ? addEditId : null } 
+                    onSuccess={ () => {
+                        dataStore.get('locations').catch(() => {});
+                        setAddEditId(false);
+                        dispatch(addToast({ children: 'Location saved.', color: 'green', duration: 5000 }));
+                    } }
+                />
             </Dialog>
         </>
     );

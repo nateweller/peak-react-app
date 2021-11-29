@@ -11,7 +11,7 @@ import { disciplines } from '../../../enums';
 
 function ClimbsPage() {
 
-    const { useData: climbs, isLoading, error } = useDataStoreItem('climbs');
+    const { useData: climbs, error } = useDataStoreItem('climbs');
 
     const climbsList = () => {
 

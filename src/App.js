@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { App as CapacitorApp } from '@capacitor/app';
 
 import { setUser } from './redux-store';
@@ -38,6 +38,7 @@ import { default as AdminLocationsPage } from './pages/Admin/Settings/LocationsP
 import { default as AdminWallsPage } from './pages/Admin/Settings/WallsPage';
 import { default as AdminGradingSystemsPage } from './pages/Admin/Settings/GradingSystemsPage';
 import { default as AdminClimbColorsPage } from './pages/Admin/Settings/ClimbColorsPage';
+import Toast from './components/Toast';
 
 /**
  * App
@@ -50,6 +51,9 @@ function App(props) {
 
   const [userLoaded, setUserLoaded] = useState(false);
   const [appInitialized, setAppInitialized] = useState(false);
+
+  const toasts = useSelector(state => state.app.toasts);
+  console.log('ToAsTs', toasts);
 
   /**
    * App Initialization Hook
@@ -107,37 +111,43 @@ function App(props) {
   }
 
   return (
-    <Switch>
+    <>
+      <Switch>
 
-      <Route path="/login" component={LoginPage} />
-      <Route path="/register" component={RegisterPage} />
-      <Route path="/reset" component={ResetPasswordPage} />
-      <AuthRoute path="/logout" component={LogoutPage} />
+        <Route path="/login" component={LoginPage} />
+        <Route path="/register" component={RegisterPage} />
+        <Route path="/reset" component={ResetPasswordPage} />
+        <AuthRoute path="/logout" component={LogoutPage} />
 
-      <Route exact path="/" component={HomePage} />
-      <Route exact path="/climbs/:climbId(\d+)" component={ClimbPage} />
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/climbs/:climbId(\d+)" component={ClimbPage} />
 
-      <Route exact path="/scan" component={ScanPage} />
+        <Route exact path="/scan" component={ScanPage} />
 
-      <Route path="/admin">
-        <OrganizationProvider>
-          <AuthRoute exact path="/admin/climbs" component={AdminClimbsPage} />
-          <AuthRoute exact path="/admin/climbs/new" component={AdminNewClimbPage} />
-          <AuthRoute exact path="/admin/climbs/:climbId(\d+)" component={AdminViewClimbPage} />
-          <AuthRoute exact path="/admin/climbs/:climbId(\d+)/edit" component={AdminEditClimbPage} />
-          <AuthRoute exact path="/admin/settings/organization" component={AdminOrganizationPage} />
-          <AuthRoute exact path="/admin/settings/locations" component={AdminLocationsPage} />
-          <AuthRoute exact path="/admin/settings/walls" component={AdminWallsPage} />
-          <AuthRoute exact path="/admin/settings/grading" component={AdminGradingSystemsPage} />
-          <AuthRoute exact path="/admin/settings/colors" component={AdminClimbColorsPage} />
-          <AuthRoute exact path="/admin/settings" component={AdminOrganizationPage} />
-          <AuthRoute exact path="/admin" component={AdminHomePage} />
-        </OrganizationProvider>
-      </Route>
+        <Route path="/admin">
+          <OrganizationProvider>
+            <AuthRoute exact path="/admin/climbs" component={AdminClimbsPage} />
+            <AuthRoute exact path="/admin/climbs/new" component={AdminNewClimbPage} />
+            <AuthRoute exact path="/admin/climbs/:climbId(\d+)" component={AdminViewClimbPage} />
+            <AuthRoute exact path="/admin/climbs/:climbId(\d+)/edit" component={AdminEditClimbPage} />
+            <AuthRoute exact path="/admin/settings/organization" component={AdminOrganizationPage} />
+            <AuthRoute exact path="/admin/settings/locations" component={AdminLocationsPage} />
+            <AuthRoute exact path="/admin/settings/walls" component={AdminWallsPage} />
+            <AuthRoute exact path="/admin/settings/grading" component={AdminGradingSystemsPage} />
+            <AuthRoute exact path="/admin/settings/colors" component={AdminClimbColorsPage} />
+            <AuthRoute exact path="/admin/settings" component={AdminOrganizationPage} />
+            <AuthRoute exact path="/admin" component={AdminHomePage} />
+          </OrganizationProvider>
+        </Route>
 
-      <Route path="/" component={NotFoundPage} />
+        <Route path="/" component={NotFoundPage} />
 
-    </Switch>
+      </Switch>
+      
+      { toasts.map((toast, loopIndex) => (
+        <Toast key={ loopIndex} color={toast.color} children={toast.children} duration={toast.duration} />
+      )) }
+    </>
   );
 }
 

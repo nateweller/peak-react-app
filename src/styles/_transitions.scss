@@ -75,3 +75,37 @@
 .transition__dialog-exit-done {
     display: none;
 }
+
+.transition__toast {
+    transition: all 500ms ease-out;
+
+    &-enter,
+    &-appear {
+       transform: translateY(50%);
+       opacity: 0;
+
+       &-done {
+           transform: translateY(0);
+           opacity: 1;
+       }
+    }
+
+    &-exit-done {
+        transform: translateY(50%);
+        opacity: 0;
+    }
+
+}
+
+.transition__toast__duration {
+    width: 0%;
+
+    &-appear-active {
+        width: 100%;
+    }
+    
+    &-appear-done {
+        width: 100%;
+    }
+
+}

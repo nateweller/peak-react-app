@@ -1,8 +1,15 @@
 import AdminLayout from '../../../layouts/AdminLayout';
 import ClimbForm from '../../../forms/ClimbForm';
 import Button from '../../../components/Button';
+import { addToast } from '../../../redux-store';
+import { useDispatch } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 function EditClimbPage(props) {
+
+    const { history } = props;
+
+    const dispatch = useDispatch();
 
     const pageHeader = (
         <div className="md:flex md:items-center md:justify-between">
@@ -21,9 +28,15 @@ function EditClimbPage(props) {
 
     return (
         <AdminLayout header={ pageHeader }>
-            <ClimbForm id={ props.match.params.climbId }  />
+            <ClimbForm id={ props.match.params.climbId } onSuccess={(response) => {
+                console.log('successsss');
+                dispatch(addToast({ children: 'Climb saved.', color: 'green', duration: 5000 }));
+                if (response?.data?.id) {
+                    history.push(`/admin/climbs/${response.data.id}`);
+                }
+            }}  />
         </AdminLayout>
     );
 }
 
-export default EditClimbPage;
+export default withRouter(EditClimbPage);

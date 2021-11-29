@@ -8,6 +8,7 @@ function Table(props) {
         data,
         emptyContent,
         isLoading,
+        error,
         className = ""
     } = props;
 
@@ -55,7 +56,7 @@ function Table(props) {
                                   : null
                                 }
 
-                                {( data === undefined && isLoading === false) && (
+                                {( error && data === undefined && isLoading === false) && (
                                     <tr>
                                         <td className="text-center py-24">
                                             <EmojiSadIcon className="inline-block w-8 h-8 text-indigo-500 mb-2" />
