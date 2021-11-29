@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
 import { useAuth } from './../hooks';
 import { API } from './../api';
-import { developmentLog } from '../utils';
 
 export const OrganizationContext = createContext(undefined);
 
@@ -16,9 +15,6 @@ function OrganizationProvider(props) {
             .then(response => {
                 // to do: add support for multiple organizations per user
                 setOrganization(response.data[0]);
-
-                developmentLog('Organization fetched by OrganizationProvider:');
-                developmentLog(response.data[0]);
             })
             .catch(error => {
                 console.error(error);

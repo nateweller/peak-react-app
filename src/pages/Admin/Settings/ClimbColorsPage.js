@@ -6,10 +6,14 @@ import Button from './../../../components/Button';
 import Table from './../../../components/Table';
 import Dialog from './../../../components/Dialog';
 import ColorForm from '../../../forms/ColorForm';
+import { addToast } from '../../../redux-store';
+import { useDispatch } from 'react-redux';
 
 function ClimbColorsPage() {
 
     const alerts = useAlerts();
+
+    const dispatch = useDispatch();
 
     const dataStore = useDataStore();
 
@@ -76,11 +80,7 @@ function ClimbColorsPage() {
                     onSuccess={ () => {
                         dataStore.get('climb_colors');
                         setAddEditId(null);
-                        alerts.replace({
-                            type: 'success',
-                            message: 'Color saved.',
-                            isDismissable: true
-                        });
+                        dispatch(addToast({ children: 'Color saved.', color: 'green', duration: 5000 }));
                     } } 
                 />
             </Dialog>

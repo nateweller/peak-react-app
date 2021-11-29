@@ -27,7 +27,7 @@ const app = createSlice({
     },
     reducers: {
         addToast: (state, action) => {
-            state.toasts = [ action.payload, ...state.toasts ]
+            state.toasts = [ ...state.toasts, action.payload ]
         },
         clearToasts: (state) => {
             state.toasts = []

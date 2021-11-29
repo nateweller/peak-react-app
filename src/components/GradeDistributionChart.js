@@ -7,7 +7,16 @@ function GradeDistributionChart(props) {
         filters = {} 
     } = props;
     
-    const { useData: data } = useDataStoreItem(`reports/grade_summary?discipline=${ filters.discipline }`);
+    const { useData: data = [] } = useDataStoreItem(`reports/grade_summary`);
+
+    // filter data
+    const filteredData = data.filter(data => {
+        for (const filterKey of Object.keys(filters)) {
+            if (data[filterKey] === undefined) return false;
+            if (data[filterKey] !== filters[filterKey]) return false;
+        }
+        return true;
+    });
 
     // find largest data 
     let largestValue = 0;
@@ -22,7 +31,7 @@ function GradeDistributionChart(props) {
     return (
         <div style={{ height: '400px' }}>
             <ResponsiveBar
-                data={ data || [] }
+                data={ filteredData }
                 keys={ ['count'] }
                 indexBy="name"
                 margin={ { 
@@ -51,7 +60,6 @@ function GradeDistributionChart(props) {
                 } }
                 colors={['#EF4444', '#F59E0B', '#FCD34D', '#10B981', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899']}
                 colorBy="indexValue"
-                gridYValues={[...Array(largestValue + 1).keys()]}
             />
         </div>
     );

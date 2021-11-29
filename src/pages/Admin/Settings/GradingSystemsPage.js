@@ -6,12 +6,16 @@ import GradingSystemForm from '../../../forms/GradingSystemForm';
 import Button from './../../../components/Button';
 import Dialog from '../../../components/Dialog';
 import Table from './../../../components/Table';
+import { addToast } from '../../../redux-store';
+import { useDispatch } from 'react-redux';
 
 function GradingSystemsPage() {
 
     const alerts = useAlerts();
 
     const dataStore = useDataStore();
+
+    const dispatch = useDispatch();
 
     const { useData: gradingSystemsData } = useDataStoreItem('grading_systems', { useCache: true });
 
@@ -94,11 +98,7 @@ function GradingSystemsPage() {
                     onSuccess={ () => {
                         dataStore.get('grading_systems');
                         setAddEditId(null);
-                        alerts.replace({
-                            type: 'success',
-                            message: 'Grading system saved.',
-                            isDismissable: true
-                        });
+                        dispatch(addToast({ children: 'Grading system saved.', color: 'green', duration: 5000 }));
                     } } 
                 />
             </Dialog>

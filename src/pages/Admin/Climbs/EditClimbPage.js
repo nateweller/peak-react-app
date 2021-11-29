@@ -29,7 +29,6 @@ function EditClimbPage(props) {
     return (
         <AdminLayout header={ pageHeader }>
             <ClimbForm id={ props.match.params.climbId } onSuccess={(response) => {
-                console.log('successsss');
                 dispatch(addToast({ children: 'Climb saved.', color: 'green', duration: 5000 }));
                 if (response?.data?.id) {
                     history.push(`/admin/climbs/${response.data.id}`);

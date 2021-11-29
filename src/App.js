@@ -53,26 +53,25 @@ function App(props) {
   const [appInitialized, setAppInitialized] = useState(false);
 
   const toasts = useSelector(state => state.app.toasts);
-  console.log('ToAsTs', toasts);
 
   /**
    * App Initialization Hook
    */
   useEffect(() => {
 
-    if (!appInitialized) {
+    if (! appInitialized) {
 
-      if (!user && !localStorage.getItem('token')) {
+      if (! user && ! localStorage.getItem('token')) {
         // signed out - no user to load
         setUserLoaded(true);
       }
 
-      if (!user && localStorage.getItem('token')) {
+      if (! user && localStorage.getItem('token')) {
         // token in local storage, set into state
         dispatch(setUser({ token: localStorage.getItem('token') }));
       }
 
-      if (user && user.token && !user.id) {
+      if (user && user.token && ! user.id) {
         // user data missing in state
         initializeCurrentUser()
           .catch(() => {})
@@ -87,7 +86,8 @@ function App(props) {
       setAppInitialized(true);
   
       developmentLog('🕺 App Initialized 🕺');
-      developmentLog(user?.id ? `User ID: ${user.id}` : 'Signed Out');
+      developmentLog(user?.id ? { user } : 'Signed Out');
+
     }
 
   }, [user, dispatch, userLoaded, appInitialized, initializeCurrentUser]);
@@ -106,7 +106,7 @@ function App(props) {
     
   }, [history])
 
-  if (!appInitialized) {
+  if (! appInitialized) {
     return <LoadingIcon isFullScreen={true} />;
   }
 
@@ -145,7 +145,7 @@ function App(props) {
       </Switch>
       
       { toasts.map((toast, loopIndex) => (
-        <Toast key={ loopIndex} color={toast.color} children={toast.children} duration={toast.duration} />
+        <Toast key={ loopIndex } color={ toast.color } children={ toast.children } duration={ toast.duration } />
       )) }
     </>
   );

@@ -108,7 +108,7 @@ function ClimbForm(props) {
 
                     <div className="mt-4">
                         <ColorPicker 
-                            name="color.id"
+                            name="color_id"
                             label="Hold Color"
                             colors={ colors }
                         />
@@ -116,7 +116,7 @@ function ClimbForm(props) {
                     
                     <div className="mt-4">
                         <Select 
-                            name="wall.id"
+                            name="wall_id"
                             label="Wall"
                             options={ [
                                 { value: '', label: '' },

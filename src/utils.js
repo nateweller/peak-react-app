@@ -19,7 +19,7 @@ export const hexToRgb = (hex) => {
 
 // http://www.w3.org/TR/AERT#color-contrast
 export const getContrastTextColor = (rgb) => {
-    const [red, green, blue] = rgb;
+    const [red, green, blue] = rgb || [255, 255, 255];
 
     const brightness = 
         Math.round(((parseInt(red) * 299) +

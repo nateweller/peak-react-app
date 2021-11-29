@@ -13,7 +13,7 @@ export default function WallsPage() {
 
     const dataStore = useDataStore();
 
-    const { useData: walls, isLoading } = useDataStoreItem('walls', { useCache: true });
+    const { useData: walls } = useDataStoreItem('walls', { useCache: true });
 
     const [addEditId, setAddEditId] = useState(false);
 
