@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import AdminSettingsLayout from '../../../layouts/AdminSettingsLayout';
 import { useDataStore, useDataStoreItem } from './../../../hooks';
-import Table from './../../../components/Table';
+import { DataTable } from './../../../components/Table';
 import Button from './../../../components/Button';
 import Dialog from '../../../components/Dialog';
 import LocationForm from '../../../forms/LocationForm';
@@ -37,7 +37,7 @@ function LocationsPage() {
                     </div>
                 </div>
 
-                <Table
+                <DataTable
                     isLoading={ locationsData === undefined }
                     error={ error }
                     data={ locationsData && locationsData.map(locationData => ({

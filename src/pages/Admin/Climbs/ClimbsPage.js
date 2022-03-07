@@ -5,7 +5,7 @@ import Button from '../../../components/Button';
 import { EmojiHappyIcon, EmojiSadIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/solid';
 
-import Table from '../../../components/Table';
+import { DataTable } from '../../../components/Table';
 import { useDataStoreItem } from '../../../hooks';
 import { disciplines } from '../../../enums';
 
@@ -51,7 +51,7 @@ function ClimbsPage() {
         }
         
         return (
-            <Table 
+            <DataTable 
                 data={climbs.reduce((data, climb) => {
                     data.push({
                         columns: [

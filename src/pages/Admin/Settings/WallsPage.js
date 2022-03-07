@@ -3,7 +3,7 @@ import { useAlerts, useDataStore, useDataStoreItem } from '../../../hooks';
 import AdminSettingsLayout from '../../../layouts/AdminSettingsLayout';
 
 import Button from '../../../components/Button';
-import Table from '../../../components/Table';
+import { DataTable } from '../../../components/Table';
 import Dialog from '../../../components/Dialog';
 import WallForm from '../../../forms/WallForm';
 
@@ -72,7 +72,7 @@ export default function WallsPage() {
 
                 { alerts.render('mb-4') }
 
-                <Table 
+                <DataTable 
                     data={ getWallsTableData() }
                     isLoading={ walls === undefined }
                 />

@@ -3,7 +3,7 @@ import { useAlerts, useDataStore, useDataStoreItem } from '../../../hooks';
 import AdminSettingsLayout from '../../../layouts/AdminSettingsLayout';
 
 import Button from './../../../components/Button';
-import Table from './../../../components/Table';
+import { DataTable } from './../../../components/Table';
 import Dialog from './../../../components/Dialog';
 import ColorForm from '../../../forms/ColorForm';
 import { addToast } from '../../../redux-store';
@@ -66,7 +66,7 @@ function ClimbColorsPage() {
 
                 { alerts.render('mb-4') }
 
-                <Table 
+                <DataTable 
                     data={ getColorsTableData() } 
                     isLoading={ isLoading } 
                 />

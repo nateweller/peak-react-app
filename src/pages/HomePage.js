@@ -4,7 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { Formik } from 'formik';
 import { useDataStoreItem } from '../hooks';
 import Select from '../components/Select';
-import Table from '../components/Table';
+import { DataTable } from '../components/Table';
 import AppLayout from '../layouts/AppLayout';
 import LoadingIcon from '../components/LoadingIcon';
 import Button from '../components/Button';
@@ -133,7 +133,7 @@ function HomePage() {
 
     const renderClimbsTable = () => {
         return (
-            <Table 
+            <DataTable 
                 className="hidden md:block"
                 isLoading={ data === undefined && isLoading }
                 data={ (() => {

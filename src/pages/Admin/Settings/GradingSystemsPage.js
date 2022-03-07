@@ -5,7 +5,7 @@ import AdminSettingsLayout from '../../../layouts/AdminSettingsLayout';
 import GradingSystemForm from '../../../forms/GradingSystemForm';
 import Button from './../../../components/Button';
 import Dialog from '../../../components/Dialog';
-import Table from './../../../components/Table';
+import { DataTable } from './../../../components/Table';
 import { addToast } from '../../../redux-store';
 import { useDispatch } from 'react-redux';
 
@@ -42,7 +42,7 @@ function GradingSystemsPage() {
 
                 { alerts.render('mb-4') }
 
-                <Table
+                <DataTable
                     isLoading={ gradingSystemsData === undefined }
                     data={ gradingSystemsData && gradingSystemsData.map(gradingSystemData => ({
                         columns: [
