@@ -53,7 +53,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "prettier"
     ]
   },
   "browserslist": {
@@ -75,7 +76,10 @@
     "concurrently": "^6.2.0",
     "electron": "^13.1.0",
     "electron-builder": "^22.10.5",
+    "eslint-config-prettier": "^8.5.0",
     "postcss": "^7.0.36",
+    "prettier": "^2.5.1",
+    "prettier-plugin-tailwindcss": "^0.1.8",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7",
     "wait-on": "^5.3.0"
   },
