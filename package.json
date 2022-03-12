@@ -23,7 +23,6 @@
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.13",
     "axios": "^0.21.2",
-    "bootstrap": "^5.0.1",
     "electron-is-dev": "^2.0.0",
     "formik": "^2.2.9",
     "invert-color": "^2.0.0",

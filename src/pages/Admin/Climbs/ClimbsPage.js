@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LoadingIcon from '../../../components/LoadingIcon';
 import AdminLayout from '../../../layouts/AdminLayout';
@@ -5,13 +6,15 @@ import Button from '../../../components/Button';
 import { EmojiHappyIcon, EmojiSadIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/solid';
 
-import { DataTable } from '../../../components/Table';
+import { Table, TableBody, TableCell, TableHead, TableHeading, TableRow } from '../../../components/Table';
 import { useDataStoreItem } from '../../../hooks';
 import { disciplines } from '../../../enums';
 
 function ClimbsPage() {
 
     const { useData: climbs, error } = useDataStoreItem('climbs');
+
+    const [activeRowIndex, setActiveRowIndex] = useState(null);
 
     const climbsList = () => {
 
@@ -51,60 +54,80 @@ function ClimbsPage() {
         }
         
         return (
-            <DataTable 
-                data={climbs.reduce((data, climb) => {
-                    data.push({
-                        columns: [
-                            {
-                                label: 'Climb',
-                                value: (
+            <>
+                <Table>
+                    <TableHead>
+                        <TableHeading>
+                            Climb
+                        </TableHeading>
+                        <TableHeading>
+                            Discipline
+                        </TableHeading>
+                        <TableHeading>
+                            Color
+                        </TableHeading>
+                        <TableHeading>
+                            Grade
+                        </TableHeading>
+                        <TableHeading>
+                            Sends
+                        </TableHeading>
+                        <TableHeading>
+                            {/* Controls */}
+                        </TableHeading>
+                    </TableHead>
+                    <TableBody>
+                        {climbs.map((climb, loopIndex) => (
+                            <TableRow 
+                                onMouseOver={() => setActiveRowIndex(loopIndex)}
+                                onMouseOut={() => setActiveRowIndex(null)}
+                                className={`${activeRowIndex === loopIndex && 'bg-gray-50'}`}
+                                key={ climb.id }
+                            >
+                                <TableCell>
                                     <Link 
                                         to={`/admin/climbs/${climb.id}`} 
                                         className="list-group-item list-group-item-action text-sm" 
                                     >
                                         { climb.name }
                                     </Link>
-                                )
-                            },
-                            {
-                                label: 'Discipline',
-                                value: <span className="text-sm">{ disciplines[climb?.discipline] }</span>
-                            },
-                            {
-                                label: 'Color',
-                                value: (
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-sm">
+                                        { disciplines[climb?.discipline] || 'N/A' }
+                                    </span>
+                                </TableCell>
+                                <TableCell>
                                     <div className="flex items-center">
                                         <div className="w-3 h-3 mr-2 rounded-full bg-gray-200" style={{ backgroundColor: climb?.color?.color }} />
                                         <span className="text-sm">{ climb?.color?.name }</span>
                                     </div>
-                                )
-                            },
-                            {
-                                label: 'Grade',
-                                value: <span className="text-sm">{ climb?.grade?.name }</span>
-                            },
-                            {
-                                label: 'Sends',
-                                value: <span className="text-sm">{ climb.send_count }</span>
-                            },
-                            {
-                                label: '',
-                                value: (
-                                    <div className="text-right text-sm font-medium">
-                                        <Button use={ Link } to={ `/admin/climbs/${climb.id}` } className="mr-2">
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-sm">
+                                        { climb?.grade?.name }
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-sm">
+                                        { climb.send_count }
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <div className={`text-right text-sm font-medium ${activeRowIndex !== loopIndex && 'invisible'}`}>
+                                        <Link to={ `/admin/climbs/${climb.id}` } className="link mr-4">
                                             View
-                                        </Button>
-                                        <Button use={ Link } to={ `/admin/climbs/${climb.id}/edit` }>
+                                        </Link>
+                                        <Link to={ `/admin/climbs/${climb.id}/edit` } className="link">
                                             Edit
-                                        </Button>
+                                        </Link>
                                     </div>
-                                )
-                            }
-                        ]
-                    });
-                    return data;
-                }, [])}
-            />
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </>
         );
     };
 

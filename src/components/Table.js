@@ -85,7 +85,7 @@ export function TableCell({
     ...rest
 }) {
     return (
-        <td className={ className } { ...rest }>
+        <td className={`px-6 py-4 whitespace-nowrap ${ className }`} { ...rest }>
             { children }
         </td>
     );
