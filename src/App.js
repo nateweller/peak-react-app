@@ -39,116 +39,122 @@ import { default as AdminWallsPage } from './pages/Admin/Settings/WallsPage';
 import { default as AdminGradingSystemsPage } from './pages/Admin/Settings/GradingSystemsPage';
 import { default as AdminClimbColorsPage } from './pages/Admin/Settings/ClimbColorsPage';
 import Toast from './components/Toast';
+import LogPage from './pages/LogPage';
 
 /**
  * App
  */
 function App(props) {
+	const dispatch = useDispatch();
+	const history = props.history;
+	const { user, initializeCurrentUser } = useAuth();
 
-  const dispatch = useDispatch();
-  const history = props.history;
-  const { user, initializeCurrentUser } = useAuth();
+	const [userLoaded, setUserLoaded] = useState(false);
+	const [appInitialized, setAppInitialized] = useState(false);
 
-  const [userLoaded, setUserLoaded] = useState(false);
-  const [appInitialized, setAppInitialized] = useState(false);
+	const toasts = useSelector((state) => state.app.toasts);
 
-  const toasts = useSelector(state => state.app.toasts);
+	/**
+	 * App Initialization Hook
+	 */
+	useEffect(() => {
+		if (!appInitialized) {
+			if (!user && !localStorage.getItem('token')) {
+				// signed out - no user to load
+				setUserLoaded(true);
+			}
 
-  /**
-   * App Initialization Hook
-   */
-  useEffect(() => {
+			if (!user && localStorage.getItem('token')) {
+				// token in local storage, set into state
+				dispatch(setUser({ token: localStorage.getItem('token') }));
+			}
 
-    if (! appInitialized) {
+			if (user && user.token && !user.id) {
+				// user data missing in state
+				initializeCurrentUser()
+					.catch(() => {})
+					.finally(() => {
+						setUserLoaded(true);
+					});
+			}
 
-      if (! user && ! localStorage.getItem('token')) {
-        // signed out - no user to load
-        setUserLoaded(true);
-      }
+			// user must be finished loading to continue
+			if (!userLoaded) return;
 
-      if (! user && localStorage.getItem('token')) {
-        // token in local storage, set into state
-        dispatch(setUser({ token: localStorage.getItem('token') }));
-      }
+			setAppInitialized(true);
 
-      if (user && user.token && ! user.id) {
-        // user data missing in state
-        initializeCurrentUser()
-          .catch(() => {})
-          .finally(() => {
-            setUserLoaded(true);
-          });
-      }
-  
-      // user must be finished loading to continue
-      if (!userLoaded) return;
+			developmentLog('🕺 App Initialized 🕺');
+			developmentLog(user?.id ? { user } : 'Signed Out');
+		}
+	}, [user, dispatch, userLoaded, appInitialized, initializeCurrentUser]);
 
-      setAppInitialized(true);
-  
-      developmentLog('🕺 App Initialized 🕺');
-      developmentLog(user?.id ? { user } : 'Signed Out');
+	/**
+	 * Back Button Listener
+	 */
+	useEffect(() => {
+		CapacitorApp.addListener('backButton', () => {
+			history.goBack();
+		});
 
-    }
+		return () => {
+			CapacitorApp.removeAllListeners();
+		};
+	}, [history]);
 
-  }, [user, dispatch, userLoaded, appInitialized, initializeCurrentUser]);
+	if (!appInitialized) {
+		return <LoadingIcon isFullScreen={true} />;
+	}
 
-  /**
-   * Back Button Listener
-   */
-  useEffect(() => {
-    CapacitorApp.addListener('backButton', () => {
-      history.goBack()
-    });
+	return (
+		<>
+			<Switch>
+				<Route path="/login" component={LoginPage} />
+				<Route path="/register" component={RegisterPage} />
+				<Route path="/reset" component={ResetPasswordPage} />
+				<AuthRoute path="/logout" component={LogoutPage} />
 
-    return () => {
-      CapacitorApp.removeAllListeners();
-    };
-    
-  }, [history])
+				<Route exact path="/" component={HomePage} />
+				<Route exact path="/climbs/:climbId(\d+)" component={ClimbPage} />
+				<AuthRoute exact path="/log" component={LogPage} />
+				<Route exact path="/scan" component={ScanPage} />
 
-  if (! appInitialized) {
-    return <LoadingIcon isFullScreen={true} />;
-  }
+				<Route path="/admin">
+					<OrganizationProvider>
+						<AuthRoute exact path="/admin/climbs" component={AdminClimbsPage} />
+						<AuthRoute exact path="/admin/climbs/new" component={AdminNewClimbPage} />
+						<AuthRoute exact path="/admin/climbs/:climbId(\d+)" component={AdminViewClimbPage} />
+						<AuthRoute
+							exact
+							path="/admin/climbs/:climbId(\d+)/edit"
+							component={AdminEditClimbPage}
+						/>
+						<AuthRoute
+							exact
+							path="/admin/settings/organization"
+							component={AdminOrganizationPage}
+						/>
+						<AuthRoute exact path="/admin/settings/locations" component={AdminLocationsPage} />
+						<AuthRoute exact path="/admin/settings/walls" component={AdminWallsPage} />
+						<AuthRoute exact path="/admin/settings/grading" component={AdminGradingSystemsPage} />
+						<AuthRoute exact path="/admin/settings/colors" component={AdminClimbColorsPage} />
+						<AuthRoute exact path="/admin/settings" component={AdminOrganizationPage} />
+						<AuthRoute exact path="/admin" component={AdminHomePage} />
+					</OrganizationProvider>
+				</Route>
 
-  return (
-    <>
-      <Switch>
+				<Route path="/" component={NotFoundPage} />
+			</Switch>
 
-        <Route path="/login" component={LoginPage} />
-        <Route path="/register" component={RegisterPage} />
-        <Route path="/reset" component={ResetPasswordPage} />
-        <AuthRoute path="/logout" component={LogoutPage} />
-
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/climbs/:climbId(\d+)" component={ClimbPage} />
-
-        <Route exact path="/scan" component={ScanPage} />
-
-        <Route path="/admin">
-          <OrganizationProvider>
-            <AuthRoute exact path="/admin/climbs" component={AdminClimbsPage} />
-            <AuthRoute exact path="/admin/climbs/new" component={AdminNewClimbPage} />
-            <AuthRoute exact path="/admin/climbs/:climbId(\d+)" component={AdminViewClimbPage} />
-            <AuthRoute exact path="/admin/climbs/:climbId(\d+)/edit" component={AdminEditClimbPage} />
-            <AuthRoute exact path="/admin/settings/organization" component={AdminOrganizationPage} />
-            <AuthRoute exact path="/admin/settings/locations" component={AdminLocationsPage} />
-            <AuthRoute exact path="/admin/settings/walls" component={AdminWallsPage} />
-            <AuthRoute exact path="/admin/settings/grading" component={AdminGradingSystemsPage} />
-            <AuthRoute exact path="/admin/settings/colors" component={AdminClimbColorsPage} />
-            <AuthRoute exact path="/admin/settings" component={AdminOrganizationPage} />
-            <AuthRoute exact path="/admin" component={AdminHomePage} />
-          </OrganizationProvider>
-        </Route>
-
-        <Route path="/" component={NotFoundPage} />
-
-      </Switch>
-      
-      { toasts.map((toast, loopIndex) => (
-        <Toast key={ loopIndex } color={ toast.color } children={ toast.children } duration={ toast.duration } />
-      )) }
-    </>
-  );
+			{toasts.map((toast, loopIndex) => (
+				<Toast
+					key={loopIndex}
+					color={toast.color}
+					children={toast.children}
+					duration={toast.duration}
+				/>
+			))}
+		</>
+	);
 }
 
 export default withRouter(App);

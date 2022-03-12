@@ -3,251 +3,280 @@ import { Link, useLocation } from 'react-router-dom';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { useAuth } from './../hooks';
 import Avatar from '../components/Avatar';
+import { FiArrowUpRight } from 'react-icons/fi';
 
 function UserMenu() {
-  
-  const location = useLocation();
+	const location = useLocation();
 
-  const { user } = useAuth();
+	const { user } = useAuth();
 
-  const [isOpen, setIsOpen] = useState(false);
-  
-  const displayClassName = isOpen ? '' : 'hidden';
-  
-  const menuItems = [
-    {
-      name: 'Sign out',
-      url: '/logout'
-    }
-  ];
+	const [isOpen, setIsOpen] = useState(false);
 
-  return (
-    <OutsideClickHandler onOutsideClick={() => setIsOpen(false)}>
-      <div className="ml-3 relative">
-        <div>
-          { user
-            ? (
-              <button 
-                type="button" 
-                className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" 
-                id="user-menu-button" 
-                aria-expanded={isOpen}
-                aria-haspopup="true"
-                onClick={() => setIsOpen(!isOpen)}
-              >
-                <span className="sr-only">Open user menu</span>
-                <Avatar className="h-8 w-8 rounded-full" />
-              </button>
-            ) : (
-              <Link 
-                to="/login" 
-                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Sign In
-              </Link>
-            ) }
-        </div>
+	const displayClassName = isOpen ? '' : 'hidden';
 
-        <div 
-          className={`origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none ${displayClassName}`}
-          role="menu" 
-          aria-orientation="vertical" 
-          aria-labelledby="user-menu-button" 
-          tabIndex="-1"
-        >
-          {menuItems.map((menuItem, loopIndex) => {
-            const className = menuItem.url === location.pathname
-              ? 'bg-gray-100 block px-4 py-2 text-sm text-gray-700'
-              : 'block px-4 py-2 text-sm text-gray-700';
+	const menuItems = [
+		{
+			name: 'Sign out',
+			url: '/logout',
+		},
+	];
 
-            return (
-              <Link to={menuItem.url} className={className} key={loopIndex}>
-                {menuItem.name}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </OutsideClickHandler>
-  );
+	return (
+		<OutsideClickHandler onOutsideClick={() => setIsOpen(false)}>
+			<div className="relative ml-3">
+				<div>
+					{user ? (
+						<button
+							type="button"
+							className="focus:outline-none flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+							id="user-menu-button"
+							aria-expanded={isOpen}
+							aria-haspopup="true"
+							onClick={() => setIsOpen(!isOpen)}
+						>
+							<span className="sr-only">Open user menu</span>
+							<Avatar className="h-8 w-8 rounded-full" />
+						</button>
+					) : (
+						<Link
+							to="/login"
+							className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+						>
+							Sign In
+						</Link>
+					)}
+				</div>
+
+				<div
+					className={`focus:outline-none absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 ${displayClassName}`}
+					role="menu"
+					aria-orientation="vertical"
+					aria-labelledby="user-menu-button"
+					tabIndex="-1"
+				>
+					{menuItems.map((menuItem, loopIndex) => {
+						const className =
+							menuItem.url === location.pathname
+								? 'bg-gray-100 block px-4 py-2 text-sm text-gray-700'
+								: 'block px-4 py-2 text-sm text-gray-700';
+
+						return (
+							<Link to={menuItem.url} className={className} key={loopIndex}>
+								{menuItem.name}
+							</Link>
+						);
+					})}
+				</div>
+			</div>
+		</OutsideClickHandler>
+	);
 }
 
 function MobileUserMenu() {
+	const location = useLocation();
 
-  const location = useLocation();
+	const { user } = useAuth();
 
-  const { user } = useAuth();
+	const menuItems = user
+		? [
+				{
+					name: 'Sign out',
+					url: '/logout',
+				},
+		  ]
+		: [
+				{
+					name: 'Sign In',
+					url: '/login',
+				},
+		  ];
 
-  const menuItems = user 
-    ? [
-        {
-          name: 'Sign out',
-          url: '/logout'
-        }
-      ]
-    : [
-        {
-          name: 'Sign In',
-          url: '/login'
-        }
-    ];
+	return (
+		<div className="border-t border-gray-700 pt-4 pb-3">
+			{user && (
+				<div className="mb-3 flex items-center px-5">
+					<div className="flex-shrink-0">
+						<Avatar className="h-10 w-10 rounded-full" />
+					</div>
+					<div className="ml-3">
+						<div className="text-base font-medium leading-none text-white">{user?.name}</div>
+						<div className="text-sm font-medium leading-none text-gray-400">{user?.email}</div>
+					</div>
+				</div>
+			)}
+			<div className="space-y-1 px-2">
+				{menuItems.map((menuItem, loopIndex) => {
+					const className =
+						menuItem.url === location.pathname
+							? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
+							: 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium';
 
-  return (
-    <div className="pt-4 pb-3 border-t border-gray-700">
-      { user && (
-        <div className="flex items-center px-5 mb-3">
-          <div className="flex-shrink-0">
-            <Avatar className="h-10 w-10 rounded-full" />
-          </div>
-          <div className="ml-3">
-            <div className="text-base font-medium leading-none text-white">
-              { user?.name }
-            </div>
-            <div className="text-sm font-medium leading-none text-gray-400">
-              { user?.email }
-            </div>
-          </div>
-        </div>
-      ) }
-      <div className="px-2 space-y-1">
-        { menuItems.map((menuItem, loopIndex) => {
-          const className = menuItem.url === location.pathname
-            ? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
-            : 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium';
-
-          return (
-            <Link to={menuItem.url} className={className} key={loopIndex}>
-              {menuItem.name}
-            </Link>
-          );
-        }) }
-      </div>
-    </div>
-  );
+					return (
+						<Link to={menuItem.url} className={className} key={loopIndex}>
+							{menuItem.name}
+						</Link>
+					);
+				})}
+			</div>
+		</div>
+	);
 }
 
 function AdminLayout(props) {
+	const { header = null, children = null, isBorderless = false } = props;
 
-  const { 
-    header = null, 
-    children = null, 
-    isBorderless = false 
-  } = props;
+	const location = useLocation();
 
-  const location = useLocation();
-  
-  const [isOpen, setIsOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 
-  const menuItems = [
-    {
-      name: 'Dashboard',
-      url: '/admin'
-    },
-    {
-      name: 'Climbs',
-      url: '/admin/climbs'
-    },
-    {
-      name: 'Settings',
-      url: '/admin/settings/organization'
-    }
-  ];
+	const menuItems = [
+		{
+			name: 'Dashboard',
+			url: '/admin',
+		},
+		{
+			name: 'Climbs',
+			url: '/admin/climbs',
+		},
+		{
+			name: 'Settings',
+			url: '/admin/settings/organization',
+		},
+		{
+			name: (
+				<>
+					Home <FiArrowUpRight className="-mt-1 inline text-sm" />
+				</>
+			),
+			url: '/',
+		},
+	];
 
-  const renderMenuItem = (menuItem, key) => {
-    const className = menuItem.url === location.pathname
-      ? 'bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium'
-      : 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium';
+	const renderMenuItem = (menuItem, key) => {
+		const className =
+			menuItem.url === location.pathname
+				? 'bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium'
+				: 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium';
 
-    return (
-      <Link to={menuItem.url} className={className} key={key}>
-        {menuItem.name}
-      </Link>
-    );
-  };
+		return (
+			<Link to={menuItem.url} className={className} key={key}>
+				{menuItem.name}
+			</Link>
+		);
+	};
 
-  const renderMobileMenuItem = (menuItem, key) => {
-    const className = menuItem.url === location.pathname
-      ? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
-      : 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium';
+	const renderMobileMenuItem = (menuItem, key) => {
+		const className =
+			menuItem.url === location.pathname
+				? 'bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium'
+				: 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium';
 
-    return (
-      <Link to={menuItem.url} className={className} key={key}>
-        {menuItem.name}
-      </Link>
-    );
-  };
+		return (
+			<Link to={menuItem.url} className={className} key={key}>
+				{menuItem.name}
+			</Link>
+		);
+	};
 
-  return (
-    <div>
-      <div className="bg-gray-800 pb-32">
-        <nav className="bg-gray-800">
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div>
-              <div className="flex items-center justify-between h-16 px-4 sm:px-0">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <Link to="/">
-                      <img className="h-8 w-8" src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg" alt="Workflow" />
-                    </Link>
-                  </div>
-                  <div className="hidden md:block">
-                    <div className="ml-10 flex items-baseline space-x-4">
-                      {menuItems.map((menuItem, loopIndex) => renderMenuItem(menuItem, loopIndex))}
-                    </div>
-                  </div>
-                </div>
-                <div className="hidden md:block">
-                  <div className="ml-4 flex items-center md:ml-6">
-                    <UserMenu />
-                  </div>
-                </div>
-                <div className="-mr-2 flex md:hidden">
-                  {/* <!-- Mobile menu button --> */}
-                  <button 
-                    type="button" 
-                    className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" 
-                    aria-controls="mobile-menu" 
-                    aria-expanded={isOpen}
-                    onClick={() => setIsOpen(!isOpen)}
-                  >
-                    <span className="sr-only">Open main menu</span>
-                    <svg className={`${(isOpen ? 'hidden' : 'block')} h-6 w-6`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <svg className={`${(isOpen ? 'block' : 'hidden')} h-6 w-6`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+	return (
+		<div>
+			<div className="bg-gray-800 pb-32">
+				<nav className="bg-gray-800">
+					<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+						<div>
+							<div className="flex h-16 items-center justify-between px-4 sm:px-0">
+								<div className="flex items-center">
+									<div className="flex-shrink-0">
+										<Link to="/">
+											<img
+												className="h-8 w-8"
+												src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
+												alt="Workflow"
+											/>
+										</Link>
+									</div>
+									<div className="hidden md:block">
+										<div className="ml-10 flex items-baseline space-x-4">
+											{menuItems.map((menuItem, loopIndex) => renderMenuItem(menuItem, loopIndex))}
+										</div>
+									</div>
+								</div>
+								<div className="hidden md:block">
+									<div className="ml-4 flex items-center md:ml-6">
+										<UserMenu />
+									</div>
+								</div>
+								<div className="-mr-2 flex md:hidden">
+									{/* <!-- Mobile menu button --> */}
+									<button
+										type="button"
+										className="focus:outline-none inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+										aria-controls="mobile-menu"
+										aria-expanded={isOpen}
+										onClick={() => setIsOpen(!isOpen)}
+									>
+										<span className="sr-only">Open main menu</span>
+										<svg
+											className={`${isOpen ? 'hidden' : 'block'} h-6 w-6`}
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											aria-hidden="true"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												d="M4 6h16M4 12h16M4 18h16"
+											/>
+										</svg>
+										<svg
+											className={`${isOpen ? 'block' : 'hidden'} h-6 w-6`}
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											aria-hidden="true"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												d="M6 18L18 6M6 6l12 12"
+											/>
+										</svg>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
 
-          {/* <!-- Mobile menu, show/hide based on menu state. --> */}
-          <div className={`${(isOpen ? 'block' : 'hidden')} border-b border-gray-700 md:hidden`} id="mobile-menu">
-            <div className="px-2 py-3 space-y-1 sm:px-3">
-              {menuItems.map((menuItem, loopIndex) => renderMobileMenuItem(menuItem, loopIndex))}
-            </div>
-            <MobileUserMenu />
-          </div>
-        </nav>
-        <header className="py-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {header}
-          </div>
-        </header>
-      </div>
+					{/* <!-- Mobile menu, show/hide based on menu state. --> */}
+					<div
+						className={`${isOpen ? 'block' : 'hidden'} border-b border-gray-700 md:hidden`}
+						id="mobile-menu"
+					>
+						<div className="space-y-1 px-2 py-3 sm:px-3">
+							{menuItems.map((menuItem, loopIndex) => renderMobileMenuItem(menuItem, loopIndex))}
+						</div>
+						<MobileUserMenu />
+					</div>
+				</nav>
+				<header className="py-10">
+					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{header}</div>
+				</header>
+			</div>
 
-      <main className="-mt-32">
-        <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
-          <div className={ `bg-white rounded-lg ${! isBorderless ? 'px-5 py-6 sm:px-6 shadow' : ''}` }>
-            {children}
-          </div>
-        </div>
-      </main>
-    </div>
-
-  );
+			<main className="-mt-32">
+				<div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+					<div className={`rounded-lg bg-white ${!isBorderless ? 'px-5 py-6 shadow sm:px-6' : ''}`}>
+						{children}
+					</div>
+				</div>
+			</main>
+		</div>
+	);
 }
 
 export default AdminLayout;
